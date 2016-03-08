@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,6 +25,13 @@ public class ComputerDAOTest {
 	@After
 	public void tearDown() throws Exception {
 		this.cdao = null;
+	}
+	
+	@Test
+	public void findAllTest(){
+		ArrayList<Computer> computers = cdao.findAll();
+		assertNotNull(computers);
+		assertEquals(Computer.class, computers.get(0).getClass());
 	}
 
 	@Test
@@ -59,7 +67,18 @@ public class ComputerDAOTest {
 		computerMockDateZero.setCompanyId(11);
 		
 		assertEquals(computerMockDateZero, this.cdao.findById(63));
+	}
+	@Test
+	public void createTest(){
+		Computer computer = new Computer();
+		computer.setName("toto");
+		computer.setIntroduced(DateConverter.stringToDate("2000-01-01"));
+		computer.setDiscontinued(DateConverter.stringToDate("2000-01-05"));
+		computer.setCompanyId(11);
 		
+		assertEquals(1, this.cdao.create(computer));
+		//Get inserted id and verify it  is the same as the inserted object
+		//assertEquals(expected, actual);
 	}
 
 }
