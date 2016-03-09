@@ -116,7 +116,7 @@ public class ConsoleUI {
 	}
 	
 	public static void handleNewComputer(CommandLine cmd){
-		int newId = API.createComputer(
+		long newId = API.createComputer(
 				cmd.getOptionValue("name"),
 				cmd.getOptionValue("intro"), 
 				cmd.getOptionValue("disco"),

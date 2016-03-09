@@ -33,11 +33,11 @@ public class CompanyDAOTest {
 	@Test
 	public void findByIdTest(){
 		Company validMock = new Company();
-		validMock.setId(1);
+		validMock.setId(1l);
 		validMock.setName("Apple Inc.");
 		
 		Company errorMock = new Company();
-		errorMock.setId(0);
+		errorMock.setId(0l);
 		errorMock.setName("whatever");
 		
 		Company fromDb = cdao.findById(1);

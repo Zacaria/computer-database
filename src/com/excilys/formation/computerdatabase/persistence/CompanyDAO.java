@@ -12,13 +12,9 @@ import com.excilys.formation.computerdatabase.model.Company;
 
 public class CompanyDAO extends AbstractDAO implements Findable<Company>{
 	
-	/*public CompanyDAO(){
-		super();
-	}*/
-
 	@Override
 	public ArrayList<Company> findAll() {
-		String query = "SELECT * FROM company;";
+		String query = "SELECT * FROM `computer-database-db`.company;";
 		Connection connection = this.getConnection();
 				
 		ArrayList<Company> companies = null;
@@ -50,9 +46,9 @@ public class CompanyDAO extends AbstractDAO implements Findable<Company>{
 	}
 
 	@Override
-	public Company findById(int id) {
+	public Company findById(long id) {
 
-		String query = "SELECT * FROM company WHERE id = ? ;";
+		String query = "SELECT * FROM `computer-database-db`.company WHERE id = ? ;";
 		Connection connection = this.getConnection();
 		Company company = null;
 		
@@ -60,7 +56,7 @@ public class CompanyDAO extends AbstractDAO implements Findable<Company>{
 		
 		try {
 			statement = connection.prepareStatement(query);
-			statement.setInt(1, id);
+			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			CompanyMapper mapper = new CompanyMapper();
 			

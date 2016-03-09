@@ -12,7 +12,7 @@ public class CompanyMapper implements Mapable<Company>{
 		Company company = new Company();
 		
 		try {
-			company.setId(rs.getInt("id"));
+			company.setId(rs.getLong("id"));
 			if(rs.getString("name") != null){
 				company.setName(rs.getString("name"));
 			}

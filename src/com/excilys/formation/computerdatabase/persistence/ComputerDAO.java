@@ -57,7 +57,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 	}
 
 	@Override
-	public Computer findById(int id) {
+	public Computer findById(long id) {
 		
 		String query = "SELECT * FROM `computer-database-db`.computer WHERE id = ? ;";
 		Connection connection = this.getConnection();
@@ -68,7 +68,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 		
 		try {
 			statement = connection.prepareStatement(query);
-			statement.setInt(1, id);
+			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			ComputerMapper mapper = new ComputerMapper();
 			
@@ -131,16 +131,12 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 	}
 
 	@Override
-	public int create(Computer toCreate) {
+	public long create(Computer toCreate) {
 		String query = "INSERT INTO `computer-database-db`.computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
 		Connection connection = this.getConnection();
 		PreparedStatement statement = null;
 		
-		
-		
-		//int affectedRows = 0;
-		//Should be Long
-		int newId = 0;
+		long newId = 0;
 		
 		try {
 			if(toCreate.getName() == null){
@@ -154,7 +150,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 			statement.setString(1, toCreate.getName());
 			statement.setDate(2, toCreate.getIntroduced());
 			statement.setDate(3, toCreate.getDiscontinued());
-			statement.setInt(4, toCreate.getCompanyId());
+			statement.setLong(4, toCreate.getCompanyId());
 			
 			int affectedRows = statement.executeUpdate();
 			if(affectedRows == 0){
@@ -164,10 +160,9 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 			if(generatedId.next()){
 				//auto unboxing
 				//use that because id is never null
-				newId = (int) (long) generatedId.getLong(1);
+				newId = (long) generatedId.getLong(1);
 			}
 		} catch (MySQLIntegrityConstraintViolationException e) {
-			// TODO Auto-generated catch block
 			System.out.println("ERROR Insert : the referenced company does not exist");
 			return 0;
 			//e.printStackTrace();
@@ -182,7 +177,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 	}
 
 	@Override
-	public int delete(int id) {
+	public int delete(long id) {
 		String query = "DELETE FROM `computer-database-db`.computer WHERE id = ?;";
 		Connection connection = this.getConnection();
 		PreparedStatement statement = null;
@@ -196,7 +191,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 		
 		try {
 			statement = connection.prepareStatement(query);
-			statement.setInt(1, id);
+			statement.setLong(1, id);
 			
 			affectedRows = statement.executeUpdate();
 			
@@ -244,8 +239,8 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 			statement.setString(1, toUpdate.getName());
 			statement.setDate(2, toUpdate.getIntroduced());
 			statement.setDate(3, toUpdate.getDiscontinued());
-			statement.setInt(4, toUpdate.getCompanyId());
-			statement.setInt(5, toUpdate.getId());
+			statement.setLong(4, toUpdate.getCompanyId());
+			statement.setLong(5, toUpdate.getId());
 			
 			
 			affectedRows = statement.executeUpdate();

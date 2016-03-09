@@ -12,7 +12,7 @@ public class ComputerMapper implements Mapable<Computer>{
 		Computer computer = new Computer();
 		
 		try {
-			computer.setId(rs.getInt("id"));
+			computer.setId((long)rs.getInt("id"));
 			if(rs.getString("name") != null){
 				computer.setName(rs.getString("name"));
 			}
@@ -24,7 +24,7 @@ public class ComputerMapper implements Mapable<Computer>{
 			}
 			
 			//because of the db constraints, the foreign key cannot be null
-			computer.setCompanyId(rs.getInt("company_id"));		
+			computer.setCompanyId((long) rs.getLong("company_id"));		
 			
 			
 		} catch (Exception e) {

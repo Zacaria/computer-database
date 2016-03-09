@@ -18,8 +18,8 @@ public class ComputerMapperTest {
 	@Before
 	public void setUp() throws Exception {
 		this.empty = new Computer();
-		this.full = new Computer(5, "full", "1999-04-04", "1999-06-06", 7);
-		this.partial = new Computer(8, "partial", "", "", 10);
+		this.full = new Computer(5l, "full", "1999-04-04", "1999-06-06", 7l);
+		this.partial = new Computer(8l, "partial", "", "", 10l);
 		
 		this.mapper = new ComputerMapper();
 	}

@@ -5,16 +5,16 @@ import java.sql.Date;
 import com.excilys.formation.computerdatabase.util.DateConverter;
 
 public class Computer {
-	private Integer id;
+	private Long id;
 	private String name;
 	private Date introduced;
 	private Date discontinued;
-	private Integer companyId;
+	private Long companyId;
 	
 	public Computer() {
 	}
 
-	public Computer(Integer id, String name, Date introduced, Date discontinued, Integer companyId) {
+	public Computer(Long id, String name, Date introduced, Date discontinued, Long companyId) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
@@ -22,7 +22,7 @@ public class Computer {
 		this.companyId = companyId;
 	}
 	
-	public Computer(Integer id, String name, String introduced, String discontinued, Integer companyId){
+	public Computer(Long id, String name, String introduced, String discontinued, Long companyId){
 		this.id = id;
 		this.name = name;
 		if(introduced != null){
@@ -34,7 +34,7 @@ public class Computer {
 		this.companyId = companyId;
 	}
 	
-	public Computer(String name, String introduced, String discontinued, Integer companyId){
+	public Computer(String name, String introduced, String discontinued, Long companyId){
 		this.name = name;
 		if(introduced != null){
 			this.introduced = DateConverter.stringToDate(introduced);
@@ -101,10 +101,10 @@ public class Computer {
 		return true;
 	}
 	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -125,10 +125,10 @@ public class Computer {
 	public void setDiscontinued(Date discontinued) {
 		this.discontinued = discontinued;
 	}
-	public Integer getCompanyId() {
+	public Long getCompanyId() {
 		return companyId;
 	}
-	public void setCompanyId(Integer company_id) {
-		this.companyId = company_id;
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
 	}
 }

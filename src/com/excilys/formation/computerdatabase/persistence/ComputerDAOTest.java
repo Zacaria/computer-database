@@ -40,31 +40,31 @@ public class ComputerDAOTest {
 		
 		Computer computerMockFull = new Computer();
 		
-		computerMockFull.setId(12);
+		computerMockFull.setId(12l);
 		computerMockFull.setName("Apple III");
 		computerMockFull.setIntroduced(DateConverter.stringToDate("1980-05-01"));
 		computerMockFull.setDiscontinued(DateConverter.stringToDate("1984-04-01"));
-		computerMockFull.setCompanyId(1);
+		computerMockFull.setCompanyId(1l);
 		
 		assertEquals(computerMockFull, this.cdao.findById(12));
 		
 		Computer computerMockDateNull = new Computer();
 		
-		computerMockDateNull.setId(13);
+		computerMockDateNull.setId(13l);
 		computerMockDateNull.setName("Apple Lisa");
 		computerMockDateNull.setIntroduced(null);
 		computerMockDateNull.setDiscontinued(null);
-		computerMockDateNull.setCompanyId(1);
+		computerMockDateNull.setCompanyId(1l);
 		
 		assertEquals("This didn't work with a date null", computerMockDateNull, this.cdao.findById(13));
 		
 		Computer computerMockDateZero = new Computer();
 		
-		computerMockDateZero.setId(63);
+		computerMockDateZero.setId(63l);
 		computerMockDateZero.setName("TX-2");
 		//computerMockDateZero.setIntroduced(DateConverter.stringToDate("0"));
 		computerMockDateZero.setDiscontinued(null);
-		computerMockDateZero.setCompanyId(11);
+		computerMockDateZero.setCompanyId(11l);
 		
 		assertEquals(computerMockDateZero, this.cdao.findById(63));
 	}
@@ -74,20 +74,20 @@ public class ComputerDAOTest {
 		computer.setName("toto");
 		computer.setIntroduced(DateConverter.stringToDate("2000-01-01"));
 		computer.setDiscontinued(DateConverter.stringToDate("2000-01-05"));
-		computer.setCompanyId(11);
+		computer.setCompanyId(11l);
 		
 		//Need to add findLast
-		int insertedId = this.cdao.create(computer);
+		long insertedId = this.cdao.create(computer);
 		
 		Computer lastComputer = this.cdao.findLast();
 		
 		assertTrue(insertedId == lastComputer.getId());
 		
-		computer.setCompanyId(100);
+		computer.setCompanyId(100l);
 		assertEquals(0, this.cdao.create(computer));
 		
 		
-		computer.setCompanyId(11);
+		computer.setCompanyId(11l);
 		computer.setName(null);
 		assertEquals(0, this.cdao.create(computer));
 	}
@@ -99,9 +99,9 @@ public class ComputerDAOTest {
 		computer.setName("toto");
 		computer.setIntroduced(DateConverter.stringToDate("2000-01-01"));
 		computer.setDiscontinued(DateConverter.stringToDate("2000-01-05"));
-		computer.setCompanyId(11);
+		computer.setCompanyId(11l);
 		
-		int newId = this.cdao.create(computer);
+		long newId = this.cdao.create(computer);
 		
 		Computer last = this.cdao.findById(newId);
 		
@@ -120,9 +120,9 @@ public class ComputerDAOTest {
 		computer.setName("toto");
 		computer.setIntroduced(DateConverter.stringToDate("2000-02-01"));
 		computer.setDiscontinued(DateConverter.stringToDate("2000-01-05"));
-		computer.setCompanyId(11);
+		computer.setCompanyId(11l);
 		
-		int newId = this.cdao.create(computer);
+		long newId = this.cdao.create(computer);
 		
 		System.out.println("New Id : " + newId);
 		
@@ -132,14 +132,14 @@ public class ComputerDAOTest {
 		
 		assertEquals(1, affectedRows);
 		
-		computer.setCompanyId(1200);
+		computer.setCompanyId(1200l);
 		
 		affectedRows = this.cdao.update(computer);
 		
 		assertEquals(0, affectedRows);
 		
 		//assume that this id deosn't exist
-		computer.setId(100000);
+		computer.setId(100000l);
 		
 		affectedRows = this.cdao.update(computer);
 		

@@ -33,7 +33,7 @@ public class API {
 	public static Computer getComputer(String pId){
 		consoleLogger.info("access");
 		try {
-			int id = Integer.parseInt(pId);
+			long id = Long.parseLong(pId);
 			
 			return new ComputerDAO().findById(id);			
 		} catch (NumberFormatException e) {
@@ -43,13 +43,13 @@ public class API {
 		}
 	}
 	
-	public static int createComputer(String name, String introduced, String discontinued, String pCompanyId){
+	public static long createComputer(String name, String introduced, String discontinued, String pCompanyId){
 		consoleLogger.info("access");
-		Integer companyId = null;
+		Long companyId = null;
 		
 		if(pCompanyId != null){
 			try {
-				companyId = Integer.parseInt(pCompanyId);
+				companyId = Long.parseLong(pCompanyId);
 				
 			} catch (NumberFormatException e) {
 				consoleLogger.error(e.getClass().getName() +" : "+ e.getMessage());
@@ -80,12 +80,12 @@ public class API {
 	
 	public static int updateComputer(String id, String name, String introduced, String discontinued, String pCompanyId){
 		consoleLogger.info("access");
-		Integer companyId = null;
-		Integer computerId = null;
+		Long companyId = null;
+		Long computerId = null;
 		
 		if(id != null){
 			try {
-				computerId = Integer.parseInt(id);
+				computerId = Long.parseLong(id);
 				
 			} catch (NumberFormatException e) {
 				consoleLogger.error(e.getClass().getName() +" : "+ e.getMessage());
@@ -95,7 +95,7 @@ public class API {
 		}
 		if(pCompanyId != null){
 			try {
-				companyId = Integer.parseInt(pCompanyId);
+				companyId = Long.parseLong(pCompanyId);
 				
 			} catch (NumberFormatException e) {
 				consoleLogger.error(e.getClass().getName() +" : "+ e.getMessage());
