@@ -2,6 +2,8 @@ package com.excilys.formation.computerdatabase.model;
 
 import java.sql.Date;
 
+import com.excilys.formation.computerdatabase.util.DateConverter;
+
 public class Computer {
 	private Integer id;
 	private String name;
@@ -9,7 +11,40 @@ public class Computer {
 	private Date discontinued;
 	private Integer companyId;
 	
+	public Computer() {
+	}
+
+	public Computer(Integer id, String name, Date introduced, Date discontinued, Integer companyId) {
+		this.id = id;
+		this.name = name;
+		this.introduced = introduced;
+		this.discontinued = discontinued;
+		this.companyId = companyId;
+	}
 	
+	public Computer(Integer id, String name, String introduced, String discontinued, Integer companyId){
+		this.id = id;
+		this.name = name;
+		if(introduced != null){
+			this.introduced = DateConverter.stringToDate(introduced);
+		}
+		if(discontinued != null){
+			this.discontinued = DateConverter.stringToDate(discontinued);
+		}
+		this.companyId = companyId;
+	}
+	
+	public Computer(String name, String introduced, String discontinued, Integer companyId){
+		this.name = name;
+		if(introduced != null){
+			this.introduced = DateConverter.stringToDate(introduced);
+		}
+		if(discontinued != null){
+			this.discontinued = DateConverter.stringToDate(discontinued);
+		}
+		this.companyId = companyId;
+	}
+
 	@Override
 	public String toString() {
 		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued=" + discontinued

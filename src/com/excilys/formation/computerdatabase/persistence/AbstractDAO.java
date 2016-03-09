@@ -11,18 +11,13 @@ public abstract class AbstractDAO {
 	private String user = "root";
 	private String pass = "root";
 	
-	/*public AbstractDAO(){
-		//Normally I should pass the cnxString here
-	}*/
 	
 	public Connection getConnection(){
 		Connection connection = null;
 		try {
 			// Register JDBC Driver
 			Class.forName("com.mysql.jdbc.Driver");
-			//if(this.connection == null){
-				connection = DriverManager.getConnection(this.cnxString, user, pass);
-			//}
+			connection = DriverManager.getConnection(this.cnxString, user, pass);
 		} catch (SQLException e){
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
@@ -31,10 +26,6 @@ public abstract class AbstractDAO {
 		
 		return connection;
 	}
-	
-	/*public abstract ArrayList<T> findAll();
-	
-	public abstract T findById(int id);*/
 	
 	public void closeConnection(Connection connection){
 		try {

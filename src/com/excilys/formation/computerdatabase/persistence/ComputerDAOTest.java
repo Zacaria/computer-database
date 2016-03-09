@@ -2,8 +2,6 @@ package com.excilys.formation.computerdatabase.persistence;
 
 import static org.junit.Assert.*;
 
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.junit.After;
@@ -14,6 +12,8 @@ import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.util.DateConverter;
 
 public class ComputerDAOTest {
+	
+	//TODO : refactor mocks
 	
 	ComputerDAO cdao;
 
@@ -77,12 +77,19 @@ public class ComputerDAOTest {
 		computer.setCompanyId(11);
 		
 		//Need to add findLast
-		//assertEquals(1, this.cdao.create(computer));
+		int insertedId = this.cdao.create(computer);
+		
+		Computer lastComputer = this.cdao.findLast();
+		
+		assertTrue(insertedId == lastComputer.getId());
 		
 		computer.setCompanyId(100);
 		assertEquals(0, this.cdao.create(computer));
-		//Get inserted id and verify it  is the same as the inserted object
-		//assertEquals(expected, actual);
+		
+		
+		computer.setCompanyId(11);
+		computer.setName(null);
+		assertEquals(0, this.cdao.create(computer));
 	}
 	
 	@Test

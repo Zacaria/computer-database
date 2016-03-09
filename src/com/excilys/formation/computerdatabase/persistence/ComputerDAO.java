@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import com.excilys.formation.computerdatabase.mapper.ComputerMapper;
 import com.excilys.formation.computerdatabase.model.Computer;
@@ -15,7 +16,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 
 	@Override
 	public ArrayList<Computer> findAll() {
-		String query = "SELECT * FROM computer;";
+		String query = "SELECT * FROM `computer-database-db`.computer;";
 		Connection connection = this.getConnection();
 				
 		ArrayList<Computer> computers = null;
@@ -58,7 +59,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 	@Override
 	public Computer findById(int id) {
 		
-		String query = "SELECT * FROM computer WHERE id = ? ;";
+		String query = "SELECT * FROM `computer-database-db`.computer WHERE id = ? ;";
 		Connection connection = this.getConnection();
 		
 		Computer computer = null;
@@ -73,8 +74,11 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 			
 			if(resultSet.first()){
 				computer = mapper.map(resultSet);
-				
+			} else {
+				throw new NoSuchElementException("No computer was found with the id " + id);
 			}
+		} catch (NoSuchElementException e){
+			System.out.println(e.getMessage());
 		} catch (SQLException e){
 			e.printStackTrace();
 		} finally {
@@ -94,7 +98,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 	@Override
 	public Computer findLast() {
 		
-		String query = "SELECT * FROM computer GROUP BY ID DESC LIMIT 1;";
+		String query = "SELECT * FROM `computer-database-db`.computer GROUP BY ID DESC LIMIT 1;";
 		Connection connection = this.getConnection();
 		
 		Computer computer = null;
@@ -128,15 +132,24 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 
 	@Override
 	public int create(Computer toCreate) {
-		String query = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
+		String query = "INSERT INTO `computer-database-db`.computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
 		Connection connection = this.getConnection();
 		PreparedStatement statement = null;
+		
+		
 		
 		//int affectedRows = 0;
 		//Should be Long
 		int newId = 0;
 		
 		try {
+			if(toCreate.getName() == null){
+				throw new Exception("ERROR Insert : Could not create an unnamed computer !");
+			}
+			if(toCreate.getCompanyId() == null){
+				throw new Exception("ERROR Insert : Could not create a computer without it's company !!");
+			}
+			
 			statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, toCreate.getName());
 			statement.setDate(2, toCreate.getIntroduced());
@@ -160,6 +173,9 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 			//e.printStackTrace();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+		} catch (Exception e){
+			System.out.println(e.getMessage());
+			return 0;
 		}
 		
 		return newId;
@@ -167,9 +183,14 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 
 	@Override
 	public int delete(int id) {
-		String query = "DELETE FROM computer WHERE id = ?;";
+		String query = "DELETE FROM `computer-database-db`.computer WHERE id = ?;";
 		Connection connection = this.getConnection();
 		PreparedStatement statement = null;
+		
+		Computer oldVersion = this.findById(id);
+		if(oldVersion == null){
+			return 0;
+		}
 		
 		int affectedRows = 0;
 		
@@ -193,13 +214,32 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 
 	@Override
 	public int update(Computer toUpdate) {
-		String query = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
+		//TODO : update from existing data
+		
+		String query = "UPDATE `computer-database-db`.computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
 		Connection connection = this.getConnection();
 		PreparedStatement statement = null;
 		
 		int affectedRows = 0;
 		
+		System.out.println(toUpdate);
+		Computer oldVersion = this.findById(toUpdate.getId());
+		if(oldVersion == null){
+			return 0;
+		}
+		
 		try {
+			//TODO : test if id not found
+			ComputerMapper mapper = new ComputerMapper();
+			mapper.merge(toUpdate, oldVersion);
+			
+			if(toUpdate.getName() == null){
+				throw new Exception("ERROR Insert : Could not update to an unnamed computer !");
+			}
+			if(toUpdate.getCompanyId() == null){
+				throw new Exception("ERROR Insert : Could not update to a computer without it's company !!");
+			}
+			
 			statement = connection.prepareStatement(query);
 			statement.setString(1, toUpdate.getName());
 			statement.setDate(2, toUpdate.getIntroduced());
@@ -221,6 +261,10 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 			//e.printStackTrace();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+			return 0;
+		} catch (Exception e){
+			System.out.println(e.getMessage());
+			return 0;
 		}
 		
 		return affectedRows;

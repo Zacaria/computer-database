@@ -11,7 +11,8 @@ public class DateConverter {
 		try {
 			date = new Date(formatter.parse(s).getTime());
 		} catch (ParseException e){
-			e.printStackTrace();
+			System.out.println("Please check the provided date format, it should be yyyy-MM-dd");
+			return null;
 		}
 		
 		return date;

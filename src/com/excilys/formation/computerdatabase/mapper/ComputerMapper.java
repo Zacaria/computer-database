@@ -33,5 +33,30 @@ public class ComputerMapper implements Mapable<Computer>{
 		
 		return computer;
 	}
+	
+	/**
+	 * Merges the right computer into the left computer
+	 * It means that each null value of the left will be replaced by the corresponding one in the right
+	 * @param left receptacle
+	 * @param right input
+	 * @return
+	 */
+	public void merge(Computer left, Computer right){
+		if(left.getId() == null){
+			left.setId(right.getId());
+		}
+		if(left.getName() == null){
+			left.setName(right.getName());
+		}
+		if(left.getIntroduced() == null){
+			left.setIntroduced(right.getIntroduced());
+		}
+		if(left.getDiscontinued() == null){
+			left.setDiscontinued(right.getDiscontinued());
+		}
+		if(left.getCompanyId() == null){
+			left.setCompanyId(right.getCompanyId());
+		}
+	}
 
 }
