@@ -5,4 +5,5 @@ import java.util.ArrayList;
 public interface Findable<T> {
 	ArrayList<T> findAll();
 	T findById(int id);
+	T findLast();
 }

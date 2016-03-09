@@ -82,5 +82,11 @@ public class CompanyDAO extends AbstractDAO implements Findable<Company>{
 		
 		return company;
 	}
+
+	@Override
+	public Company findLast() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

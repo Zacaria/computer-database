@@ -76,9 +76,70 @@ public class ComputerDAOTest {
 		computer.setDiscontinued(DateConverter.stringToDate("2000-01-05"));
 		computer.setCompanyId(11);
 		
-		assertEquals(1, this.cdao.create(computer));
+		//Need to add findLast
+		//assertEquals(1, this.cdao.create(computer));
+		
+		computer.setCompanyId(100);
+		assertEquals(0, this.cdao.create(computer));
 		//Get inserted id and verify it  is the same as the inserted object
 		//assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void deleteTest(){
+		
+		Computer computer = new Computer();
+		computer.setName("toto");
+		computer.setIntroduced(DateConverter.stringToDate("2000-01-01"));
+		computer.setDiscontinued(DateConverter.stringToDate("2000-01-05"));
+		computer.setCompanyId(11);
+		
+		int newId = this.cdao.create(computer);
+		
+		Computer last = this.cdao.findById(newId);
+		
+		int affectedRows = this.cdao.delete(last.getId());
+		
+		Computer deleted = this.cdao.findById(last.getId());
+		
+		assertNull(deleted);
+		assertEquals(1, affectedRows);
+	}
+	
+	@Test
+	public void updateTest(){
+		
+		Computer computer = new Computer();
+		computer.setName("toto");
+		computer.setIntroduced(DateConverter.stringToDate("2000-02-01"));
+		computer.setDiscontinued(DateConverter.stringToDate("2000-01-05"));
+		computer.setCompanyId(11);
+		
+		int newId = this.cdao.create(computer);
+		
+		System.out.println("New Id : " + newId);
+		
+		computer.setId(newId);
+		
+		int affectedRows = this.cdao.update(computer);
+		
+		assertEquals(1, affectedRows);
+		
+		computer.setCompanyId(1200);
+		
+		affectedRows = this.cdao.update(computer);
+		
+		assertEquals(0, affectedRows);
+		
+		//assume that this id deosn't exist
+		computer.setId(100000);
+		
+		affectedRows = this.cdao.update(computer);
+		
+		assertEquals(0, affectedRows);
+		
+		this.cdao.delete(newId);
+		
 	}
 
 }

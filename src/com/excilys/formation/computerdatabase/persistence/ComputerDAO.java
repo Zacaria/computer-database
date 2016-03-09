@@ -1,18 +1,15 @@
 package com.excilys.formation.computerdatabase.persistence;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import javax.naming.OperationNotSupportedException;
-
 import com.excilys.formation.computerdatabase.mapper.ComputerMapper;
-import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 
@@ -93,22 +90,20 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 		
 		return computer;
 	}
-
-	/*@Override
-	public int update(Computer toUpdate) {
-		//TODO : handle id not found
-		//String query = "SELECT * FROM computer WHERE id = ? ;";
-		String query = "UPDATE computer SET name = WHERE id = ?";
+	
+	@Override
+	public Computer findLast() {
+		
+		String query = "SELECT * FROM computer GROUP BY ID DESC LIMIT 1;";
 		Connection connection = this.getConnection();
 		
 		Computer computer = null;
 		
-		PreparedStatement statement = null;
+		Statement statement = null;
 		
 		try {
-			statement = connection.prepareStatement(query);
-			statement.setInt(1, id);
-			ResultSet resultSet = statement.executeQuery();
+			statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
 			ComputerMapper mapper = new ComputerMapper();
 			
 			if(resultSet.first()){
@@ -128,59 +123,107 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 			this.closeConnection(connection);
 		}
 		
-		return id;
-		return null;
-		throw new ();
-	}*/
+		return computer;
+	}
 
 	@Override
 	public int create(Computer toCreate) {
-		// TODO handle already exist
-		// TODO handle no company with this id found
 		String query = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
 		Connection connection = this.getConnection();
 		PreparedStatement statement = null;
 		
-		//Check if the company exists
-		CompanyDAO companyDao = new CompanyDAO();
-		Company company = companyDao.findById(toCreate.getCompanyId());
+		//int affectedRows = 0;
+		//Should be Long
+		int newId = 0;
 		
 		try {
-			if(company == null){
-				throw new Exception("ERROR : the referenced company does not exist");
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		int affectedRows = 0;
-		
-		try {
-			statement = connection.prepareStatement(query);
+			statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, toCreate.getName());
 			statement.setDate(2, toCreate.getIntroduced());
 			statement.setDate(3, toCreate.getDiscontinued());
 			statement.setInt(4, toCreate.getCompanyId());
 			
-			affectedRows = statement.executeUpdate();
-		} catch (SQLException e) {
+			int affectedRows = statement.executeUpdate();
+			if(affectedRows == 0){
+				throw new SQLException("Error Insert : failed, no rows affected");
+			}
+			ResultSet generatedId = statement.getGeneratedKeys();
+			if(generatedId.next()){
+				//auto unboxing
+				//use that because id is never null
+				newId = (int) (long) generatedId.getLong(1);
+			}
+		} catch (MySQLIntegrityConstraintViolationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("ERROR Insert : the referenced company does not exist");
+			return 0;
+			//e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return newId;
+	}
+
+	@Override
+	public int delete(int id) {
+		String query = "DELETE FROM computer WHERE id = ?;";
+		Connection connection = this.getConnection();
+		PreparedStatement statement = null;
+		
+		int affectedRows = 0;
+		
+		try {
+			statement = connection.prepareStatement(query);
+			statement.setInt(1, id);
+			
+			affectedRows = statement.executeUpdate();
+			
+			if(affectedRows == 0){
+				throw new SQLException("ERROR Delete : failed, no rows affected");
+			}
+						
+		} catch (SQLException e) {
+			//e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		
 		return affectedRows;
 	}
 
 	@Override
-	public boolean delete(Integer id) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public int update(Computer toUpdate) {
-		// TODO Auto-generated method stub
-		return 0;
+		String query = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
+		Connection connection = this.getConnection();
+		PreparedStatement statement = null;
+		
+		int affectedRows = 0;
+		
+		try {
+			statement = connection.prepareStatement(query);
+			statement.setString(1, toUpdate.getName());
+			statement.setDate(2, toUpdate.getIntroduced());
+			statement.setDate(3, toUpdate.getDiscontinued());
+			statement.setInt(4, toUpdate.getCompanyId());
+			statement.setInt(5, toUpdate.getId());
+			
+			
+			affectedRows = statement.executeUpdate();
+			
+			if(affectedRows == 0){
+				throw new SQLException("ERROR Update : failed, no rows affected");
+			}
+						
+		} catch (MySQLIntegrityConstraintViolationException e) {
+			// TODO Auto-generated catch block
+			System.out.println("ERROR Update : the referenced company does not exist");
+			return 0;
+			//e.printStackTrace();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return affectedRows;
 	}
 
 }
