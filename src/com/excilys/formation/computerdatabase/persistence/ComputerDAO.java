@@ -12,12 +12,18 @@ import com.excilys.formation.computerdatabase.mapper.ComputerMapper;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
-public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
+public class ComputerDAO implements Crudable<Computer>{
+	
+	private ConnectionFactory connectionFactory;
+	
+	public ComputerDAO(){
+		this.connectionFactory = ConnectionFactory.getInstance();
+	}
 
 	@Override
 	public ArrayList<Computer> findAll() {
 		String query = "SELECT * FROM `computer-database-db`.computer;";
-		Connection connection = this.getConnection();
+		Connection connection = connectionFactory.getConnection();
 				
 		ArrayList<Computer> computers = null;
 		
@@ -50,7 +56,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 					e2.printStackTrace();
 				}
 			}
-			this.closeConnection(connection);
+			connectionFactory.closeConnection(connection);
 		}
 		
 		return computers;
@@ -60,7 +66,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 	public Computer findById(long id) {
 		
 		String query = "SELECT * FROM `computer-database-db`.computer WHERE id = ? ;";
-		Connection connection = this.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		
 		Computer computer = null;
 		
@@ -89,7 +95,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 					e2.printStackTrace();
 				}
 			}
-			this.closeConnection(connection);
+			connectionFactory.closeConnection(connection);
 		}
 		
 		return computer;
@@ -99,7 +105,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 	public Computer findLast() {
 		
 		String query = "SELECT * FROM `computer-database-db`.computer GROUP BY ID DESC LIMIT 1;";
-		Connection connection = this.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		
 		Computer computer = null;
 		
@@ -124,7 +130,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 					e2.printStackTrace();
 				}
 			}
-			this.closeConnection(connection);
+			connectionFactory.closeConnection(connection);
 		}
 		
 		return computer;
@@ -133,7 +139,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 	@Override
 	public long create(Computer toCreate) {
 		String query = "INSERT INTO `computer-database-db`.computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
-		Connection connection = this.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		PreparedStatement statement = null;
 		
 		long newId = 0;
@@ -171,6 +177,15 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 		} catch (Exception e){
 			System.out.println(e.getMessage());
 			return 0;
+		} finally {
+			if(statement != null){
+				try {
+					statement.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+			connectionFactory.closeConnection(connection);
 		}
 		
 		return newId;
@@ -179,7 +194,7 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 	@Override
 	public int delete(long id) {
 		String query = "DELETE FROM `computer-database-db`.computer WHERE id = ?;";
-		Connection connection = this.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		PreparedStatement statement = null;
 		
 		Computer oldVersion = this.findById(id);
@@ -202,6 +217,15 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 		} catch (SQLException e) {
 			//e.printStackTrace();
 			System.out.println(e.getMessage());
+		} finally {
+			if(statement != null){
+				try {
+					statement.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+			connectionFactory.closeConnection(connection);
 		}
 		
 		return affectedRows;
@@ -209,10 +233,9 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 
 	@Override
 	public int update(Computer toUpdate) {
-		//TODO : update from existing data
 		
 		String query = "UPDATE `computer-database-db`.computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
-		Connection connection = this.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		PreparedStatement statement = null;
 		
 		int affectedRows = 0;
@@ -224,7 +247,6 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 		}
 		
 		try {
-			//TODO : test if id not found
 			ComputerMapper mapper = new ComputerMapper();
 			mapper.merge(toUpdate, oldVersion);
 			
@@ -250,7 +272,6 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 			}
 						
 		} catch (MySQLIntegrityConstraintViolationException e) {
-			// TODO Auto-generated catch block
 			System.out.println("ERROR Update : the referenced company does not exist");
 			return 0;
 			//e.printStackTrace();
@@ -260,6 +281,15 @@ public class ComputerDAO extends AbstractDAO implements Crudable<Computer>{
 		} catch (Exception e){
 			System.out.println(e.getMessage());
 			return 0;
+		} finally {
+			if(statement != null){
+				try {
+					statement.close();
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
+			}
+			connectionFactory.closeConnection(connection);
 		}
 		
 		return affectedRows;

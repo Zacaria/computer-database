@@ -10,12 +10,18 @@ import java.util.ArrayList;
 import com.excilys.formation.computerdatabase.mapper.CompanyMapper;
 import com.excilys.formation.computerdatabase.model.Company;
 
-public class CompanyDAO extends AbstractDAO implements Findable<Company>{
+public class CompanyDAO implements Findable<Company>{
+	
+	private ConnectionFactory connectionFactory;
+	
+	public CompanyDAO() {
+		this.connectionFactory = ConnectionFactory.getInstance();
+	}
 	
 	@Override
 	public ArrayList<Company> findAll() {
 		String query = "SELECT * FROM `computer-database-db`.company;";
-		Connection connection = this.getConnection();
+		Connection connection = connectionFactory.getConnection();
 				
 		ArrayList<Company> companies = null;
 		
@@ -39,7 +45,7 @@ public class CompanyDAO extends AbstractDAO implements Findable<Company>{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			this.closeConnection(connection);
+			connectionFactory.closeConnection(connection);
 		}
 		
 		return companies;
@@ -49,7 +55,7 @@ public class CompanyDAO extends AbstractDAO implements Findable<Company>{
 	public Company findById(long id) {
 
 		String query = "SELECT * FROM `computer-database-db`.company WHERE id = ? ;";
-		Connection connection = this.getConnection();
+		Connection connection = connectionFactory.getConnection();
 		Company company = null;
 		
 		PreparedStatement statement = null;
@@ -73,7 +79,7 @@ public class CompanyDAO extends AbstractDAO implements Findable<Company>{
 					e2.printStackTrace();
 				}
 			}
-			this.closeConnection(connection);
+			connectionFactory.closeConnection(connection);
 		}
 		
 		return company;
