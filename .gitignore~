@@ -12,5 +12,3 @@
 
 bin/
 tmp/
-
-src/main/resources/db.private.properties
