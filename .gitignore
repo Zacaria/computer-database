@@ -6,3 +6,5 @@
 
 *.jar
 /build/
+/bin/
+/target/
