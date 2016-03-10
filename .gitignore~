@@ -1,6 +1,5 @@
 *.class
 *.jar
-*.log
 
 .settings/
 .classpath

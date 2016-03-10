@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.excilys.formation.computerdatabase.mapper.CompanyMapper;
@@ -29,19 +28,11 @@ public class CompanyDAO implements Findable<Company>{
 		try (Statement statement = connection.createStatement()){
 			
 			ResultSet resultSet = statement.executeQuery(query);
-			
-			//No linkedList because it is slower for read
-			companies = new ArrayList<>();
-			
+					
 			CompanyMapper mapper = new CompanyMapper();
 			
-			Company company;
-			while(resultSet.next()){
-				company = mapper.map(resultSet);
-				
-				companies.add(company);
-			}
-			
+			//No linkedList because it is slower for read
+			companies = mapper.mapList(resultSet);			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

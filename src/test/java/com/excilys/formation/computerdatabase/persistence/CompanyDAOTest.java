@@ -2,7 +2,6 @@ package com.excilys.formation.computerdatabase.persistence;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;

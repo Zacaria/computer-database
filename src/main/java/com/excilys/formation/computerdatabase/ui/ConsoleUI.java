@@ -16,11 +16,14 @@ import org.apache.logging.log4j.Logger;
 
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
-import com.excilys.formation.computerdatabase.service.API;
+import com.excilys.formation.computerdatabase.service.CompanyService;
+import com.excilys.formation.computerdatabase.service.ComputerService;
 
 public class ConsoleUI {
 	
 	private static final Logger consoleLogger = LogManager.getLogger("com.excilys.formation.computerdatabase.console");
+	private static final ComputerService computerService = ComputerService.getInstance();
+	private static final CompanyService companyService = CompanyService.getInstance();
 	
 	public static void main(String[] args) {		
 		Options options = ConsoleConfig.getConfig();
@@ -61,7 +64,7 @@ public class ConsoleUI {
 	}
 	
 	public static void handleShowCompanies(CommandLine cmd){
-		List<Company> companies = API.getCompanies();
+		List<Company> companies = companyService.getCompanies();
 		
 		Iterator<Company> iterator = companies.iterator();
 		while(iterator.hasNext()){
@@ -75,7 +78,7 @@ public class ConsoleUI {
 		Scanner sc = new Scanner(System.in);
 		
 		//Problem, I load everything
-		List<Computer> computers = API.getComputers();
+		List<Computer> computers = computerService.getComputers();
 		Pager<Computer> pager = new Pager<>(computers);
 		
 		int command = 0;
@@ -109,14 +112,14 @@ public class ConsoleUI {
 		if(!cmd.hasOption("id") || cmd.getOptionValue("id") == null){
 			consoleLogger.error("Please specify the id of the computer you want to see !");
 		}
-		Computer computer = API.getComputer(cmd.getOptionValue("id"));
+		Computer computer = computerService.getComputer(cmd.getOptionValue("id"));
 		if(computer != null){
 			consoleLogger.info(computer);
 		}
 	}
 	
 	public static void handleNewComputer(CommandLine cmd){
-		Long newId = API.createComputer(
+		Long newId = computerService.createComputer(
 				cmd.getOptionValue("name"),
 				cmd.getOptionValue("intro"), 
 				cmd.getOptionValue("disco"),
@@ -130,7 +133,7 @@ public class ConsoleUI {
 			consoleLogger.error("Please specify the id of the computer you want to update !");
 		}
 		
-		int affectedRows = API.updateComputer(
+		int affectedRows = computerService.updateComputer(
 				cmd.getOptionValue("id"),
 				cmd.getOptionValue("name"),
 				cmd.getOptionValue("intro"), 
@@ -147,7 +150,7 @@ public class ConsoleUI {
 			consoleLogger.error("Please specify the id of the computer you want to delete !");
 		}
 		
-		int affectedRows = API.deleteComputer(cmd.getOptionValue("id"));
+		int affectedRows = computerService.deleteComputer(cmd.getOptionValue("id"));
 		
 		consoleLogger.info(affectedRows + " computer deleted !");
 	}

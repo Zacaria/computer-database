@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -37,15 +36,7 @@ public class ComputerDAO implements Crudable<Computer>{
 			ResultSet resultSet = statement.executeQuery(query);
 			ComputerMapper mapper = new ComputerMapper();
 			
-			//No linkedList because it is slower for read
-			computers = new ArrayList<>();
-			
-			Computer computer;
-			while(resultSet.next()){
-				computer = mapper.map(resultSet);
-				
-				computers.add(computer);
-			}
+			computers = mapper.mapList(resultSet);
 			
 			
 		} catch (SQLException e) {

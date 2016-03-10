@@ -13,8 +13,6 @@ import com.excilys.formation.computerdatabase.util.DateConverter;
 
 public class ComputerDAOTest {
 	
-	//TODO : refactor mocks
-	
 	ComputerDAO cdao;
 
 	@Before

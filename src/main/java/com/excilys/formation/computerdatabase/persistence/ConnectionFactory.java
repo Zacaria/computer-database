@@ -60,11 +60,16 @@ public class ConnectionFactory{
 		
 	}
 	
+	/**
+	 * Only loaded on first call to getInstance
+	 * @author excilys
+	 *
+	 */
 	private static class ConnectionFactoryHolder {
 		private final static ConnectionFactory instance = new ConnectionFactory();
 	}
 	
-	public static synchronized ConnectionFactory getInstance(){
+	public static ConnectionFactory getInstance(){
 		return ConnectionFactoryHolder.instance;
 	}
 	

@@ -4,6 +4,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 public class ConsoleConfig {
+	private ConsoleConfig(){
+		
+	}
+	
 	public static Options getConfig(){
 		Options options = new Options();
 		

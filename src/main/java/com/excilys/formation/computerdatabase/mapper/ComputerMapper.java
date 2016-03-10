@@ -1,6 +1,9 @@
 package com.excilys.formation.computerdatabase.mapper;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.excilys.formation.computerdatabase.model.Computer;
 
@@ -35,6 +38,23 @@ public class ComputerMapper implements Mapable<Computer>{
 		}
 		
 		return computer;
+	}
+	
+	@Override
+	public List<Computer> mapList(ResultSet rs) {
+		List<Computer> computers = new ArrayList<>();
+		
+		Computer computer = null;
+		try {
+			while(rs.next()){
+				computer = this.map(rs);
+				
+				computers.add(computer);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return computers;
 	}
 	
 	/**

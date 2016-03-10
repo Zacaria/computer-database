@@ -5,32 +5,31 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
-import com.excilys.formation.computerdatabase.persistence.CompanyDAO;
 import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
 
-/**
- * This class is a facade exposing the capabilities of the API
- * @author excilys
- *
- */
-public class API {
+public class ComputerService {
 	
-	private static final Logger consoleLogger = LogManager.getLogger("com.excilys.formation.computerdatabase.console");
-	//private static final Logger HTMLLogger = LogManager.getLogger("com.excilys.formation.computerdatabase.html");
+	private static final Logger consoleLogger = LogManager.getLogger("com.excilys.formation.computerdatabase");
 	
-	public static List<Company> getCompanies(){
-		consoleLogger.info("access");
-		return new CompanyDAO().findAll();
+	private ComputerService (){
+		
 	}
 	
-	public static List<Computer> getComputers(){
+	private static class ComputerServiceHolder {
+		private final static ComputerService instance = new ComputerService();
+	}
+	
+	public static ComputerService getInstance(){
+		return ComputerServiceHolder.instance;
+	}
+	
+	public List<Computer> getComputers(){
 		consoleLogger.info("access");
 		return new ComputerDAO().findAll();
 	}
 	
-	public static Computer getComputer(String pId){
+	public Computer getComputer(String pId){
 		consoleLogger.info("access");
 		try {
 			long id = Long.parseLong(pId);
@@ -38,12 +37,11 @@ public class API {
 			return new ComputerDAO().findById(id);			
 		} catch (NumberFormatException e) {
 			consoleLogger.error(e.getClass().getName() +" : "+ e.getMessage());
-			//HTMLLogger.error(e.getClass().getName() +" : "+ e.getMessage());
 			return null;
 		}
 	}
 	
-	public static long createComputer(String name, String introduced, String discontinued, String pCompanyId){
+	public Long createComputer(String name, String introduced, String discontinued, String pCompanyId){
 		consoleLogger.info("access");
 		Long companyId = null;
 		
@@ -53,8 +51,7 @@ public class API {
 				
 			} catch (NumberFormatException e) {
 				consoleLogger.error(e.getClass().getName() +" : "+ e.getMessage());
-				//HTMLLogger.error(e.getClass().getName() +" : "+ e.getMessage());
-				return 0;
+				return 0l;
 			}
 		}
 		
@@ -64,7 +61,7 @@ public class API {
 		return new ComputerDAO().create(computer);
 	}
 	
-	public static int deleteComputer(String id){
+	public int deleteComputer(String id){
 		consoleLogger.info("access");
 		Long computerId = null;
 		try {
@@ -72,13 +69,12 @@ public class API {
 			
 		} catch (NumberFormatException e) {
 			consoleLogger.error(e.getClass().getName() +" : "+ e.getMessage());
-			//HTMLLogger.error(e.getClass().getName() +" : "+ e.getMessage());
 			return 0;
 		}
 		return new ComputerDAO().delete(computerId);
 	}
 	
-	public static int updateComputer(String id, String name, String introduced, String discontinued, String pCompanyId){
+	public int updateComputer(String id, String name, String introduced, String discontinued, String pCompanyId){
 		consoleLogger.info("access");
 		Long companyId = null;
 		Long computerId = null;
@@ -89,7 +85,6 @@ public class API {
 				
 			} catch (NumberFormatException e) {
 				consoleLogger.error(e.getClass().getName() +" : "+ e.getMessage());
-				//HTMLLogger.error(e.getClass().getName() +" : "+ e.getMessage());
 				return 0;
 			}
 		}
@@ -99,11 +94,9 @@ public class API {
 				
 			} catch (NumberFormatException e) {
 				consoleLogger.error(e.getClass().getName() +" : "+ e.getMessage());
-				//HTMLLogger.error(e.getClass().getName() +" : "+ e.getMessage());
 				return 0;
 			}
 		}
-		
 		
 		Computer computer = new Computer(computerId, name, introduced, discontinued, companyId);
 		
