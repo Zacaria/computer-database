@@ -5,7 +5,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.excilys.formation.computerdatabase.mapper.Page;
+import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.persistence.CompanyDAO;
 import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
 
 public class ComputerService {
@@ -24,15 +27,31 @@ public class ComputerService {
 		return ComputerServiceHolder.instance;
 	}
 	
-	public List<Computer> getComputers(){
+	public int countComputers(){
 		consoleLogger.info("access");
-		return new ComputerDAO().findAll();
+		
+		int count = new ComputerDAO().count();
+		
+		return count;
+	}
+	
+	public Page<Computer> getComputers(int from, int max){
+		consoleLogger.info("access");
+		
+		ComputerDAO cdao = new ComputerDAO();
+		
+		
+		Page<Computer> computers = new Page<>(from, cdao.findWithRange(from, max), cdao.count());
+		//List<Computer> computers = new ComputerDAO().findAll();
+		
+		
+		return computers;
 	}
 	
 	public Computer getComputer(String pId){
 		consoleLogger.info("access");
 		try {
-			long id = Long.parseLong(pId);
+			Long id = Long.parseLong(pId);
 			
 			return new ComputerDAO().findById(id);			
 		} catch (NumberFormatException e) {
@@ -55,8 +74,10 @@ public class ComputerService {
 			}
 		}
 		
+		Company company = new CompanyDAO().findById(companyId);
 		
-		Computer computer = new Computer(name, introduced, discontinued, companyId);
+		
+		Computer computer = new Computer(name, introduced, discontinued, company);
 		
 		return new ComputerDAO().create(computer);
 	}
@@ -98,7 +119,9 @@ public class ComputerService {
 			}
 		}
 		
-		Computer computer = new Computer(computerId, name, introduced, discontinued, companyId);
+		Company company = new CompanyDAO().findById(companyId);
+		
+		Computer computer = new Computer(computerId, name, introduced, discontinued, company);
 		
 		return new ComputerDAO().update(computer);
 	}

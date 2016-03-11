@@ -8,6 +8,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import com.excilys.formation.computerdatabase.exceptions.DBConnectionException;
+
 //Found at : http://thecodersbreakfast.net/index.php?post/2008/02/25/26-de-la-bonne-implementation-du-singleton-en-java
 
 /**
@@ -53,9 +55,9 @@ public class ConnectionFactory{
 			}
 			
 		} catch(FileNotFoundException e){
-			throw new RuntimeException();
+			throw new DBConnectionException(e);
 		} catch (IOException e) {
-			throw new RuntimeException();
+			throw new DBConnectionException(e);
 		}
 		
 	}
@@ -87,9 +89,11 @@ public class ConnectionFactory{
 					ConnectionFactory.password
 					);
 		} catch (SQLException e){
+			
 			e.printStackTrace();
+			throw new DBConnectionException(e);
 		} catch (ClassNotFoundException e) {
-			throw new RuntimeException();
+			throw new DBConnectionException(e);
 		}
 		
 		return connection;

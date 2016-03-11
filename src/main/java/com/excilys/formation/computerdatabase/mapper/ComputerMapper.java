@@ -8,7 +8,10 @@ import java.util.List;
 import com.excilys.formation.computerdatabase.model.Computer;
 
 public class ComputerMapper implements Mapable<Computer>{
-
+	private final static String COMPUTER_ID = "computer_id";
+	private final static String COMPUTER_NAME = "computer_name";
+	private final static String COMPUTER_INTRODUCED = "introduced";
+	private final static String COMPUTER_DISCONTINUED = "discontinued";
 	
 	/**
 	 * Maps a ResultSet into an Object
@@ -18,20 +21,19 @@ public class ComputerMapper implements Mapable<Computer>{
 		Computer computer = new Computer();
 		
 		try {
-			computer.setId(rs.getLong("id"));
-			if(rs.getString("name") != null){
-				computer.setName(rs.getString("name"));
+			computer.setId(rs.getLong(COMPUTER_ID));
+			if(rs.getString(COMPUTER_NAME) != null){
+				computer.setName(rs.getString(COMPUTER_NAME));
 			}
-			if(rs.getTimestamp("introduced") != null){
-				computer.setIntroduced(rs.getDate("introduced").toLocalDate());
+			if(rs.getTimestamp(COMPUTER_INTRODUCED) != null){
+				computer.setIntroduced(rs.getDate(COMPUTER_INTRODUCED).toLocalDate());
 			}
-			if(rs.getTimestamp("discontinued") != null){
-				computer.setDiscontinued(rs.getDate("discontinued").toLocalDate());
+			if(rs.getTimestamp(COMPUTER_DISCONTINUED) != null){
+				computer.setDiscontinued(rs.getDate(COMPUTER_DISCONTINUED).toLocalDate());
 			}
 			
-			//because of the db constraints, the foreign key cannot be null
-			computer.setCompanyId(rs.getLong("company_id"));		
-			
+			CompanyMapper companyMapper = new CompanyMapper();
+			computer.setCompany(companyMapper.map(rs));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -77,8 +79,8 @@ public class ComputerMapper implements Mapable<Computer>{
 		if(left.getDiscontinued() == null){
 			left.setDiscontinued(right.getDiscontinued());
 		}
-		if(left.getCompanyId() == null){
-			left.setCompanyId(right.getCompanyId());
+		if(left.getCompany() == null){
+			left.setCompany(right.getCompany());
 		}
 	}
 

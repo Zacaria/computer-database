@@ -14,6 +14,7 @@ import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.excilys.formation.computerdatabase.mapper.Page;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.CompanyService;
@@ -24,6 +25,10 @@ public class ConsoleUI {
 	private static final Logger consoleLogger = LogManager.getLogger("com.excilys.formation.computerdatabase.console");
 	private static final ComputerService computerService = ComputerService.getInstance();
 	private static final CompanyService companyService = CompanyService.getInstance();
+	
+	private static int companiesOffset = 0;
+	private static int computerOffset = 0;
+	private static int defaultMax = 10;
 	
 	public static void main(String[] args) {		
 		Options options = ConsoleConfig.getConfig();
@@ -38,9 +43,9 @@ public class ConsoleUI {
 				
 			} else if (cmd.hasOption("e")){
 				handleShowCompanies(cmd);				
-			} else if (cmd.hasOption("C")){
+			} else if (cmd.hasOption("c") && !cmd.hasOption("id")){
 				handleShowComputers(cmd);
-			} else if (cmd.hasOption("c")){
+			} else if (cmd.hasOption("c") && cmd.hasOption("id")){
 				handleShowComputer(cmd);			
 			} else if (cmd.hasOption("new")){
 				handleNewComputer(cmd);				
@@ -58,15 +63,15 @@ public class ConsoleUI {
 	
 	public static void handleMenu(Options options){
 		
-		//tell about syntax and mandatory args
+		//TODO : tell about syntax and mandatory args
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp("ant", options);
 	}
 	
 	public static void handleShowCompanies(CommandLine cmd){
-		List<Company> companies = companyService.getCompanies();
+		Page<Company> companies = companyService.getCompanies(companiesOffset, defaultMax);
 		
-		Iterator<Company> iterator = companies.iterator();
+		Iterator<Company> iterator = companies.getElements().iterator();
 		while(iterator.hasNext()){
 			Company company = iterator.next();
 			
@@ -78,22 +83,22 @@ public class ConsoleUI {
 		Scanner sc = new Scanner(System.in);
 		
 		//Problem, I load everything
-		List<Computer> computers = computerService.getComputers();
+		Page<Computer> computers = computerService.getComputers(computerOffset, defaultMax);
 		Pager<Computer> pager = new Pager<>(computers);
+		
 		
 		int command = 0;
 		
 		do{
 			System.out.println("Page " + pager.getCurrentPageNumber() + " of " + pager.getTotalPage());
-			
+
 			if(command == 4){
-				pager.previous();
+				pager.setCurrentPage(computerService.getComputers(pager.previous(), defaultMax));
 			} else if (command == 6){
-				pager.next();
+				pager.setCurrentPage(computerService.getComputers(pager.next(), defaultMax));
 			}
-			List<Computer> page = pager.getCurrentPage();
 			
-			Iterator<Computer> iterator = page.iterator();
+			Iterator<Computer> iterator = pager.getCurrentPage().getElements().iterator();
 			while(iterator.hasNext()){
 				Computer computer = iterator.next();
 				
@@ -101,9 +106,14 @@ public class ConsoleUI {
 			}
 			
 			System.out.println("Hit 4 to previous page or hit 6 to next ! \nExit with 9");
+			//if(sc.hasNextInt()){
 			command = sc.nextInt();
+			/*} else {
+				System.out.println("wow !");
+			}*/
+			
 		}while(command != 9);
-		
+		sc.close();
 		
 		System.out.println("Computer database existing, bye !");
 	}
@@ -114,7 +124,7 @@ public class ConsoleUI {
 		}
 		Computer computer = computerService.getComputer(cmd.getOptionValue("id"));
 		if(computer != null){
-			consoleLogger.info(computer);
+			System.out.println(computer);
 		}
 	}
 	

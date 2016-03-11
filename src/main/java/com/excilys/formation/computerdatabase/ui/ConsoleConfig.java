@@ -24,16 +24,10 @@ public class ConsoleConfig {
 				.desc("Lists the companies")
 				.build(); 
 		
-		Option computers = Option
-				.builder("C")
-				.longOpt("computers")
-				.desc("Lists the computers")
-				.build();
-		
 		Option computer = Option
 				.builder("c")
-				.longOpt("computer")
-				.desc("Details a computer, id option mandatory")
+				.longOpt("computers")
+				.desc("Lists computers, if id is provided, lists only one computer")
 				.build();
 		
 		//Enablers
@@ -53,7 +47,6 @@ public class ConsoleConfig {
 		
 		options.addOption(companies);
 		
-		options.addOption(computers);
 		options.addOption(computer);
 		
 		

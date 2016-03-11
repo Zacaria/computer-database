@@ -8,16 +8,23 @@ import java.util.List;
 import com.excilys.formation.computerdatabase.model.Company;
 
 public class CompanyMapper implements Mapable<Company>{
+	
+	private final static String COMPANY_ID = "company_id";
+	private final static String COMPANY_NAME= "company_name";
+	
 
 	@Override
 	public Company map(ResultSet rs) {
-		Company company = new Company();
+		Company company = null;
 		
 		try {
-			company.setId(rs.getLong("id"));
-			if(rs.getString("name") != null){
-				company.setName(rs.getString("name"));
-			}
+			if(rs.getLong(COMPANY_ID) != 0){
+				company = new Company();
+				company.setId(rs.getLong(COMPANY_ID));
+				if(rs.getString(COMPANY_NAME) != null){
+					company.setName(rs.getString(COMPANY_NAME));
+				}
+			}			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

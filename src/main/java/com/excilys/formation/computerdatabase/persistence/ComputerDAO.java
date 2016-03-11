@@ -15,40 +15,90 @@ import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationExceptio
 
 public class ComputerDAO implements Crudable<Computer>{
 	
+	
+	private final static String fields = "computer.id as computer_id, computer.name as computer_name, introduced, discontinued, company_id";
+	
+	private final String countQuery = "SELECT COUNT(*) as total from `computer-database-db`.computer;";
+	private final String findAllQuery = "SELECT " + ComputerDAO.fields + " , company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id;";
+	private final String findWithRangeQuery = "SELECT " + ComputerDAO.fields + ", company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id limit ?, ?;";
+	private final String findByIdQuery = "SELECT " + ComputerDAO.fields + ", company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id where computer.id = ?;";
+	private final String findLastQuery = "SELECT " + ComputerDAO.fields + ", company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id GROUP BY computer.id DESC LIMIT 1;";
+	private final String insertQuery = "INSERT INTO `computer-database-db`.computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
+	private final String updateQuery = "UPDATE `computer-database-db`.computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
+	private final String deleteQuery = "DELETE FROM `computer-database-db`.computer WHERE id = ?;";
+	
 	private ConnectionFactory connectionFactory;
 	
 	public ComputerDAO(){
 		this.connectionFactory = ConnectionFactory.getInstance();
 	}
-
+	
 	@Override
-	public List<Computer> findAll() {
-		String query = "SELECT * FROM `computer-database-db`.computer;";
+	public int count(){
 		Connection connection = connectionFactory.getConnection();
-				
-		List<Computer> computers = null;
 		
-		Statement statement = null;
+		int count = 0;
 		
-		try {
-			statement = connection.createStatement();
+		try (Statement statement = connection.createStatement()){
 			
-			ResultSet resultSet = statement.executeQuery(query);
-			ComputerMapper mapper = new ComputerMapper();
+			ResultSet resultSet = statement.executeQuery(countQuery);
 			
-			computers = mapper.mapList(resultSet);
-			
+			if(resultSet.first()){
+				count = (int) resultSet.getInt("total");
+			}			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if(statement != null){
-				try {
-					statement.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
+			connectionFactory.closeConnection(connection);
+		}
+		
+		return count;
+	}
+
+	@Override
+	public List<Computer> findAll() {
+		Connection connection = connectionFactory.getConnection();
+				
+		List<Computer> computers = null;
+		
+		try (Statement statement = connection.createStatement()){
+			
+			ResultSet resultSet = statement.executeQuery(findAllQuery);
+			ComputerMapper mapper = new ComputerMapper();
+			
+			computers = mapper.mapList(resultSet);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			connectionFactory.closeConnection(connection);
+		}
+		
+		return computers;
+	}
+	
+	@Override
+	public List<Computer> findWithRange(int from, int max){
+		Connection connection = connectionFactory.getConnection();
+				
+		List<Computer> computers = null;
+		
+		PreparedStatement statement = null;
+		
+		try {
+			statement = connection.prepareStatement(findWithRangeQuery);
+			statement.setInt(1, from);
+			statement.setInt(2, max);
+			
+			ResultSet resultSet = statement.executeQuery();
+			ComputerMapper mapper = new ComputerMapper();
+			
+			computers = mapper.mapList(resultSet);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
 			connectionFactory.closeConnection(connection);
 		}
 		
@@ -57,8 +107,6 @@ public class ComputerDAO implements Crudable<Computer>{
 
 	@Override
 	public Computer findById(Long id) {
-		
-		String query = "SELECT * FROM `computer-database-db`.computer WHERE id = ? ;";
 		Connection connection = connectionFactory.getConnection();
 		
 		Computer computer = null;
@@ -66,7 +114,7 @@ public class ComputerDAO implements Crudable<Computer>{
 		PreparedStatement statement = null;
 		
 		try {
-			statement = connection.prepareStatement(query);
+			statement = connection.prepareStatement(findByIdQuery);
 			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			ComputerMapper mapper = new ComputerMapper();
@@ -96,8 +144,6 @@ public class ComputerDAO implements Crudable<Computer>{
 	
 	@Override
 	public Computer findLast() {
-		
-		String query = "SELECT * FROM `computer-database-db`.computer GROUP BY ID DESC LIMIT 1;";
 		Connection connection = connectionFactory.getConnection();
 		
 		Computer computer = null;
@@ -106,7 +152,7 @@ public class ComputerDAO implements Crudable<Computer>{
 		
 		try {
 			statement = connection.createStatement();
-			ResultSet resultSet = statement.executeQuery(query);
+			ResultSet resultSet = statement.executeQuery(findLastQuery);
 			ComputerMapper mapper = new ComputerMapper();
 			
 			if(resultSet.first()){
@@ -131,7 +177,6 @@ public class ComputerDAO implements Crudable<Computer>{
 
 	@Override
 	public Long create(Computer toCreate) {
-		String query = "INSERT INTO `computer-database-db`.computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
 		Connection connection = connectionFactory.getConnection();
 		PreparedStatement statement = null;
 		
@@ -141,15 +186,15 @@ public class ComputerDAO implements Crudable<Computer>{
 			if(toCreate.getName() == null){
 				throw new Exception("ERROR Insert : Could not create an unnamed computer !");
 			}
-			if(toCreate.getCompanyId() == null){
+			if(toCreate.getCompany().getId() == null){
 				throw new Exception("ERROR Insert : Could not create a computer without it's company !!");
 			}
 			
-			statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			statement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, toCreate.getName());
 			statement.setDate(2, Date.valueOf(toCreate.getIntroduced()));
 			statement.setDate(3, Date.valueOf(toCreate.getDiscontinued()));
-			statement.setLong(4, toCreate.getCompanyId());
+			statement.setLong(4, toCreate.getCompany().getId());
 			
 			int affectedRows = statement.executeUpdate();
 			if(affectedRows == 0){
@@ -157,8 +202,6 @@ public class ComputerDAO implements Crudable<Computer>{
 			}
 			ResultSet generatedId = statement.getGeneratedKeys();
 			if(generatedId.next()){
-				//auto unboxing
-				//use that because id is never null
 				newId = generatedId.getLong(1);
 			}
 		} catch (MySQLIntegrityConstraintViolationException e) {
@@ -183,7 +226,6 @@ public class ComputerDAO implements Crudable<Computer>{
 
 	@Override
 	public int delete(Long id) {
-		String query = "DELETE FROM `computer-database-db`.computer WHERE id = ?;";
 		Connection connection = connectionFactory.getConnection();
 		PreparedStatement statement = null;
 		
@@ -195,7 +237,7 @@ public class ComputerDAO implements Crudable<Computer>{
 		int affectedRows = 0;
 		
 		try {
-			statement = connection.prepareStatement(query);
+			statement = connection.prepareStatement(deleteQuery);
 			statement.setLong(1, id);
 			
 			affectedRows = statement.executeUpdate();
@@ -223,8 +265,6 @@ public class ComputerDAO implements Crudable<Computer>{
 
 	@Override
 	public int update(Computer toUpdate) {
-		
-		String query = "UPDATE `computer-database-db`.computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
 		Connection connection = connectionFactory.getConnection();
 		PreparedStatement statement = null;
 		
@@ -243,15 +283,15 @@ public class ComputerDAO implements Crudable<Computer>{
 			if(toUpdate.getName() == null){
 				throw new Exception("ERROR Insert : Could not update to an unnamed computer !");
 			}
-			if(toUpdate.getCompanyId() == null){
+			if(toUpdate.getCompany().getId() == null){
 				throw new Exception("ERROR Insert : Could not update to a computer without it's company !!");
 			}
 			
-			statement = connection.prepareStatement(query);
+			statement = connection.prepareStatement(updateQuery);
 			statement.setString(1, toUpdate.getName());
 			statement.setDate(2, Date.valueOf(toUpdate.getIntroduced()));
 			statement.setDate(3, Date.valueOf(toUpdate.getDiscontinued()));
-			statement.setLong(4, toUpdate.getCompanyId());
+			statement.setLong(4, toUpdate.getCompany().getId());
 			statement.setLong(5, toUpdate.getId());
 			
 			

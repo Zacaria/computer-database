@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 
 public class ComputerMapperTest {
@@ -18,8 +19,8 @@ public class ComputerMapperTest {
 	@Before
 	public void setUp() throws Exception {
 		this.empty = new Computer();
-		this.full = new Computer(5l, "full", "1999-04-04", "1999-06-06", 7l);
-		this.partial = new Computer(8l, "partial", "", "", 10l);
+		this.full = new Computer(5l, "full", "1999-04-04", "1999-06-06", new Company(7l, "MOS Technology"));
+		this.partial = new Computer(8l, "partial", "", "", new Company(10l, "Digital Equipment Corporation"));
 		
 		this.mapper = new ComputerMapper();
 	}

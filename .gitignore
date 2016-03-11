@@ -10,6 +10,8 @@
 /build/
 /bin/
 /target/
+logs/*
+
 
 bin/
 tmp/
