@@ -6,7 +6,9 @@
 .classpath
 .project
 
-
+WebContent/*
+config/*
+static/*
 /build/
 /bin/
 /target/
