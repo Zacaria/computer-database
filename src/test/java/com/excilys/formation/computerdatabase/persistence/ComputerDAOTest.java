@@ -51,7 +51,7 @@ public class ComputerDAOTest {
 		this.computerMock63DateZero.setName("TX-2");
 		this.computerMock63DateZero.setIntroduced(DateConverter.stringToDate("0"));
 		this.computerMock63DateZero.setDiscontinued(null);
-		this.computerMock63DateZero.setCompany(this.companyDao.findById(11l));
+		this.computerMock63DateZero.setCompany(this.companyDao.find(11l));
 		
 		this.computerMockNullToCUD = new Computer();
 		this.computerMockNullToCUD.setName("toto");
@@ -72,7 +72,7 @@ public class ComputerDAOTest {
 	
 	@Test
 	public void findAllTest(){
-		List<Computer> computers = cdao.findAll();
+		List<Computer> computers = cdao.find();
 		assertNotNull(computers);
 		assertEquals(Computer.class, computers.get(0).getClass());
 	}
@@ -89,11 +89,11 @@ public class ComputerDAOTest {
 		computerMockFull.setDiscontinued(DateConverter.stringToDate("1984-04-01"));
 		computerMockFull.setCompany(new Company(1l, "Apple Inc."));
 		
-		assertEquals(computerMockFull, this.cdao.findById(12l));
+		assertEquals(computerMockFull, this.cdao.find(12l));
 				
-		assertEquals("This didn't work with a date null", this.computerMock13DateNull, this.cdao.findById(13l));
+		assertEquals("This didn't work with a date null", this.computerMock13DateNull, this.cdao.find(13l));
 		
-		assertEquals(this.computerMock63DateZero, this.cdao.findById(63l));
+		assertEquals(this.computerMock63DateZero, this.cdao.find(63l));
 	}
 	
 	@Test
@@ -102,11 +102,9 @@ public class ComputerDAOTest {
 		//Need to add findLast
 		Long insertedId = this.cdao.create(this.computerMockNullToCUD);
 		
-		Computer lastComputer = this.cdao.findLast();
+		assertTrue(insertedId != null);
 		
-		assertEquals(insertedId, lastComputer.getId());
-		
-		this.cdao.delete(lastComputer.getId());
+		this.cdao.delete(insertedId);
 		
 		
 		this.computerMockNullToCUD.setCompany(new Company(100l, "Missingno"));
@@ -123,14 +121,14 @@ public class ComputerDAOTest {
 		
 		long newId = this.cdao.create(this.computerMockNullToCUD);
 		
-		Computer last = this.cdao.findById(newId);
+		Computer last = this.cdao.find(newId);
 		
-		int affectedRows = this.cdao.delete(last.getId());
+		boolean success = this.cdao.delete(last.getId());
 		
-		Computer deleted = this.cdao.findById(last.getId());
+		Computer deleted = this.cdao.find(last.getId());
 		
 		assertNull(deleted);
-		assertEquals(1, affectedRows);
+		assertTrue(success);
 	}
 	
 	@Test
@@ -142,22 +140,22 @@ public class ComputerDAOTest {
 		
 		this.computerMockNullToCUD.setId(newId);
 		
-		int affectedRows = this.cdao.update(this.computerMockNullToCUD);
+		Computer computer = this.cdao.update(this.computerMockNullToCUD);
 		
-		assertEquals(1, affectedRows);
+		assertEquals(computer, this.computerMockNullToCUD);
 		
 		this.computerMockNullToCUD.setCompany(new Company(100l, "Lincoln Laboratory"));
 		
-		affectedRows = this.cdao.update(this.computerMockNullToCUD);
+		computer = this.cdao.update(this.computerMockNullToCUD);
 		
-		assertEquals(0, affectedRows);
+		assertNotEquals(computer, this.computerMockNullToCUD);
 		
 		//assume that this id deosn't exist
 		this.computerMockNullToCUD.setId(100000l);
 		
-		affectedRows = this.cdao.update(this.computerMockNullToCUD);
+		computer = this.cdao.update(this.computerMockNullToCUD);
 		
-		assertEquals(0, affectedRows);
+		assertNotEquals(computer, this.computerMockNullToCUD);
 		
 		this.cdao.delete(newId);
 		

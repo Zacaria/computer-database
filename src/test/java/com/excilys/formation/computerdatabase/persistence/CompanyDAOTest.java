@@ -25,7 +25,7 @@ public class CompanyDAOTest {
 
 	@Test
 	public void findAllTest(){		
-		List<Company> companies = cdao.findAll();
+		List<Company> companies = cdao.find();
 		assertNotNull(companies);
 		assertEquals(Company.class, companies.get(0).getClass());
 	}
@@ -40,7 +40,7 @@ public class CompanyDAOTest {
 		errorMock.setId(0l);
 		errorMock.setName("whatever");
 		
-		Company fromDb = cdao.findById(1l);
+		Company fromDb = cdao.find(1l);
 		assertEquals(validMock, fromDb);
 		assertNotEquals(errorMock, fromDb);
 	}

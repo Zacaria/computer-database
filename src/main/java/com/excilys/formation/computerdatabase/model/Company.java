@@ -1,12 +1,13 @@
 package com.excilys.formation.computerdatabase.model;
 
-public class Company {	
+public class Company {
 	private Long id;
 	private String name;
-	
-	public Company(){}
-	
-	public Company(Long id, String name){
+
+	public Company() {
+	}
+
+	public Company(Long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -25,8 +26,7 @@ public class Company {
 
 	public void setName(String name) {
 		this.name = name;
-	}	
-	
+	}
 
 	@Override
 	public String toString() {
@@ -70,6 +70,5 @@ public class Company {
 		}
 		return true;
 	}
-	
-	
+
 }

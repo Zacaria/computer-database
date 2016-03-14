@@ -12,45 +12,50 @@ import org.apache.logging.log4j.Logger;
 import com.excilys.formation.computerdatabase.mapper.Page;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.persistence.CompanyDAO;
+import com.excilys.formation.computerdatabase.persistence.Crudable;
 
 public class CompanyService {
-	
-	private static final Logger consoleLogger = LogManager.getLogger("com.excilys.formation.computerdatabase");
-	
-	private CompanyService(){
-		
+
+	private static final Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
+
+	private final Crudable<Company> cdao;
+
+	private CompanyService() {
+		this.cdao = new CompanyDAO();
 	}
-	
+
 	private static class CompanyServiceHolder {
 		private final static CompanyService instance = new CompanyService();
 	}
-	
-	public static CompanyService getInstance(){
+
+	public static CompanyService getInstance() {
 		return CompanyServiceHolder.instance;
 	}
-	
-	
-	
-	public Page<Company> getCompanies(int from, int max){
-		consoleLogger.info("access");
-		
-		CompanyDAO cdao = new CompanyDAO();
-		
-		Page<Company> companies = new Page<>(from, cdao.findWithRange(from, max), cdao.count());
-		
+
+	public Page<Company> get(int from, int max) {
+		LOGGER.info("access");
+
+		Page<Company> companies = new Page<>(from, this.cdao.find(from, max), this.cdao.count());
+
 		return companies;
 	}
-	
-	public Company getCompany(String pId){
-		consoleLogger.info("access");
+
+	// TODO : Remove this !
+	public Company get(String pId) {
+		LOGGER.info("access");
 		try {
 			Long id = Long.parseLong(pId);
-			
-			return new CompanyDAO().findById(id);			
+
+			return this.cdao.find(id);
 		} catch (NumberFormatException e) {
-			consoleLogger.error(e.getClass().getName() +" : "+ e.getMessage());
+			LOGGER.error(e.getClass().getName() + " : " + e.getMessage());
 			return null;
 		}
 	}
 
+	public Company get(Long id) {
+		LOGGER.info("access");
+
+		return this.cdao.find(id);
+	}
 }

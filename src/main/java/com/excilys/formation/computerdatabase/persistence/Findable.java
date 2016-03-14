@@ -19,5 +19,4 @@ public interface Findable<T> {
 	 */
 	List<T> findWithRange(int from, int max);
 	T findById(Long id);
-	T findLast();
 }

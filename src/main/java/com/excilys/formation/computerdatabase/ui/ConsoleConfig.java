@@ -36,11 +36,24 @@ public class ConsoleConfig {
 		Option updateParam = new Option("up", "enables the update of computer");
 		
 		//Data
-		Option id = new Option("id", true, "id of the computer to retrieve");
+		//Option id = new Option("id", true, "id of the computer to retrieve");
+		Option id = Option
+				.builder("id")
+				.desc("id of the computer to retrieve")
+				.hasArg()
+				.type(Long.class)
+				.build();
+				
 		Option name = new Option("name", true, "name of the computer to retrieve");
 		Option introduced = new Option("intro", true, "yyyy-MM-dd date of the introduction of the computer");
 		Option discontinued = new Option("disco", true, "yyyy-MM-dd date of the discontinuation of the computer");
-		Option company = new Option("com", true, "id of the company of the computer");
+		
+		Option company = Option
+				.builder("com")
+				.desc("id of the company of the computer")
+				.type(Long.class)
+				.hasArg()
+				.build();
 		
 		
 		options.addOption(help);

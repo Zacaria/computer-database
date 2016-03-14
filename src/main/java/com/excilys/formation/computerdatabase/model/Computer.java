@@ -10,10 +10,10 @@ public class Computer {
 	private LocalDate introduced;
 	private LocalDate discontinued;
 	private Company company;
-	
+
 	public Computer() {
 	}
-	
+
 	public Computer(Long id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.id = id;
 		this.name = name;
@@ -21,30 +21,30 @@ public class Computer {
 		this.discontinued = discontinued;
 		this.company = company;
 	}
-	
-	public Computer(Long id, String name, String introduced, String discontinued, Company company){
+
+	public Computer(Long id, String name, String introduced, String discontinued, Company company) {
 		this.id = id;
 		this.name = name;
-		if(introduced != null){
+		if (introduced != null) {
 			this.introduced = DateConverter.stringToDate(introduced);
 		}
-		if(discontinued != null){
+		if (discontinued != null) {
 			this.discontinued = DateConverter.stringToDate(discontinued);
 		}
 		this.company = company;
 	}
-	
-	public Computer(String name, String introduced, String discontinued, Company company){
+
+	public Computer(String name, String introduced, String discontinued, Company company) {
 		this.name = name;
-		if(introduced != null){
+		if (introduced != null) {
 			this.introduced = DateConverter.stringToDate(introduced);
 		}
-		if(discontinued != null){
+		if (discontinued != null) {
 			this.discontinued = DateConverter.stringToDate(discontinued);
 		}
 		this.company = company;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Computer [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued=" + discontinued
@@ -116,24 +116,31 @@ public class Computer {
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public LocalDate getIntroduced() {
 		return introduced;
 	}
+
 	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
+
 	public LocalDate getDiscontinued() {
 		return discontinued;
 	}
+
 	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}

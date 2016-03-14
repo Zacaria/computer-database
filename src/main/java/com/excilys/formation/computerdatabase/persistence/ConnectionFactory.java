@@ -8,104 +8,89 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.excilys.formation.computerdatabase.exceptions.DBConnectionException;
 
-//Found at : http://thecodersbreakfast.net/index.php?post/2008/02/25/26-de-la-bonne-implementation-du-singleton-en-java
-
 /**
- * This is a Thread-Safe Singleton
- * It Provides an instance of ConnectionFactory
+ * This is a Thread-Safe Singleton It Provides an instance of ConnectionFactory
  * Which generates instances of Connections
+ * 
  * @author excilys
  *
  */
-public class ConnectionFactory{
-	
-	private static String url;
-	private static String database;
-	private static String options;
-	
-	private static String user;
-	private static String password;
-	
+public class ConnectionFactory {
+
+	private final static Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
+
+	private String url;
+	private String database;
+	private String options;
+
+	private String user;
+	private String password;
+
 	private ConnectionFactory() {
 		Properties prop = new Properties();
 		String propFilePublic = "db.public.properties";
 		String propFilePrivate = "db.private.properties";
-		
+
 		InputStream publicPropStream = getClass().getClassLoader().getResourceAsStream(propFilePublic);
 		InputStream privatePropStream = getClass().getClassLoader().getResourceAsStream(propFilePrivate);
-		try{
-			
-			if(publicPropStream != null && privatePropStream != null){
-				prop.load(publicPropStream);
-				
-				ConnectionFactory.url = prop.getProperty("url");
-				ConnectionFactory.database = prop.getProperty("database");
-				ConnectionFactory.options = prop.getProperty("options");
-				
-				prop.load(privatePropStream);
-				
-				ConnectionFactory.user = prop.getProperty("user");
-				ConnectionFactory.password = prop.getProperty("password");
-				
-			} else {
-				//throw new RuntimeErrorException("property file " + propFileName + " not found")
-				throw new FileNotFoundException("property file " + propFilePublic + " not found");
-			}
-			
-		} catch(FileNotFoundException e){
-			throw new DBConnectionException(e);
+		try {
+			prop.load(publicPropStream);
+
+			this.url = prop.getProperty("url");
+			this.database = prop.getProperty("database");
+			this.options = prop.getProperty("options");
+
+			prop.load(privatePropStream);
+
+			this.user = prop.getProperty("user");
+			this.password = prop.getProperty("password");
+
 		} catch (IOException e) {
 			throw new DBConnectionException(e);
 		}
-		
+
 	}
-	
+
 	/**
 	 * Only loaded on first call to getInstance
+	 * 
 	 * @author excilys
 	 *
 	 */
 	private static class ConnectionFactoryHolder {
 		private final static ConnectionFactory instance = new ConnectionFactory();
 	}
-	
-	public static ConnectionFactory getInstance(){
+
+	public static ConnectionFactory getInstance() {
 		return ConnectionFactoryHolder.instance;
 	}
-	
-	public Connection getConnection(){
-		
-		Connection connection = null;
+
+	public Connection getConnection() {
+		Connection connection;
+
 		try {
-			
-			
 			// Register JDBC Driver
 			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection(
-					ConnectionFactory.url + ConnectionFactory.database + "?" + ConnectionFactory.options, 
-					ConnectionFactory.user, 
-					ConnectionFactory.password
-					);
-		} catch (SQLException e){
-			
-			e.printStackTrace();
-			throw new DBConnectionException(e);
-		} catch (ClassNotFoundException e) {
+			connection = DriverManager.getConnection(this.url + this.database + "?" + this.options, this.user,
+					this.password);
+		} catch (SQLException | ClassNotFoundException e) {
 			throw new DBConnectionException(e);
 		}
-		
+
 		return connection;
 	}
-	
-	public void closeConnection(Connection connection){
+
+	public void closeConnection(Connection connection) {
 		try {
-			if(connection != null){
-				connection.close();
-			}
+			connection.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Connection did not close properly !");
+			throw new DBConnectionException("Connection did not close properly !");
 		}
 	}
 }

@@ -21,7 +21,7 @@ public class ConnectionFactoryTest {
 	public void tearDown() throws Exception {
 		this.factory = null;
 	}
-
+	
 	@Test
 	public void getConnectionTest() {
 		Connection cnx = factory.getConnection();
