@@ -1,13 +1,18 @@
-package com.excilys.formation.computerdatabase.mapper;
+package com.excilys.formation.computerdatabase.dataBinders.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.excilys.formation.computerdatabase.model.Computer;
 
 public class ComputerMapper implements Mapable<Computer>{
+	private static final Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
+	
 	private final static String COMPUTER_ID = "computer_id";
 	private final static String COMPUTER_NAME = "computer_name";
 	private final static String COMPUTER_INTRODUCED = "introduced";
@@ -36,7 +41,7 @@ public class ComputerMapper implements Mapable<Computer>{
 			computer.setCompany(companyMapper.map(rs));
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("mapping computer error");
 		}
 		
 		return computer;
@@ -54,7 +59,7 @@ public class ComputerMapper implements Mapable<Computer>{
 				computers.add(computer);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.error("list mapping computer error");
 		}
 		return computers;
 	}

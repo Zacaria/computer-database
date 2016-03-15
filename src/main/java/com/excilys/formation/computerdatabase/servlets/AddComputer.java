@@ -14,31 +14,38 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
+import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.ui.Pager;
 
 /**
- * Servlet implementation class Dashboard
+ * Servlet implementation class AddComputer
  */
-@WebServlet("/dashboard")
-public class Dashboard extends HttpServlet {
+@WebServlet("/addComputer")
+public class AddComputer extends HttpServlet {
 	private static final Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
-
-	private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
 	private static final long serialVersionUID = 1L;
+	private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
 
 	private final ComputerService cs;
-	private Pager<Computer> pager;
+	private final CompanyService es;
+
+	private Pager<Company> pager;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public Dashboard() {
+	public AddComputer() {
 		super();
 		this.cs = ComputerService.getInstance();
+		this.es = CompanyService.getInstance();
 
-		this.pager = new Pager<>(this.cs.count(), (offset, max) -> this.cs.get(offset, max));
+		this.pager = new Pager<Company>(this.es.count(), (offset, max) -> this.es.get(offset, max));
+
+		// FIXME : This is ugly and hard code
+		this.pager.setRange(100);
 
 	}
 
@@ -51,28 +58,11 @@ public class Dashboard extends HttpServlet {
 		
 		LOGGER.info("access to : " + request.getRequestURL() + " " + request.getQueryString());
 
-		int page = 1;
+		PageDTO<Company> companies = this.pager.getPage();
 
-		if (request.getParameter("p") != null && INT_PATTERN.matcher(request.getParameter("p")).matches()) {
-			page = Integer.parseInt(request.getParameter("p"));
-		}
+		request.setAttribute("companies", companies);
 
-		if (request.getParameter("r") != null && INT_PATTERN.matcher(request.getParameter("r")).matches()) {
-			this.pager.setRange(Integer.parseInt(request.getParameter("r")));
-		}
-
-		int count = this.cs.count();
-
-		PageDTO<Computer> computers = this.pager.getPage(page);
-
-		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
-
-		request.setAttribute("count", count);
-		request.setAttribute("computers", computers);
-		request.setAttribute("totalPage", (int) count / this.pager.getRange());
-		request.setAttribute("range", this.pager.getRange());
-
-		System.out.println(request.getQueryString());
+		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
 
 		view.forward(request, response);
 	}
@@ -83,7 +73,28 @@ public class Dashboard extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
+		LOGGER.info("access to : " + request.getRequestURL() + " " + request.getQueryString());
+		
+		Long companyId = null;
+		
+		if (request.getParameter("companyId") != null && INT_PATTERN.matcher(request.getParameter("companyId")).matches()) {
+			companyId = Long.parseLong(request.getParameter("companyId"));
+		}
+		
+		Computer computer = Computer
+				.builder()
+				.name(request.getParameter("name"))
+				.introduced(request.getParameter("introduced"))
+				.discontinued(request.getParameter("discontinued"))
+				.company(Company.builder().id(companyId).build())
+				.build();
+		
+		Long newId = cs.create(computer);
+		
+		System.out.println(request.getParameter("companyId"));
+		System.out.println(request.getParameter("name"));
+		
 		doGet(request, response);
 	}
 

@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.excilys.formation.computerdatabase.persistence.CompanyDAO;
 import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
 
 /**

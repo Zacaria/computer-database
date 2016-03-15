@@ -12,6 +12,31 @@ public class Company {
 		this.name = name;
 	}
 
+	public static Builder builder() {
+		return new Company.Builder();
+	}
+
+	public static class Builder{
+		private Company instance = new Company();
+		
+		public Builder(){
+		}
+		
+		public Builder id(Long id){
+			instance.id = id;
+			return this;
+		}
+		
+		public Builder name(String name){
+			instance.name = name;
+			return this;
+		}
+		
+		public Company build(){
+			return instance;
+		}
+	}
+
 	public Long getId() {
 		return id;
 	}

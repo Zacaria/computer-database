@@ -1,16 +1,12 @@
 package com.excilys.formation.computerdatabase.service;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.excilys.formation.computerdatabase.mapper.Page;
+import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
+import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
+import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.persistence.CompanyDAO;
 import com.excilys.formation.computerdatabase.persistence.Crudable;
 
@@ -32,16 +28,18 @@ public class CompanyService {
 		return CompanyServiceHolder.instance;
 	}
 
-	public Page<Company> get(int from, int max) {
+	public PageDTO<Company> get(int from, int max) {
 		LOGGER.info("access");
 
-		Page<Company> companies = new Page<>(from, this.cdao.find(from, max), this.cdao.count());
+		Page<Company> companyPage = new Page<>(from, this.cdao.find(from, max), this.cdao.count());
+		
+		PageDTO<Company> companies = new PageDTO<>(companyPage, company -> new CompanyDTO(company));
 
 		return companies;
 	}
 
 	// TODO : Remove this !
-	public Company get(String pId) {
+	/*public Company get(String pId) {
 		LOGGER.info("access");
 		try {
 			Long id = Long.parseLong(pId);
@@ -51,11 +49,15 @@ public class CompanyService {
 			LOGGER.error(e.getClass().getName() + " : " + e.getMessage());
 			return null;
 		}
-	}
+	}*/
 
 	public Company get(Long id) {
 		LOGGER.info("access");
 
 		return this.cdao.find(id);
+	}
+	
+	public int count(){
+		return this.cdao.count();
 	}
 }

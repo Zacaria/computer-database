@@ -1,13 +1,18 @@
-package com.excilys.formation.computerdatabase.mapper;
+package com.excilys.formation.computerdatabase.dataBinders.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.excilys.formation.computerdatabase.model.Company;
 
 public class CompanyMapper implements Mapable<Company>{
+	
+	private static final Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
 	
 	private final static String COMPANY_ID = "company_id";
 	private final static String COMPANY_NAME= "company_name";
@@ -26,7 +31,7 @@ public class CompanyMapper implements Mapable<Company>{
 				}
 			}			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.error("mapping company error");
 		}
 		return company;
 	}
@@ -42,7 +47,7 @@ public class CompanyMapper implements Mapable<Company>{
 				companies.add(company);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.error("list mapping company error");
 		}
 		
 		return companies;

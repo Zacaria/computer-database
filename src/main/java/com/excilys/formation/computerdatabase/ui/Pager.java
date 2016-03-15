@@ -1,10 +1,11 @@
 package com.excilys.formation.computerdatabase.ui;
 
-import com.excilys.formation.computerdatabase.mapper.Page;
+import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
+import com.excilys.formation.computerdatabase.model.Page;
 
 public class Pager<T> {
-	private Page<T> data;
-	private int offset = 0;
+	private PageDTO<T> data;
+	//private int offset = 0;
 	private int range = 10;
 	private int totalPage;
 	private int currentPageNumber = 1;
@@ -20,19 +21,19 @@ public class Pager<T> {
 		this.dataRetreiver = p;
 	}
 	
-	public Page<T> next(){
+	public PageDTO<T> next(){
 		return this.getPage(++this.currentPageNumber);
 	}
 	
-	public Page<T> previous(){
+	public PageDTO<T> previous(){
 		return this.getPage(--this.currentPageNumber);
 	}
 	
-	public Page<T> getPage(){
+	public PageDTO<T> getPage(){
 		return this.getPage(this.currentPageNumber);
 	}
 	
-	public Page<T> getPage(int number){
+	public PageDTO<T> getPage(int number){
 		
 		if(number < 1){
 			number = 1;
@@ -51,5 +52,13 @@ public class Pager<T> {
 
 	public int getTotalPage() {
 		return this.totalPage;
+	}
+	
+	public void setRange(int range){
+		this.range = range;
+	}
+	
+	public int getRange(){
+		return this.range;
 	}
 }

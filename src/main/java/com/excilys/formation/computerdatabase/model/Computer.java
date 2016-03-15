@@ -11,37 +11,117 @@ public class Computer {
 	private LocalDate discontinued;
 	private Company company;
 
+	// Should be private
 	public Computer() {
 	}
 
-	public Computer(Long id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
+	/*
+	 * public Computer(Long id, String name, LocalDate introduced, LocalDate
+	 * discontinued, Company company) { this.id = id; this.name = name;
+	 * this.introduced = introduced; this.discontinued = discontinued;
+	 * this.company = company; }
+	 * 
+	 * public Computer(Long id, String name, String introduced, String
+	 * discontinued, Company company) { this.id = id; this.name = name; if
+	 * (introduced != null) { this.introduced =
+	 * DateConverter.stringToDate(introduced); } if (discontinued != null) {
+	 * this.discontinued = DateConverter.stringToDate(discontinued); }
+	 * this.company = company; }
+	 * 
+	 * public Computer(String name, String introduced, String discontinued,
+	 * Company company) { this.name = name; if (introduced != null) {
+	 * this.introduced = DateConverter.stringToDate(introduced); } if
+	 * (discontinued != null) { this.discontinued =
+	 * DateConverter.stringToDate(discontinued); } this.company = company; }
+	 */
+
+	public static Builder builder() {
+		return new Computer.Builder();
+	}
+
+	public static class Builder {
+		private Computer instance = new Computer();
+
+		public Builder() {
+		}
+
+		public Builder id(Long id) {
+			instance.id = id;
+			return this;
+		}
+
+		public Builder name(String name) {
+			instance.name = name;
+			return this;
+		}
+
+		public Builder introduced(LocalDate introduced) {
+			instance.introduced = introduced;
+			return this;
+		}
+
+		public Builder introduced(String introduced) {
+			instance.introduced = DateConverter.stringToDate(introduced);
+			return this;
+		}
+
+		public Builder discontinued(LocalDate discontinued) {
+			instance.discontinued = discontinued;
+			return this;
+		}
+
+		public Builder discontinued(String discontinued) {
+			instance.discontinued = DateConverter.stringToDate(discontinued);
+			return this;
+		}
+
+		public Builder company(Company company) {
+			instance.company = company;
+			return this;
+		}
+
+		public Computer build() {
+			return instance;
+		}
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
 		this.name = name;
+	}
+
+	public LocalDate getIntroduced() {
+		return introduced;
+	}
+
+	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
+	}
+
+	public LocalDate getDiscontinued() {
+		return discontinued;
+	}
+
+	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
-		this.company = company;
 	}
 
-	public Computer(Long id, String name, String introduced, String discontinued, Company company) {
-		this.id = id;
-		this.name = name;
-		if (introduced != null) {
-			this.introduced = DateConverter.stringToDate(introduced);
-		}
-		if (discontinued != null) {
-			this.discontinued = DateConverter.stringToDate(discontinued);
-		}
-		this.company = company;
+	public Company getCompany() {
+		return company;
 	}
 
-	public Computer(String name, String introduced, String discontinued, Company company) {
-		this.name = name;
-		if (introduced != null) {
-			this.introduced = DateConverter.stringToDate(introduced);
-		}
-		if (discontinued != null) {
-			this.discontinued = DateConverter.stringToDate(discontinued);
-		}
+	public void setCompany(Company company) {
 		this.company = company;
 	}
 
@@ -111,45 +191,5 @@ public class Computer {
 			return false;
 		}
 		return true;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public LocalDate getIntroduced() {
-		return introduced;
-	}
-
-	public void setIntroduced(LocalDate introduced) {
-		this.introduced = introduced;
-	}
-
-	public LocalDate getDiscontinued() {
-		return discontinued;
-	}
-
-	public void setDiscontinued(LocalDate discontinued) {
-		this.discontinued = discontinued;
-	}
-
-	public Company getCompany() {
-		return company;
-	}
-
-	public void setCompany(Company company) {
-		this.company = company;
 	}
 }

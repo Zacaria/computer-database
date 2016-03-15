@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.mapper;
+package com.excilys.formation.computerdatabase.model;
 
 import java.util.List;
 

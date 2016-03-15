@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.mapper;
+package com.excilys.formation.computerdatabase.dataBinders.mapper;
 
 import java.sql.ResultSet;
 import java.util.List;

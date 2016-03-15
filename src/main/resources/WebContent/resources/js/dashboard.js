@@ -21,6 +21,18 @@ $(function() {
             $("#deleteSelected").disable();
         }
     });
+    
+    $(".form_datetime").datetimepicker({
+        format: "yyyy-mm-dd",
+        minView : 'month',
+        autoclose : true
+    });
+    
+    $('.selectpicker').selectpicker({
+    	  size: 7,
+    	  witdth : 'auto',
+    	  liveSearch: true
+    	});
 
 });
 

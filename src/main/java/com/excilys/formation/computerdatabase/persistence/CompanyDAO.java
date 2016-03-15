@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.excilys.formation.computerdatabase.mapper.CompanyMapper;
+import com.excilys.formation.computerdatabase.dataBinders.mapper.CompanyMapper;
 import com.excilys.formation.computerdatabase.model.Company;
 
 public class CompanyDAO implements Crudable<Company> {

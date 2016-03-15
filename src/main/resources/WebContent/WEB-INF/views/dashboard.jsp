@@ -1,5 +1,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
+<c:catch var="paramError">
+	<fmt:parseNumber var="currentPage" integerOnly="true" type="number"
+		value="${param.p}" />
+</c:catch>
+<c:if test="${paramError != null}">
+	<c:set var="currentPage" value="1" />
+</c:if>
+<c:if test="${paramError == null}">
+	<c:set var="currentPage" value="${empty param.p ? 1 : param.p}" />
+</c:if>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,14 +27,14 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard.html"> Application -
-				Computer Database </a>
+			<a class="navbar-brand" href="dashboard"> Application - Computer
+				Database </a>
 		</div>
 	</header>
 
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${count}Computers found</h1>
+			<h1 id="homeTitle">${count}&nbsp;Computersfound</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -35,7 +46,7 @@
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer.html">Add
+					<a class="btn btn-success" id="addComputer" href="addComputer">Add
 						Computer</a> <a class="btn btn-default" id="editComputer" href="#"
 						onclick="$.fn.toggleEditMode();">Edit</a>
 				</div>
@@ -75,10 +86,10 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="0"></td>
-							<td><a href="editComputer.html" onclick="">${computer.getName()}</a></td>
+							<td><a href="editComputer" onclick="">${computer.getName()}</a></td>
 							<td>${computer.getIntroduced()}</td>
 							<td>${computer.getDiscontinued() }</td>
-							<td>${computer.getCompany().getName()}</td>
+							<td>${computer.getCompanyName()}</td>
 
 						</tr>
 					</c:forEach>
@@ -86,26 +97,42 @@
 			</table>
 		</div>
 	</section>
-
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<ul class="pagination">
-				<li><a href="#" aria-label="Previous"> <span
+				<li><a href="./dashboard?p=1" aria-label="Previous"> <span
 						aria-hidden="true">&laquo;</span>
 				</a></li>
-				<li><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li><a href="#">5</a></li>
-				<li><a href="#" aria-label="Next"> <span aria-hidden="true">&raquo;</span>
+				<c:if test="${currentPage > 2 }">
+					<li><a class="btn btn-default" role="button"
+						href="./dashboard?p=${currentPage-2}&r=${range}">${currentPage-2}</a></li>
+				</c:if>
+				<c:if test="${currentPage > 1 }">
+					<li><a class="btn btn-default" role="button"
+						href="./dashboard?p=${currentPage-1}&r=${range}">${currentPage-1}</a></li>
+				</c:if>
+				<li><a class="btn btn-primary active" role="button" href="#">${currentPage}</a></li>
+				<c:if test="${currentPage <= totalPage}">
+					<li><a class="btn btn-default" role="button"
+						href="./dashboard?p=${currentPage + 1 }&r=${range}">${currentPage + 1 }</a></li>
+				</c:if>
+				<c:if test="${currentPage <= totalPage - 1}">
+					<li><a class="btn btn-default" role="button"
+						href="./dashboard?p=${currentPage + 2 }&r=${range}">${currentPage + 2 }</a></li>
+				</c:if>
+
+				<li><a href="./dashboard?p=${totalPage + 1}&r=${range}" aria-label="Next">
+						<span aria-hidden="true">&raquo;</span>
 				</a></li>
 			</ul>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<button type="button" class="btn btn-default">10</button>
-				<button type="button" class="btn btn-default">50</button>
-				<button type="button" class="btn btn-default">100</button>
+				<a href="dashboard?p=${currentPage}&r=10"
+					class="btn btn-default ${param.r == 10 || empty param.r ? 'active' : '' }">10</a>
+				<a href="dashboard?p=${currentPage}&r=50"
+					class="btn btn-default ${param.r == 50 ? 'active' : '' }">50</a> <a
+					href="dashboard?p=${currentPage}&r=100"
+					class="btn btn-default ${param.r == 100 ? 'active' : '' }">100</a>
 			</div>
 		</div>
 	</footer>

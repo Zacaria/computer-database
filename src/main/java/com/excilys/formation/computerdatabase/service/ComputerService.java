@@ -3,8 +3,10 @@ package com.excilys.formation.computerdatabase.service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.excilys.formation.computerdatabase.mapper.Page;
+import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
+import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
 import com.excilys.formation.computerdatabase.persistence.Crudable;
 
@@ -34,10 +36,12 @@ public class ComputerService {
 		return count;
 	}
 
-	public Page<Computer> get(int from, int max) {
+	public PageDTO<Computer> get(int from, int max) {
 		LOGGER.info("access");
 
-		Page<Computer> computers = new Page<>(from, this.cdao.find(from, max), this.cdao.count());
+		Page<Computer> computerPage = new Page<>(from, this.cdao.find(from, max), this.cdao.count());
+		
+		PageDTO<Computer> computers = new PageDTO<>(computerPage, computer -> new ComputerDTO(computer));
 
 		return computers;
 	}
