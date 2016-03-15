@@ -8,38 +8,41 @@ public class Pager<T> {
 	private int range = 10;
 	private int totalPage;
 	private int currentPageNumber = 1;
+	private int total;
+	private Pageable<T> dataRetreiver;
 	
-	
-	public Pager(Page<T> data){
-		this.data = data;
-		this.totalPage = this.data.getTotal() / this.range + 1;
-	}
-	
-	public int next(){
-		this.offset = this.offset + this.range < this.data.getTotal()
-				? this.offset + this.range
-				: this.offset;
+	public Pager(){
 		
-		return this.offset;
 	}
 	
-	public int previous(){
-		this.offset = this.offset - this.range > 0
-				? this.offset - this.range
-				: 0;
+	public Pager(int count, Pageable<T> p){
+		this.total = count;
+		this.dataRetreiver = p;
+	}
+	
+	public Page<T> next(){
+		return this.getPage(++this.currentPageNumber);
+	}
+	
+	public Page<T> previous(){
+		return this.getPage(--this.currentPageNumber);
+	}
+	
+	public Page<T> getPage(){
+		return this.getPage(this.currentPageNumber);
+	}
+	
+	public Page<T> getPage(int number){
 		
-		return this.offset;
-	}
-	
-	public Page<T> getCurrentPage(){
-		this.currentPageNumber = this.offset / this.range + 1;
+		if(number < 1){
+			number = 1;
+		}
+		
+		this.data = this.dataRetreiver.get((number * this.range) - this.range, this.range);
+		
+		this.currentPageNumber = number;
 		
 		return this.data;
-	}
-	
-	public void setCurrentPage(Page<T> data){
-		this.data = data;
-		this.totalPage = this.data.getTotal() / this.range + 1;
 	}
 	
 	public int getCurrentPageNumber(){
@@ -49,6 +52,4 @@ public class Pager<T> {
 	public int getTotalPage() {
 		return this.totalPage;
 	}
-	
-	
 }

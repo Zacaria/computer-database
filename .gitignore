@@ -5,6 +5,8 @@
 .settings/
 .classpath
 .project
+.tern-project
+.gitignore~
 
 WebContent/*
 config/*

@@ -84,21 +84,24 @@ public class ConsoleUI {
 		Scanner sc = new Scanner(System.in);
 
 		// Problem, I load everything
-		Page<Computer> computers = COMPUTER_SERVICE.get(computerOffset, defaultMax);
-		Pager<Computer> pager = new Pager<>(computers);
+		//Page<Computer> computers = COMPUTER_SERVICE.get(computerOffset, defaultMax);
+		Pager<Computer> pager = new Pager<>(COMPUTER_SERVICE.count(), (offset, max) -> COMPUTER_SERVICE.get(offset, max));
+		
 
-		int command = 0;
+		int command = 4;
 
 		do {
 			System.out.println("Page " + pager.getCurrentPageNumber() + " of " + pager.getTotalPage());
-
+			
+			Iterator<Computer> iterator = pager.getPage().getElements().iterator();
+			
 			if (command == 4) {
-				pager.setCurrentPage(COMPUTER_SERVICE.get(pager.previous(), defaultMax));
+				iterator = pager.previous().getElements().iterator();
 			} else if (command == 6) {
-				pager.setCurrentPage(COMPUTER_SERVICE.get(pager.next(), defaultMax));
+				iterator = pager.next().getElements().iterator();
 			}
 
-			Iterator<Computer> iterator = pager.getCurrentPage().getElements().iterator();
+			
 			while (iterator.hasNext()) {
 				Computer computer = iterator.next();
 
