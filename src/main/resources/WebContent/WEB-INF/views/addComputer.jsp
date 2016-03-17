@@ -43,8 +43,8 @@
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<strong>Error!</strong> Something happened, if you are an
-							administrator, check the logs too good.
+							<strong>Oops!</strong> Something happened, if you are an
+							administrator, check the logs
 						</div>
 					</c:if>
 					<h1>Add Computer</h1>
@@ -53,17 +53,17 @@
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									placeholder="Computer name" name="name" required>
+									placeholder="Computer name" name="name" pattern="[A-Za-z0-9\-_\s]{1,30}" required>
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control form_datetime" id="introduced"
-									placeholder="Introduced date" name="introduced" readonly>
+									placeholder="Click to pick a date" name="introduced" readonly>
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control form_datetime"
-									id="discontinued" placeholder="Discontinued date"
+									id="discontinued" placeholder="Click to pick a date"
 									name="discontinued" readonly>
 							</div>
 							<div class="form-group">

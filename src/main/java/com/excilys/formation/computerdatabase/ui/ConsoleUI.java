@@ -11,22 +11,28 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
+import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
+import com.excilys.formation.computerdatabase.dataBinders.dto.DTO;
+import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
-import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 
 public class ConsoleUI {
 
-	private static final Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase.console");
+	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 	private static final Pattern ID_PATTERN = Pattern.compile("^\\d+$");
 	private static final ComputerService COMPUTER_SERVICE = ComputerService.getInstance();
 	private static final CompanyService COMPANY_SERVICE = CompanyService.getInstance();
 
+	private static Pager<Computer> computerPager;
+	private static Pager<Company> companyPager;
 	private static int companiesOffset = 0;
 	private static int computerOffset = 0;
 	private static int defaultMax = 10;
@@ -36,12 +42,19 @@ public class ConsoleUI {
 
 		CommandLineParser parser = new DefaultParser();
 
+		computerPager = new Pager<>(COMPUTER_SERVICE.count(), (offset, max) -> COMPUTER_SERVICE.get(offset, max));
+		companyPager = new Pager<>(COMPANY_SERVICE.count(), (offset, max) -> COMPANY_SERVICE.get(offset, max));
+
+		computerPager.setRange(defaultMax);
+
+		// FIXME : We always display all companies
+		companyPager.setRange(50);
+
 		try {
 			CommandLine cmd = parser.parse(options, args);
 
 			if (cmd.hasOption("h") || cmd.getOptions().length == 0) {
 				handleMenu(options);
-
 			} else if (cmd.hasOption("e")) {
 				handleShowCompanies(cmd);
 			} else if (cmd.hasOption("c") && !cmd.hasOption("id")) {
@@ -70,40 +83,34 @@ public class ConsoleUI {
 	}
 
 	public static void handleShowCompanies(CommandLine cmd) {
-		Page<Company> companies = COMPANY_SERVICE.get(companiesOffset, defaultMax);
+		PageDTO<Company> companies = companyPager.getPage(1);
 
-		Iterator<Company> iterator = companies.getElements().iterator();
+		Iterator<DTO> iterator = companies.getElements().iterator();
 		while (iterator.hasNext()) {
-			Company company = iterator.next();
+			CompanyDTO company = (CompanyDTO) iterator.next();
 
-			LOGGER.info(company.toString());
+			System.out.println(company.toString());
 		}
 	}
 
 	public static void handleShowComputers(CommandLine cmd) {
 		Scanner sc = new Scanner(System.in);
 
-		// Problem, I load everything
-		//Page<Computer> computers = COMPUTER_SERVICE.get(computerOffset, defaultMax);
-		Pager<Computer> pager = new Pager<>(COMPUTER_SERVICE.count(), (offset, max) -> COMPUTER_SERVICE.get(offset, max));
-		
-
 		int command = 4;
 
 		do {
-			System.out.println("Page " + pager.getCurrentPageNumber() + " of " + pager.getTotalPage());
-			
-			Iterator<Computer> iterator = pager.getPage().getElements().iterator();
-			
+			System.out.println("Page " + computerPager.getCurrentPageNumber() + " of " + computerPager.getTotalPage());
+
+			Iterator<DTO> iterator = computerPager.getPage().getElements().iterator();
+
 			if (command == 4) {
-				iterator = pager.previous().getElements().iterator();
+				iterator = computerPager.previous().getElements().iterator();
 			} else if (command == 6) {
-				iterator = pager.next().getElements().iterator();
+				iterator = computerPager.next().getElements().iterator();
 			}
 
-			
 			while (iterator.hasNext()) {
-				Computer computer = iterator.next();
+				ComputerDTO computer = (ComputerDTO) iterator.next();
 
 				System.out.println(computer.toString());
 			}
@@ -123,11 +130,11 @@ public class ConsoleUI {
 
 	public static void handleShowComputer(CommandLine cmd) {
 		if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
-			LOGGER.info("Please specify the id of the computer you want to see !");
+			System.out.println("Please specify the id of the computer you want to see !");
 		}
 
 		if (!ID_PATTERN.matcher(cmd.getOptionValue("id")).matches()) {
-			LOGGER.info("Please specify ids as numbers");
+			System.out.println("Please specify ids as numbers");
 			return;
 		}
 
@@ -144,33 +151,39 @@ public class ConsoleUI {
 	public static void handleNewComputer(CommandLine cmd) {
 		Company company = null;
 		Computer computer = null;
-		if(cmd.hasOption("com")){
-			if(!ID_PATTERN.matcher(cmd.getOptionValue("com")).matches()){
-				LOGGER.info("Please specify the company id as a number");
+		if (cmd.hasOption("com")) {
+			if (!ID_PATTERN.matcher(cmd.getOptionValue("com")).matches()) {
+				System.out.println("Please specify the company id as a number");
 				return;
 			}
-			
+
 			Long companyId = Long.parseLong(cmd.getOptionValue("com"));
-			
+
 			company = COMPANY_SERVICE.get(companyId);
 		}
-		computer = new Computer(cmd.getOptionValue("name"), cmd.getOptionValue("intro"),
-				cmd.getOptionValue("disco"), company); 
-		
+		computer = Computer.builder(cmd.getOptionValue("name")).introduced(cmd.getOptionValue("inro"))
+				.discontinued(cmd.getOptionValue("disco")).company(company).build();
+		//
+		// computer = new Computer(cmd.getOptionValue("name"),
+		// cmd.getOptionValue("intro"), cmd.getOptionValue("disco"),
+		// company);
+
 		Long newId = COMPUTER_SERVICE.create(computer);
 
-		LOGGER.info("New computer created with id " + newId);
+		System.out.println("New computer created with id " + newId);
+
+		// LOGGER.info("New computer created with id " + newId);
 	}
 
 	public static void handleUpdateComputer(CommandLine cmd) {
 		if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
-			LOGGER.info("Please specify the id of the computer you want to update !");
+			System.out.println("Please specify the id of the computer you want to update !");
 			return;
 		}
 
 		if (!ID_PATTERN.matcher(cmd.getOptionValue("id")).matches()
 				&& (!cmd.hasOption("com") || !ID_PATTERN.matcher(cmd.getOptionValue("com")).matches())) {
-			LOGGER.info("Please specify ids as numbers");
+			System.out.println("Please specify ids as numbers");
 			return;
 		}
 
@@ -180,30 +193,36 @@ public class ConsoleUI {
 		Computer computer = COMPUTER_SERVICE.get(id);
 		Company company = COMPANY_SERVICE.get(comId);
 
-		computer = COMPUTER_SERVICE.update(new Computer(id, cmd.getOptionValue("name"),
-				cmd.getOptionValue("intro"), cmd.getOptionValue("disco"), company));
+		if (computer == null) {
+			System.out.println("No computer was found with this id : " + id);
+			return;
+		}
 
-		LOGGER.info("computer updated : " + computer);
+		computer = COMPUTER_SERVICE
+				.update(Computer.builder(cmd.getOptionValue("name")).id(id).introduced(cmd.getOptionValue("intro"))
+						.discontinued(cmd.getOptionValue("disco")).company(company).build());
+		System.out.println("computer updated : " + computer);
 	}
 
 	public static void handleDeleteComputer(CommandLine cmd) {
 		// TODO : Say : Are you sure ? this operation is irreversible !
 
 		if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
-			LOGGER.error("Please specify the id of the computer you want to delete !");
+			System.out.println("Please specify the id of the computer you want to delete !");
+			return;
 		}
-		
+
 		if (!ID_PATTERN.matcher(cmd.getOptionValue("id")).matches()) {
-			LOGGER.info("Please specify ids as numbers");
+			System.out.println("Please specify ids as numbers");
 			return;
 		}
 
 		boolean success = COMPUTER_SERVICE.delete(cmd.getOptionValue("id"));
 
 		if (success) {
-			LOGGER.info("computer deleted !");
+			System.out.println("computer deleted !");
 		} else {
-			LOGGER.info("Nothing happened");
+			System.out.println("Nothing happened");
 		}
 
 	}

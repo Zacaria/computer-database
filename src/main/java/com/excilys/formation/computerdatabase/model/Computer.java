@@ -11,7 +11,6 @@ public class Computer {
 	private LocalDate discontinued;
 	private Company company;
 
-	// Should be private
 	private Computer() {
 	}
 

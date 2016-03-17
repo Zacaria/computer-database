@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
@@ -24,7 +24,7 @@ import com.excilys.formation.computerdatabase.ui.Pager;
  */
 @WebServlet("/dashboard")
 public class Dashboard extends HttpServlet {
-	private static final Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
+	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
 	private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
 	private static final long serialVersionUID = 1L;
@@ -32,7 +32,6 @@ public class Dashboard extends HttpServlet {
 	private static final int DEFAULT_RANGE = 10;
 
 	private final ComputerService cs;
-	// private Pager<Computer> pager;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -40,10 +39,6 @@ public class Dashboard extends HttpServlet {
 	public Dashboard() {
 		super();
 		this.cs = ComputerService.getInstance();
-
-		// this.pager = new Pager<>(this.cs.count(), (offset, max) ->
-		// this.cs.get(offset, max));
-
 	}
 
 	/**

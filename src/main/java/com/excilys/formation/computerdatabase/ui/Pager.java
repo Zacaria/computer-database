@@ -5,7 +5,6 @@ import com.excilys.formation.computerdatabase.model.Page;
 
 public class Pager<T> {
 	private PageDTO<T> data;
-	//private int offset = 0;
 	private int range = 10;
 	private int totalPage;
 	private int currentPageNumber = 1;

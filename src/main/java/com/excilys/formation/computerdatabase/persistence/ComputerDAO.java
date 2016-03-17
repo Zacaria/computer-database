@@ -8,15 +8,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.mapper.ComputerMapper;
 import com.excilys.formation.computerdatabase.model.Computer;
 
 public class ComputerDAO implements Crudable<Computer> {
 
-	private final static Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
+	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
 	private final static String FIELDS = "computer.id as computer_id, computer.name as computer_name, introduced, discontinued, company_id";
 
@@ -53,7 +53,7 @@ public class ComputerDAO implements Crudable<Computer> {
 			}
 
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error(e.getMessage());
 		} finally {
 			connectionFactory.closeConnection(connection);
 		}
@@ -75,7 +75,7 @@ public class ComputerDAO implements Crudable<Computer> {
 			computers = mapper.mapList(resultSet);
 
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error(e.getMessage());
 		} finally {
 			connectionFactory.closeConnection(connection);
 		}
@@ -99,7 +99,7 @@ public class ComputerDAO implements Crudable<Computer> {
 			computers = mapper.mapList(resultSet);
 
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error(e.getMessage());
 		} finally {
 			connectionFactory.closeConnection(connection);
 		}
@@ -124,7 +124,7 @@ public class ComputerDAO implements Crudable<Computer> {
 				return null;
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error(e.getMessage());
 		} finally {
 			connectionFactory.closeConnection(connection);
 		}
@@ -139,8 +139,6 @@ public class ComputerDAO implements Crudable<Computer> {
 		Long newId = null;
 
 		try (PreparedStatement statement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
-			
-			System.out.println(computer);
 			if (computer.getName() == null || computer.getName().isEmpty()) {
 				LOGGER.error("ERROR Insert : Could not create an unnamed computer !");
 				return null;
@@ -165,7 +163,7 @@ public class ComputerDAO implements Crudable<Computer> {
 				newId = generatedId.getLong(1);
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error(e.getMessage());
 		} finally {
 			connectionFactory.closeConnection(connection);
 		}

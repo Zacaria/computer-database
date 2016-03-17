@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
@@ -25,7 +25,7 @@ import com.excilys.formation.computerdatabase.ui.Pager;
  */
 @WebServlet("/addComputer")
 public class AddComputer extends HttpServlet {
-	private static final Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
+	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 	private static final long serialVersionUID = 1L;
 	private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
 

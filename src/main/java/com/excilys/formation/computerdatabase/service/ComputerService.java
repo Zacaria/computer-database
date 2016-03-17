@@ -1,7 +1,8 @@
 package com.excilys.formation.computerdatabase.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
@@ -11,7 +12,7 @@ import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
 import com.excilys.formation.computerdatabase.persistence.Crudable;
 
 public class ComputerService {
-	private final static Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
+	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
 	private final Crudable<Computer> cdao;
 
@@ -55,6 +56,7 @@ public class ComputerService {
 		return this.cdao.create(computer);
 	}
 
+	//FIXME dirty check
 	public boolean delete(String id) {
 		LOGGER.info("access");
 		Long computerId = null;

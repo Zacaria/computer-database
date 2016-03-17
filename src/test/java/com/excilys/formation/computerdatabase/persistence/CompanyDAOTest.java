@@ -32,11 +32,11 @@ public class CompanyDAOTest {
 	
 	@Test
 	public void findByIdTest(){
-		Company validMock = new Company();
+		Company validMock = Company.builder(1l).name("Apple Inc.").build();
 		validMock.setId(1l);
 		validMock.setName("Apple Inc.");
 		
-		Company errorMock = new Company();
+		Company errorMock = Company.builder(0l).name("whatever").build();
 		errorMock.setId(0l);
 		errorMock.setName("whatever");
 		

@@ -7,14 +7,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.mapper.CompanyMapper;
 import com.excilys.formation.computerdatabase.model.Company;
 
 public class CompanyDAO implements Crudable<Company> {
-	private final static Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
+	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
 	private final static String FIELDS = "company.id as company_id, company.name as company_name";
 
@@ -41,7 +41,7 @@ public class CompanyDAO implements Crudable<Company> {
 			}
 
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error(e.getMessage());
 		} finally {
 			connectionFactory.closeConnection(connection);
 		}
@@ -65,7 +65,7 @@ public class CompanyDAO implements Crudable<Company> {
 			companies = mapper.mapList(resultSet);
 
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error(e.getMessage());
 		} finally {
 			connectionFactory.closeConnection(connection);
 		}
@@ -91,7 +91,7 @@ public class CompanyDAO implements Crudable<Company> {
 			companies = mapper.mapList(resultSet);
 
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error(e.getMessage());
 		} finally {
 			if (statement != null) {
 				try {
@@ -124,13 +124,13 @@ public class CompanyDAO implements Crudable<Company> {
 				company = mapper.map(resultSet);
 			}
 		} catch (SQLException e) {
-			LOGGER.error(e);
+			LOGGER.error(e.getMessage());
 		} finally {
 			if (statement != null) {
 				try {
 					statement.close();
 				} catch (Exception e2) {
-					LOGGER.error(e2);
+					LOGGER.error(e2.getMessage());
 				}
 			}
 			connectionFactory.closeConnection(connection);

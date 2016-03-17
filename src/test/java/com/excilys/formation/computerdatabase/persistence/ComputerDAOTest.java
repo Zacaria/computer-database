@@ -24,6 +24,7 @@ public class ComputerDAOTest {
 	private Computer computerMock13DateNull;
 	private Computer computerMock63DateZero;
 	private Computer computerMockNullToCUD;
+	private Computer computerMockFull;
 	
 	
 
@@ -32,32 +33,42 @@ public class ComputerDAOTest {
 		this.cdao = new ComputerDAO();
 		this.companyDao = new CompanyDAO();
 		
-		this.computerMock12Full = new Computer();		
-		this.computerMock12Full.setId(12l);
-		this.computerMock12Full.setName("Apple III");
-		this.computerMock12Full.setIntroduced(DateConverter.stringToDate("1980-05-01"));
-		this.computerMock12Full.setDiscontinued(DateConverter.stringToDate("1984-04-01"));
-		this.computerMock12Full.setCompany(new Company(1l, "Apple Inc."));
+		this.computerMock12Full = Computer
+				.builder("Apple III")
+				.id(12l)
+				.introduced("1980-05-01")
+				.discontinued("1984-04-01")
+				.company(Company.builder(1l).name("Apple Inc.").build())
+				.build();
 		
-		this.computerMock13DateNull = new Computer();		
-		this.computerMock13DateNull.setId(13l);
-		this.computerMock13DateNull.setName("Apple Lisa");
-		this.computerMock13DateNull.setIntroduced(null);
-		this.computerMock13DateNull.setDiscontinued(null);
-		this.computerMock13DateNull.setCompany(new Company(1l, "Apple Inc."));
+		this.computerMock13DateNull = Computer
+				.builder("Apple Lisa")
+				.id(13l)
+				.company(Company.builder(1l).name("Apple Inc.").build())
+				.build();
 		
-		this.computerMock63DateZero = new Computer();		
-		this.computerMock63DateZero.setId(63l);
-		this.computerMock63DateZero.setName("TX-2");
-		this.computerMock63DateZero.setIntroduced(DateConverter.stringToDate("0"));
-		this.computerMock63DateZero.setDiscontinued(null);
-		this.computerMock63DateZero.setCompany(this.companyDao.find(11l));
+		this.computerMock63DateZero = Computer
+				.builder("TX-2")
+				.id(63l)
+				.introduced("0")
+				.company(Company.builder(11l).name("Lincoln Laboratory").build())
+				.build();
 		
-		this.computerMockNullToCUD = new Computer();
-		this.computerMockNullToCUD.setName("toto");
-		this.computerMockNullToCUD.setIntroduced(DateConverter.stringToDate("2000-01-01"));
-		this.computerMockNullToCUD.setDiscontinued(DateConverter.stringToDate("2000-01-05"));
-		this.computerMockNullToCUD.setCompany(new Company(11l, "Lincoln Laboratory"));
+		this.computerMockNullToCUD = Computer
+				.builder("toto")
+				.id(63l)
+				.introduced("2000-01-01")
+				.discontinued("2000-01-05")
+				.company(Company.builder(11l).name("Lincoln Laboratory").build())
+				.build();
+		
+		this.computerMockFull = Computer
+				.builder("Apple III")
+				.id(12l)
+				.introduced("1980-05-01")
+				.discontinued("1984-04-01")
+				.company(Company.builder(1l).name("Apple Inc.").build())
+				.build();
 	}
 
 	@After
@@ -81,15 +92,8 @@ public class ComputerDAOTest {
 	public void findByIdTest() {
 		//testing some values of the db assuming these are the same that the inital sql file
 		
-		Computer computerMockFull = new Computer();
 		
-		computerMockFull.setId(12l);
-		computerMockFull.setName("Apple III");
-		computerMockFull.setIntroduced(DateConverter.stringToDate("1980-05-01"));
-		computerMockFull.setDiscontinued(DateConverter.stringToDate("1984-04-01"));
-		computerMockFull.setCompany(new Company(1l, "Apple Inc."));
-		
-		assertEquals(computerMockFull, this.cdao.find(12l));
+		assertEquals(this.computerMockFull, this.cdao.find(12l));
 				
 		assertEquals("This didn't work with a date null", this.computerMock13DateNull, this.cdao.find(13l));
 		
@@ -107,11 +111,11 @@ public class ComputerDAOTest {
 		this.cdao.delete(insertedId);
 		
 		
-		this.computerMockNullToCUD.setCompany(new Company(100l, "Missingno"));
+		this.computerMockNullToCUD.setCompany(Company.builder(100l).name("Missingno").build());
 		assertNull("should not insert a computer with a company that doesn't exist", this.cdao.create(this.computerMockNullToCUD));
 		
 		
-		this.computerMockNullToCUD.setCompany(new Company(1l, "Apple Inc."));
+		this.computerMockNullToCUD.setCompany(Company.builder(1l).name("Apple Inc.").build());
 		this.computerMockNullToCUD.setName(null);
 		assertNull(this.cdao.create(this.computerMockNullToCUD));
 	}
@@ -144,7 +148,7 @@ public class ComputerDAOTest {
 		
 		assertEquals(computer, this.computerMockNullToCUD);
 		
-		this.computerMockNullToCUD.setCompany(new Company(100l, "Lincoln Laboratory"));
+		this.computerMockNullToCUD.setCompany(Company.builder(100l).name("Lincoln Laboratory").build());
 		
 		computer = this.cdao.update(this.computerMockNullToCUD);
 		

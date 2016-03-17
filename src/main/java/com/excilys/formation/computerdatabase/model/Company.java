@@ -7,11 +7,6 @@ public class Company {
 	private Company() {
 	}
 
-//	public Company(Long id, String name) {
-//		this.id = id;
-//		this.name = name;
-//	}
-
 	public static Builder builder(Long id) {
 		return new Company.Builder(id);
 	}
