@@ -19,6 +19,7 @@ public class Pager<T> {
 	public Pager(int count, Pageable<T> p){
 		this.total = count;
 		this.dataRetreiver = p;
+		this.setTotalPage();
 	}
 	
 	public PageDTO<T> next(){
@@ -33,15 +34,16 @@ public class Pager<T> {
 		return this.getPage(this.currentPageNumber);
 	}
 	
-	public PageDTO<T> getPage(int number){
+	public PageDTO<T> getPage(int pageNum){
 		
-		if(number < 1){
-			number = 1;
+		if(pageNum < 1){
+			pageNum = 1;
 		}
 		
-		this.data = this.dataRetreiver.get((number * this.range) - this.range, this.range);
+		this.data = this.dataRetreiver.get((pageNum * this.range) - this.range, this.range);
 		
-		this.currentPageNumber = number;
+		this.setTotal(this.data.getTotal());
+		this.currentPageNumber = pageNum;
 		
 		return this.data;
 	}
@@ -54,11 +56,22 @@ public class Pager<T> {
 		return this.totalPage;
 	}
 	
+	private void setTotalPage(){
+		this.totalPage = (this.total + this.range - 1) / this.range;
+	}
+	
 	public void setRange(int range){
 		this.range = range;
+		this.setTotalPage();
 	}
 	
 	public int getRange(){
 		return this.range;
 	}
+	
+	private void setTotal(int total){
+		this.total = total;
+		this.setTotalPage();
+	}
+	
 }

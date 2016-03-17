@@ -12,7 +12,7 @@
 				title="Computer Database logs" />
 		</File>
 		<RollingFile name="RollingFile" fileName="${log_path}/log.log"
-			filePattern="${log_path}/log-%d{yyyy-MM-dd}-%i.log">
+			filePattern="${log_path}/log-%d{yyyy-MM-dd}-%i.log"  immediateFlush="true">
 			<PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="10 MB" />
@@ -25,13 +25,14 @@
 			level="error" additivity="false">
 			<AppenderRef ref="RollingFile" />
 		</Logger>
-		<Logger name="com.excilys.formation.computerdatabase" level="info"
-			additivity="false">
+		<Logger name="com.excilys.formation.computerdatabase" level="debug"
+			additivity="true">
 			<AppenderRef ref="STDOUT" />
 			<AppenderRef ref="RollingFile" />
 		</Logger>
 		<Root level="trace">
 			<AppenderRef ref="STDOUT" />
+			<AppenderRef ref="RollingFile" />
 		</Root>
 	</Loggers>
 </Configuration>

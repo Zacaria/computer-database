@@ -1,15 +1,21 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
 <c:catch var="paramError">
 	<fmt:parseNumber var="currentPage" integerOnly="true" type="number"
-		value="${param.p}" />
+		value="${current}" />
+	<fmt:parseNumber var="range" integerOnly="true" type="number"
+		value="${range}" />
 </c:catch>
-<c:if test="${paramError != null}">
+<c:if test="${not empty paramError}">
 	<c:set var="currentPage" value="1" />
+	<c:set var="range" value="10" />
 </c:if>
-<c:if test="${paramError == null}">
-	<c:set var="currentPage" value="${empty param.p ? 1 : param.p}" />
+
+<c:if test="${empty paramError}">
+	<c:set var="currentPage" value="${empty current ? 1 : current}" />
+	<c:set var="range" value="${empty range ? 10 : range}" />
 </c:if>
 <!DOCTYPE html>
 <html>
@@ -31,10 +37,9 @@
 				Database </a>
 		</div>
 	</header>
-
 	<section id="main">
 		<div class="container">
-			<h1 id="homeTitle">${count}&nbsp;Computersfound</h1>
+			<h1 id="homeTitle">${count}&nbsp;Computers&nbsp;found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
 					<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -99,40 +104,16 @@
 	</section>
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
-			<ul class="pagination">
-				<li><a href="./dashboard?p=1" aria-label="Previous"> <span
-						aria-hidden="true">&laquo;</span>
-				</a></li>
-				<c:if test="${currentPage > 2 }">
-					<li><a class="btn btn-default" role="button"
-						href="./dashboard?p=${currentPage-2}&r=${range}">${currentPage-2}</a></li>
-				</c:if>
-				<c:if test="${currentPage > 1 }">
-					<li><a class="btn btn-default" role="button"
-						href="./dashboard?p=${currentPage-1}&r=${range}">${currentPage-1}</a></li>
-				</c:if>
-				<li><a class="btn btn-primary active" role="button" href="#">${currentPage}</a></li>
-				<c:if test="${currentPage <= totalPage}">
-					<li><a class="btn btn-default" role="button"
-						href="./dashboard?p=${currentPage + 1 }&r=${range}">${currentPage + 1 }</a></li>
-				</c:if>
-				<c:if test="${currentPage <= totalPage - 1}">
-					<li><a class="btn btn-default" role="button"
-						href="./dashboard?p=${currentPage + 2 }&r=${range}">${currentPage + 2 }</a></li>
-				</c:if>
-
-				<li><a href="./dashboard?p=${totalPage + 1}&r=${range}" aria-label="Next">
-						<span aria-hidden="true">&raquo;</span>
-				</a></li>
-			</ul>
+			<cdb:pagination total="${totalPage}" current="${currentPage}"
+				range="${range}"></cdb:pagination>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
 				<a href="dashboard?p=${currentPage}&r=10"
-					class="btn btn-default ${param.r == 10 || empty param.r ? 'active' : '' }">10</a>
+					class="btn btn-default ${range == 10 || empty range ? 'active' : '' }">10</a>
 				<a href="dashboard?p=${currentPage}&r=50"
-					class="btn btn-default ${param.r == 50 ? 'active' : '' }">50</a> <a
+					class="btn btn-default ${range== 50 ? 'active' : '' }">50</a> <a
 					href="dashboard?p=${currentPage}&r=100"
-					class="btn btn-default ${param.r == 100 ? 'active' : '' }">100</a>
+					class="btn btn-default ${range== 100 ? 'active' : '' }">100</a>
 			</div>
 		</div>
 	</footer>

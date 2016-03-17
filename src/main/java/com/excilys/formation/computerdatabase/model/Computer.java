@@ -12,37 +12,18 @@ public class Computer {
 	private Company company;
 
 	// Should be private
-	public Computer() {
+	private Computer() {
 	}
 
-	/*
-	 * public Computer(Long id, String name, LocalDate introduced, LocalDate
-	 * discontinued, Company company) { this.id = id; this.name = name;
-	 * this.introduced = introduced; this.discontinued = discontinued;
-	 * this.company = company; }
-	 * 
-	 * public Computer(Long id, String name, String introduced, String
-	 * discontinued, Company company) { this.id = id; this.name = name; if
-	 * (introduced != null) { this.introduced =
-	 * DateConverter.stringToDate(introduced); } if (discontinued != null) {
-	 * this.discontinued = DateConverter.stringToDate(discontinued); }
-	 * this.company = company; }
-	 * 
-	 * public Computer(String name, String introduced, String discontinued,
-	 * Company company) { this.name = name; if (introduced != null) {
-	 * this.introduced = DateConverter.stringToDate(introduced); } if
-	 * (discontinued != null) { this.discontinued =
-	 * DateConverter.stringToDate(discontinued); } this.company = company; }
-	 */
-
-	public static Builder builder() {
-		return new Computer.Builder();
+	public static Builder builder(String name) {
+		return new Computer.Builder(name);
 	}
 
 	public static class Builder {
 		private Computer instance = new Computer();
 
-		public Builder() {
+		public Builder(String name) {
+			instance.name = name;
 		}
 
 		public Builder id(Long id) {

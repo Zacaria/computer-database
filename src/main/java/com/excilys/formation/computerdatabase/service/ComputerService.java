@@ -11,8 +11,7 @@ import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
 import com.excilys.formation.computerdatabase.persistence.Crudable;
 
 public class ComputerService {
-
-	private static final Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
+	private final static Logger LOGGER = LogManager.getLogger("com.excilys.formation.computerdatabase");
 
 	private final Crudable<Computer> cdao;
 

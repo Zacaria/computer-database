@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,9 +28,11 @@ public class Dashboard extends HttpServlet {
 
 	private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
 	private static final long serialVersionUID = 1L;
+	private static final int DEFAULT_PAGE = 1;
+	private static final int DEFAULT_RANGE = 10;
 
 	private final ComputerService cs;
-	private Pager<Computer> pager;
+	// private Pager<Computer> pager;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -38,7 +41,8 @@ public class Dashboard extends HttpServlet {
 		super();
 		this.cs = ComputerService.getInstance();
 
-		this.pager = new Pager<>(this.cs.count(), (offset, max) -> this.cs.get(offset, max));
+		// this.pager = new Pager<>(this.cs.count(), (offset, max) ->
+		// this.cs.get(offset, max));
 
 	}
 
@@ -46,33 +50,58 @@ public class Dashboard extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		LOGGER.info("access to : " + request.getRequestURL() + " " + request.getQueryString());
 
-		int page = 1;
+		int page;
+		int range;
+		int totalPage;
+
+		Pager<Computer> pager = null;		
+		
+		HttpSession session = request.getSession();
+
+		if (session.getAttribute("pager") == null || !(session.getAttribute("pager") instanceof Pager)) {
+			pager = new Pager<>(this.cs.count(), (offset, max) -> this.cs.get(offset, max));
+			session.setAttribute("pager", pager);
+		} else {
+			pager = (Pager<Computer>) session.getAttribute("pager");
+		}
+
+		
 
 		if (request.getParameter("p") != null && INT_PATTERN.matcher(request.getParameter("p")).matches()) {
 			page = Integer.parseInt(request.getParameter("p"));
+		} else {
+			page = DEFAULT_PAGE;
 		}
 
 		if (request.getParameter("r") != null && INT_PATTERN.matcher(request.getParameter("r")).matches()) {
-			this.pager.setRange(Integer.parseInt(request.getParameter("r")));
+			range = Integer.parseInt(request.getParameter("r"));
+		} else {
+			range = DEFAULT_RANGE;
 		}
+		pager.setRange(range);
 
+		// I need to know how much computers there is before asking any page
 		int count = this.cs.count();
 
-		PageDTO<Computer> computers = this.pager.getPage(page);
+		totalPage = (count + range - 1) / range;
 
 		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
 
+		page = page > totalPage ? totalPage : page;
+
+		PageDTO<Computer> computers = pager.getPage(page);
+
 		request.setAttribute("count", count);
 		request.setAttribute("computers", computers);
-		request.setAttribute("totalPage", (int) count / this.pager.getRange());
-		request.setAttribute("range", this.pager.getRange());
-
-		System.out.println(request.getQueryString());
+		request.setAttribute("totalPage", totalPage);
+		request.setAttribute("range", range);
+		request.setAttribute("current", page);
 
 		view.forward(request, response);
 	}

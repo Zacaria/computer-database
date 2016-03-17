@@ -4,22 +4,23 @@ public class Company {
 	private Long id;
 	private String name;
 
-	public Company() {
+	private Company() {
 	}
 
-	public Company(Long id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+//	public Company(Long id, String name) {
+//		this.id = id;
+//		this.name = name;
+//	}
 
-	public static Builder builder() {
-		return new Company.Builder();
+	public static Builder builder(Long id) {
+		return new Company.Builder(id);
 	}
 
 	public static class Builder{
 		private Company instance = new Company();
 		
-		public Builder(){
+		public Builder(Long id){
+			instance.id = id;
 		}
 		
 		public Builder id(Long id){

@@ -139,7 +139,9 @@ public class ComputerDAO implements Crudable<Computer> {
 		Long newId = null;
 
 		try (PreparedStatement statement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
-			if (computer.getName() == null) {
+			
+			System.out.println(computer);
+			if (computer.getName() == null || computer.getName().isEmpty()) {
 				LOGGER.error("ERROR Insert : Could not create an unnamed computer !");
 				return null;
 			}
@@ -149,8 +151,8 @@ public class ComputerDAO implements Crudable<Computer> {
 			}
 
 			statement.setString(1, computer.getName());
-			statement.setDate(2, Date.valueOf(computer.getIntroduced()));
-			statement.setDate(3, Date.valueOf(computer.getDiscontinued()));
+			statement.setDate(2, computer.getIntroduced() != null ? Date.valueOf(computer.getIntroduced()) : null);
+			statement.setDate(3, computer.getDiscontinued() != null ? Date.valueOf(computer.getDiscontinued()) : null);
 			statement.setLong(4, computer.getCompany().getId());
 
 			int affectedRows = statement.executeUpdate();

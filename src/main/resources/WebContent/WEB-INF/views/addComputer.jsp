@@ -10,8 +10,10 @@
 	media="screen">
 <link href="${root}/css/font-awesome.css" rel="stylesheet"
 	media="screen">
-<link href="${root}/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
-<link href="${root}/css/bootstrap-select.min.css" rel="stylesheet" media="screen">
+<link href="${root}/css/bootstrap-datetimepicker.min.css"
+	rel="stylesheet" media="screen">
+<link href="${root}/css/bootstrap-select.min.css" rel="stylesheet"
+	media="screen">
 <link href="${root}/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
@@ -21,11 +23,30 @@
 				Database </a>
 		</div>
 	</header>
-
 	<section id="main">
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
+					<c:if test="${success == true}">
+						<div class="alert alert-success alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<strong>Success!</strong> Your computer has been successfully
+							added
+						</div>
+					</c:if>
+					<c:if test="${success == false}">
+						<div class="alert alert-danger alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<strong>Error!</strong> Something happened, if you are an
+							administrator, check the logs too good.
+						</div>
+					</c:if>
 					<h1>Add Computer</h1>
 					<form action="addComputer" method="POST">
 						<fieldset>
@@ -41,12 +62,14 @@
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
-									type="date" class="form-control form_datetime" id="discontinued"
-									placeholder="Discontinued date" name="discontinued" readonly>
+									type="date" class="form-control form_datetime"
+									id="discontinued" placeholder="Discontinued date"
+									name="discontinued" readonly>
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label> 
-								<select class="form-control selectpicker" id="companyId" title="Pick a company" name="companyId" required>
+								<label for="companyId">Company</label> <select
+									class="form-control selectpicker" id="companyId"
+									title="Pick a company" name="companyId" required>
 									<c:forEach items="${companies.getElements()}" var="company">
 										<option value="${company.getId()}">${company.getName()}</option>
 									</c:forEach>

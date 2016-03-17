@@ -56,7 +56,7 @@ public class AddComputer extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		LOGGER.info("access to : " + request.getRequestURL() + " " + request.getQueryString());
+		LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " " + request.getQueryString());
 
 		PageDTO<Company> companies = this.pager.getPage();
 
@@ -74,7 +74,7 @@ public class AddComputer extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		LOGGER.info("access to : " + request.getRequestURL() + " " + request.getQueryString());
+		LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " " + request.getQueryString());
 		
 		Long companyId = null;
 		
@@ -82,19 +82,23 @@ public class AddComputer extends HttpServlet {
 			companyId = Long.parseLong(request.getParameter("companyId"));
 		}
 		
+		//Checked by DAO
+		if(request.getParameter("name").isEmpty()){
+			
+		}
+		
+		//Safe strings with prepared queries
 		Computer computer = Computer
-				.builder()
-				.name(request.getParameter("name"))
+				.builder(request.getParameter("name"))
 				.introduced(request.getParameter("introduced"))
 				.discontinued(request.getParameter("discontinued"))
-				.company(Company.builder().id(companyId).build())
+				.company(Company.builder(companyId).build())
 				.build();
 		
 		Long newId = cs.create(computer);
 		
-		System.out.println(request.getParameter("companyId"));
-		System.out.println(request.getParameter("name"));
-		
+		request.setAttribute("success", newId != null ? true : false);
+				
 		doGet(request, response);
 	}
 
