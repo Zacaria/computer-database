@@ -1,6 +1,7 @@
 *.class
 *.jar
 *.log
+*.html
 
 .settings/
 .classpath
