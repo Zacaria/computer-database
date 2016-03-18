@@ -20,7 +20,7 @@ import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.ui.Pager;
 
 /**
- * Servlet implementation class Dashboard
+ * Servlet implementation class Dashboard.
  */
 @WebServlet("/dashboard")
 public class Dashboard extends HttpServlet {

@@ -33,8 +33,6 @@ public class ConsoleUI {
 
 	private static Pager<Computer> computerPager;
 	private static Pager<Company> companyPager;
-	private static int companiesOffset = 0;
-	private static int computerOffset = 0;
 	private static int defaultMax = 10;
 
 	public static void main(String[] args) {
@@ -161,18 +159,12 @@ public class ConsoleUI {
 
 			company = COMPANY_SERVICE.get(companyId);
 		}
-		computer = Computer.builder(cmd.getOptionValue("name")).introduced(cmd.getOptionValue("inro"))
+		computer = Computer.builder(cmd.getOptionValue("name")).introduced(cmd.getOptionValue("intro"))
 				.discontinued(cmd.getOptionValue("disco")).company(company).build();
-		//
-		// computer = new Computer(cmd.getOptionValue("name"),
-		// cmd.getOptionValue("intro"), cmd.getOptionValue("disco"),
-		// company);
 
 		Long newId = COMPUTER_SERVICE.create(computer);
 
 		System.out.println("New computer created with id " + newId);
-
-		// LOGGER.info("New computer created with id " + newId);
 	}
 
 	public static void handleUpdateComputer(CommandLine cmd) {
@@ -188,24 +180,39 @@ public class ConsoleUI {
 		}
 
 		Long id = Long.parseLong(cmd.getOptionValue("id"));
-		Long comId = Long.parseLong(cmd.getOptionValue("com"));
 
+		// Get the actual computer to update it.
 		Computer computer = COMPUTER_SERVICE.get(id);
-		Company company = COMPANY_SERVICE.get(comId);
 
 		if (computer == null) {
 			System.out.println("No computer was found with this id : " + id);
 			return;
 		}
 
-		computer = COMPUTER_SERVICE
-				.update(Computer.builder(cmd.getOptionValue("name")).id(id).introduced(cmd.getOptionValue("intro"))
-						.discontinued(cmd.getOptionValue("disco")).company(company).build());
+		// Only change the given parameters, keep the other ones.
+		if (cmd.hasOption("name")) {
+			computer.setName(cmd.getOptionValue("name").trim());
+		}
+		if (cmd.hasOption("intro")) {
+			computer.setIntroduced(cmd.getOptionValue("intro").trim());
+		}
+		if (cmd.hasOption("disco")) {
+			computer.setDiscontinued(cmd.getOptionValue("disco").trim());
+		}
+		if (cmd.hasOption("com")) {
+			Long comId = Long.parseLong(cmd.getOptionValue("com").trim());
+
+			Company company = COMPANY_SERVICE.get(comId);
+			computer.setCompany(company);
+		}
+
+		computer = COMPUTER_SERVICE.update(computer);
+
 		System.out.println("computer updated : " + computer);
 	}
 
 	public static void handleDeleteComputer(CommandLine cmd) {
-		// TODO : Say : Are you sure ? this operation is irreversible !
+		Scanner scanner = new Scanner(System.in);
 
 		if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
 			System.out.println("Please specify the id of the computer you want to delete !");
@@ -216,15 +223,20 @@ public class ConsoleUI {
 			System.out.println("Please specify ids as numbers");
 			return;
 		}
+		Long computerId = Long.parseLong(cmd.getOptionValue("id"));
 
-		boolean success = COMPUTER_SERVICE.delete(cmd.getOptionValue("id"));
+		System.out.println("This operation is irreversible ? y/N :");
 
-		if (success) {
-			System.out.println("computer deleted !");
+		String answer = scanner.next("^\\w$");
+		System.out.println(answer);
+		if (answer.charAt(0) == 'y') {
+			boolean success = COMPUTER_SERVICE.delete(computerId);
+
+			System.out.println(success ? "Computer deleted !" : "Nothing happened");
+
 		} else {
-			System.out.println("Nothing happened");
+			System.out.println("Delete Cancelled");
 		}
-
 	}
 
 }

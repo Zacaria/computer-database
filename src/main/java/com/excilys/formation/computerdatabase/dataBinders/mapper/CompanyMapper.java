@@ -12,7 +12,7 @@ import com.excilys.formation.computerdatabase.model.Company;
 
 public class CompanyMapper implements Mapable<Company> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+	private final static Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
 	private final static String COMPANY_ID = "company_id";
 	private final static String COMPANY_NAME = "company_name";
@@ -28,11 +28,9 @@ public class CompanyMapper implements Mapable<Company> {
 			if (rs.getLong(COMPANY_ID) != 0) {
 
 				id = rs.getLong(COMPANY_ID);
-				// if(rs.getString(COMPANY_NAME) != null){
 				name = rs.getString(COMPANY_NAME);
 
 				company = Company.builder(id).name(name).build();
-				// }
 			}
 		} catch (SQLException e) {
 			LOGGER.error("mapping company error");

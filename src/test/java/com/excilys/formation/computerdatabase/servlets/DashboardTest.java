@@ -28,15 +28,11 @@ public class DashboardTest {
 		driver.get(relativeUrl);
 		driver.findElement(By.linkText("2")).click();
 		assertEquals(relativeUrl + "?p=2&r=10", driver.getCurrentUrl());
-		driver.findElement(By.xpath("//li[7]/a/span")).click();
-		assertEquals(relativeUrl + "?p=7&r=10", driver.getCurrentUrl());
-		driver.findElement(By.linkText("50")).click();
-		assertEquals(relativeUrl + "?p=7&r=50", driver.getCurrentUrl());
-		driver.findElement(By.linkText("2")).click();
+		driver.findElement(By.xpath("//a[contains(text(),'50')]")).click();
 		assertEquals(relativeUrl + "?p=2&r=50", driver.getCurrentUrl());
 		driver.findElement(By.linkText("«")).click();
 		assertEquals(relativeUrl + "?p=1&r=50", driver.getCurrentUrl());
-		driver.findElement(By.linkText("100")).click();
+		driver.findElement(By.xpath("//a[contains(text(),'100')]")).click();
 		assertEquals(relativeUrl + "?p=1&r=100", driver.getCurrentUrl());
 		driver.findElement(By.cssSelector("a.navbar-brand")).click();
 		assertEquals(relativeUrl, driver.getCurrentUrl());

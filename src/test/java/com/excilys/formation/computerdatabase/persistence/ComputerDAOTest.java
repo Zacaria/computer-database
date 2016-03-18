@@ -30,8 +30,8 @@ public class ComputerDAOTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.cdao = new ComputerDAO();
-		this.companyDao = new CompanyDAO();
+		this.cdao = ComputerDAO.INSTANCE;
+		this.companyDao = CompanyDAO.INSTANCE;
 		
 		this.computerMock12Full = Computer
 				.builder("Apple III")

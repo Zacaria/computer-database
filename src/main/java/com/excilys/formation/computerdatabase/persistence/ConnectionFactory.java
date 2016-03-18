@@ -13,15 +13,15 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.computerdatabase.exceptions.DBConnectionException;
 
 /**
- * This is a Thread-Safe Singleton It Provides an instance of ConnectionFactory
- * Which generates instances of Connections
+ * This Factory is a Singleton.
+ * It's role is to provide Connection instances.
  * 
- * @author excilys
+ * @author Zacaria
  *
  */
 public class ConnectionFactory {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+	private final static Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
 	private String url;
 	private String database;
@@ -52,13 +52,12 @@ public class ConnectionFactory {
 		} catch (IOException e) {
 			throw new DBConnectionException(e);
 		}
-
 	}
 
 	/**
-	 * Only loaded on first call to getInstance
+	 * Only loaded on first call to getInstance.
 	 * 
-	 * @author excilys
+	 * @author Zacaria
 	 *
 	 */
 	private static class ConnectionFactoryHolder {
@@ -73,7 +72,8 @@ public class ConnectionFactory {
 		Connection connection;
 
 		try {
-			// Register JDBC Driver
+			//FIXME : put that into properties file
+			// Register JDBC Driver.
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(this.url + this.database + "?" + this.options, this.user,
 					this.password);
@@ -87,8 +87,7 @@ public class ConnectionFactory {
 	public void closeConnection(Connection connection) {
 		try {
 			connection.close();
-		} catch (Exception e) {
-			LOGGER.error("Connection did not close properly !");
+		} catch (SQLException e) {
 			throw new DBConnectionException("Connection did not close properly !");
 		}
 	}

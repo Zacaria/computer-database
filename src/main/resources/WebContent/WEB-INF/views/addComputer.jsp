@@ -37,7 +37,7 @@
 							added
 						</div>
 					</c:if>
-					<c:if test="${success == false}">
+					<c:if test="${success == false && warning == false}">
 						<div class="alert alert-danger alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert"
 								aria-label="Close">
@@ -47,13 +47,23 @@
 							administrator, check the logs
 						</div>
 					</c:if>
+					<c:if test="${warning == true}">
+						<div class="alert alert-warning alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<strong>Warning!</strong> There was a problem parsing the given
+							dates
+						</div>
+					</c:if>
 					<h1>Add Computer</h1>
 					<form action="addComputer" method="POST">
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									placeholder="Computer name" name="name" pattern="[A-Za-z0-9\-_\s]{1,30}" required>
+									placeholder="Computer name" name="name" required>
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input

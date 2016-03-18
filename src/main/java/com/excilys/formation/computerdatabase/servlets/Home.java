@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
 
 /**
- * Servlet implementation class Home
+ * Servlet implementation class Home.
  */
 @WebServlet("/Home")
 public class Home extends HttpServlet {
@@ -29,7 +29,7 @@ public class Home extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		int c = new ComputerDAO().count();
+		int c = ComputerDAO.INSTANCE.count();
 		response.getWriter().append("Served at: ").append(request.getContextPath()).append(c+"");
 	}
 

@@ -17,7 +17,7 @@ public class CompanyService {
 	private final Crudable<Company> cdao;
 
 	private CompanyService() {
-		this.cdao = new CompanyDAO();
+		this.cdao = CompanyDAO.INSTANCE;
 	}
 
 	private static class CompanyServiceHolder {
@@ -37,19 +37,6 @@ public class CompanyService {
 
 		return companies;
 	}
-
-	// TODO : Remove this !
-	/*public Company get(String pId) {
-		LOGGER.info("access");
-		try {
-			Long id = Long.parseLong(pId);
-
-			return this.cdao.find(id);
-		} catch (NumberFormatException e) {
-			LOGGER.error(e.getClass().getName() + " : " + e.getMessage());
-			return null;
-		}
-	}*/
 
 	public Company get(Long id) {
 		LOGGER.info("access");

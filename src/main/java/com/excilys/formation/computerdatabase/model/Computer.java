@@ -88,6 +88,10 @@ public class Computer {
 	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
+	
+	public void setIntroduced(String introduced) {
+		this.introduced = DateConverter.stringToDate(introduced);
+	}
 
 	public LocalDate getDiscontinued() {
 		return discontinued;
@@ -95,6 +99,10 @@ public class Computer {
 
 	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
+	}
+	
+	public void setDiscontinued(String discontinued) {
+		this.discontinued = DateConverter.stringToDate(discontinued);
 	}
 
 	public Company getCompany() {

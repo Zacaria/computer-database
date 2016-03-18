@@ -6,6 +6,13 @@ import java.util.List;
 
 import com.excilys.formation.computerdatabase.model.Page;
 
+/**
+ * This holds other model classes.
+ * This is made to hold some meta-datas. 
+ * @author Zacaria
+ *
+ * @param <E>
+ */
 public class PageDTO<E> {
 	private final int total;
 	private final List<DTO> elements;

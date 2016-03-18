@@ -15,7 +15,7 @@ public class CompanyDAOTest {
 
 	@Before
 	public void setUp() throws Exception {
-		cdao = new CompanyDAO();
+		cdao = CompanyDAO.INSTANCE;
 	}
 
 	@After

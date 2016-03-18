@@ -14,9 +14,15 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.computerdatabase.dataBinders.mapper.ComputerMapper;
 import com.excilys.formation.computerdatabase.model.Computer;
 
-public class ComputerDAO implements Crudable<Computer> {
+/**
+ * The enum Singleton is not vulnerable against Reflection API.
+ * @author Zacaria
+ *
+ */
+public enum ComputerDAO implements Crudable<Computer> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+	INSTANCE;
+	private final static Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
 	private final static String FIELDS = "computer.id as computer_id, computer.name as computer_name, introduced, discontinued, company_id";
 
@@ -34,12 +40,12 @@ public class ComputerDAO implements Crudable<Computer> {
 
 	private ConnectionFactory connectionFactory;
 
-	public ComputerDAO() {
+	ComputerDAO() {
 		this.connectionFactory = ConnectionFactory.getInstance();
 	}
 
 	@Override
-	public int count() {
+	public synchronized int count() {
 		Connection connection = connectionFactory.getConnection();
 
 		int count = 0;
@@ -62,7 +68,7 @@ public class ComputerDAO implements Crudable<Computer> {
 	}
 
 	@Override
-	public List<Computer> find() {
+	public synchronized List<Computer> find() {
 		Connection connection = connectionFactory.getConnection();
 
 		List<Computer> computers = null;
@@ -84,7 +90,7 @@ public class ComputerDAO implements Crudable<Computer> {
 	}
 
 	@Override
-	public List<Computer> find(int from, int max) {
+	public synchronized List<Computer> find(int from, int max) {
 		Connection connection = connectionFactory.getConnection();
 
 		List<Computer> computers = null;
@@ -108,7 +114,7 @@ public class ComputerDAO implements Crudable<Computer> {
 	}
 
 	@Override
-	public Computer find(Long id) {
+	public synchronized Computer find(Long id) {
 		Connection connection = connectionFactory.getConnection();
 
 		Computer computer = null;
@@ -133,7 +139,7 @@ public class ComputerDAO implements Crudable<Computer> {
 	}
 
 	@Override
-	public Long create(Computer computer) {
+	public synchronized Long create(Computer computer) {
 		Connection connection = connectionFactory.getConnection();
 
 		Long newId = null;
@@ -172,7 +178,7 @@ public class ComputerDAO implements Crudable<Computer> {
 	}
 
 	@Override
-	public boolean delete(Long id) {
+	public synchronized boolean delete(Long id) {
 		Connection connection = connectionFactory.getConnection();
 
 		int affectedRows = 0;
@@ -192,7 +198,7 @@ public class ComputerDAO implements Crudable<Computer> {
 	}
 
 	@Override
-	public Computer update(Computer computer) {
+	public synchronized Computer update(Computer computer) {
 		Connection connection = connectionFactory.getConnection();
 
 		int affectedRows = 0;
@@ -203,8 +209,8 @@ public class ComputerDAO implements Crudable<Computer> {
 		}
 
 		try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-			ComputerMapper mapper = new ComputerMapper();
-			mapper.merge(computer, oldVersion);
+//			ComputerMapper mapper = new ComputerMapper();
+//			mapper.merge(computer, oldVersion);
 
 			if (computer.getName() == null) {
 				LOGGER.error("ERROR Insert : Could not update to an unnamed computer !");

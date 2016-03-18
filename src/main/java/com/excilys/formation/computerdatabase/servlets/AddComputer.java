@@ -1,6 +1,7 @@
 package com.excilys.formation.computerdatabase.servlets;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
@@ -19,6 +20,7 @@ import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.ui.Pager;
+import com.excilys.formation.computerdatabase.util.DateConverter;
 
 /**
  * Servlet implementation class AddComputer
@@ -55,7 +57,7 @@ public class AddComputer extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " " + request.getQueryString());
 
 		PageDTO<Company> companies = this.pager.getPage();
@@ -73,32 +75,48 @@ public class AddComputer extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " " + request.getQueryString());
-		
+
 		Long companyId = null;
-		
-		if (request.getParameter("companyId") != null && INT_PATTERN.matcher(request.getParameter("companyId")).matches()) {
+		String name = null;
+		LocalDate introduced = null;
+		LocalDate discontinued = null;
+
+		boolean warning = false;
+
+		if (request.getParameter("companyId") != null
+				&& INT_PATTERN.matcher(request.getParameter("companyId")).matches()) {
 			companyId = Long.parseLong(request.getParameter("companyId"));
 		}
-		
-		//Checked by DAO
-		if(request.getParameter("name").isEmpty()){
-			
+
+		if (request.getParameter("name") != null && request.getParameter("name").trim().isEmpty()) {
+			name = request.getParameter("name").trim();
 		}
-		
-		//Safe strings with prepared queries
-		Computer computer = Computer
-				.builder(request.getParameter("name"))
-				.introduced(request.getParameter("introduced"))
-				.discontinued(request.getParameter("discontinued"))
-				.company(Company.builder(companyId).build())
-				.build();
-		
+
+		if (!request.getParameter("introduced").isEmpty()) {
+			introduced = DateConverter.stringToDate(request.getParameter("introduced"));
+			if (introduced == null) {
+				warning = true;
+			}
+		}
+
+		if (!request.getParameter("discontinued").isEmpty()) {
+			discontinued = DateConverter.stringToDate(request.getParameter("discontinued"));
+			if (discontinued == null) {
+				warning = true;
+			}
+		}
+
+		// Safe strings with prepared queries
+		Computer computer = Computer.builder(name).introduced(introduced)
+				.discontinued(discontinued).company(Company.builder(companyId).build()).build();
+
 		Long newId = cs.create(computer);
-		
+
 		request.setAttribute("success", newId != null ? true : false);
-				
+		request.setAttribute("warning", warning);
+
 		doGet(request, response);
 	}
 
