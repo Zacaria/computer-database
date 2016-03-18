@@ -22,8 +22,8 @@ $(function() {
         }
     });
     
-    $(".form_datetime").datetimepicker({
-        format: "yyyy-mm-dd",
+    $('.form_datetime').datetimepicker({
+        format: 'yyyy-mm-dd',
         minView : 'month',
         autoclose : true
     });

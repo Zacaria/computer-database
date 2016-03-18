@@ -63,6 +63,8 @@ public class Dashboard extends HttpServlet {
 			pager = new Pager<>(this.cs.count(), (offset, max) -> this.cs.get(offset, max));
 			session.setAttribute("pager", pager);
 		} else {
+			
+			//Here's the unchecked, safe enough
 			pager = (Pager<Computer>) session.getAttribute("pager");
 		}
 

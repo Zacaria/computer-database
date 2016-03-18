@@ -113,12 +113,10 @@ public class ConsoleUI {
 				System.out.println(computer.toString());
 			}
 
+			//FIXME : NextInt is not safe enough
 			System.out.println("Hit 4 to previous page or hit 6 to next ! \nExit with 9");
-			// if(sc.hasNextInt()){
+			
 			command = sc.nextInt();
-			/*
-			 * } else { System.out.println("wow !"); }
-			 */
 
 		} while (command != 9);
 		sc.close();
