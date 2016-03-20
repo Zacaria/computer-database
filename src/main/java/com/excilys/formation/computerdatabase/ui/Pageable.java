@@ -1,6 +1,7 @@
 package com.excilys.formation.computerdatabase.ui;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
+import com.excilys.formation.computerdatabase.model.Page;
 
 /**
  * Functionnal Interface made to get Pages
@@ -9,5 +10,5 @@ import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
  * @param <T> The type of the elements in the Page
  */
 public interface Pageable<T> {
-	PageDTO<T> get(int from, int max);
+	Page<T> get(int from, int max);
 }

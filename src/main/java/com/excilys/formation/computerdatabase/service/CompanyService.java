@@ -10,7 +10,7 @@ import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.persistence.CompanyDAO;
 import com.excilys.formation.computerdatabase.persistence.Crudable;
 
-public class CompanyService {
+public class CompanyService implements Servable<Company>{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
@@ -28,22 +28,23 @@ public class CompanyService {
 		return CompanyServiceHolder.instance;
 	}
 
-	public PageDTO<Company> get(int from, int max) {
+	@Override
+	public Page<Company> get(int offset, int limit) {
 		LOGGER.info("access");
 
-		Page<Company> companyPage = new Page<>(from, this.cdao.find(from, max), this.cdao.count());
+		Page<Company> companyPage = new Page<>(offset, this.cdao.find(offset, limit), this.cdao.count());
 		
-		PageDTO<Company> companies = new PageDTO<>(companyPage, company -> new CompanyDTO(company));
-
-		return companies;
+		return companyPage;
 	}
 
+	@Override
 	public Company get(Long id) {
 		LOGGER.info("access");
 
 		return this.cdao.find(id);
 	}
 	
+	@Override
 	public int count(){
 		return this.cdao.count();
 	}

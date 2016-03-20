@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.computerdatabase.exceptions.DBConnectionException;
 
 /**
- * This Factory is a Singleton.
- * It's role is to provide Connection instances.
+ * This Factory is a Singleton. It's role is to provide Connection instances.
  * 
  * @author Zacaria
  *
@@ -49,7 +48,10 @@ public class ConnectionFactory {
 			this.user = prop.getProperty("user");
 			this.password = prop.getProperty("password");
 
-		} catch (IOException e) {
+			// Register JDBC Driver.
+			Class.forName(prop.getProperty("driver"));
+
+		} catch (IOException | ClassNotFoundException e) {
 			throw new DBConnectionException(e);
 		}
 	}
@@ -72,12 +74,9 @@ public class ConnectionFactory {
 		Connection connection;
 
 		try {
-			//FIXME : put that into properties file
-			// Register JDBC Driver.
-			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(this.url + this.database + "?" + this.options, this.user,
 					this.password);
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			throw new DBConnectionException(e);
 		}
 

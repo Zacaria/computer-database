@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
@@ -44,7 +45,9 @@ public class AddComputer extends HttpServlet {
 		this.cs = ComputerService.getInstance();
 		this.es = CompanyService.getInstance();
 
-		this.pager = new Pager<Company>(this.es.count(), (offset, max) -> this.es.get(offset, max));
+		this.pager = new Pager<Company>(this.es.count(),
+				(offset, max) -> this.es.get(offset, max),
+				company -> new CompanyDTO(company));
 
 		// FIXME : This is ugly and hard code
 		this.pager.setRange(100);

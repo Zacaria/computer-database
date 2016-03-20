@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.ComputerService;
@@ -59,8 +60,11 @@ public class Dashboard extends HttpServlet {
 		
 		HttpSession session = request.getSession();
 
+		/**
+		 * Init the pager in the client's session if it doesn't exist.
+		 */
 		if (session.getAttribute("pager") == null || !(session.getAttribute("pager") instanceof Pager)) {
-			pager = new Pager<>(this.cs.count(), (offset, max) -> this.cs.get(offset, max));
+			pager = new Pager<>(this.cs.count(), (offset, max) -> this.cs.get(offset, max), computer -> new ComputerDTO(computer));
 			session.setAttribute("pager", pager);
 		} else {
 			
@@ -102,15 +106,4 @@ public class Dashboard extends HttpServlet {
 
 		view.forward(request, response);
 	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }

@@ -117,7 +117,8 @@ public class ComputerDAOTest {
 		
 		this.computerMockNullToCUD.setCompany(Company.builder(1l).name("Apple Inc.").build());
 		this.computerMockNullToCUD.setName(null);
-		assertNull(this.cdao.create(this.computerMockNullToCUD));
+		//This is not illegal for the DAO
+		assertTrue(1 == this.cdao.create(this.computerMockNullToCUD));
 	}
 	
 	@Test

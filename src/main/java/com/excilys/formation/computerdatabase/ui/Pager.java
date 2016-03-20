@@ -1,6 +1,9 @@
 package com.excilys.formation.computerdatabase.ui;
 
+import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
+import com.excilys.formation.computerdatabase.dataBinders.dto.DTOable;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
+import com.excilys.formation.computerdatabase.model.Page;
 
 public class Pager<T> {
 	private PageDTO<T> data;
@@ -8,16 +11,24 @@ public class Pager<T> {
 	private int totalPage;
 	private int currentPageNumber = 1;
 	private int total;
+	/**
+	 * The class in charge of fetching data.
+	 */
 	private Pageable<T> dataRetreiver;
+	/**
+	 * The class in charge of getting a plain model into a DTO.
+	 */
+	private DTOable<T> dtoizer;
 
 	public Pager() {
 
 	}
 
-	public Pager(int count, Pageable<T> p) {
+	public Pager(int count, Pageable<T> p, DTOable<T> dtoizer) {
 		this.total = count;
 		this.dataRetreiver = p;
 		this.setTotalPage();
+		this.dtoizer = dtoizer;
 	}
 
 	public PageDTO<T> next() {
@@ -38,7 +49,8 @@ public class Pager<T> {
 			pageNum = 1;
 		}
 
-		this.data = this.dataRetreiver.get((pageNum * this.range) - this.range, this.range);
+		Page<T> page = this.dataRetreiver.get((pageNum * this.range) - this.range, this.range);
+		this.data = new PageDTO<>(page, this.dtoizer);
 
 		this.setTotal(this.data.getTotal());
 		this.currentPageNumber = pageNum;
