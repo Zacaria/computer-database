@@ -96,7 +96,8 @@
 				</reportSets>
 				<configuration>
 					<configLocation>src/main/resources/checkstyle.xml</configLocation>
-					<suppressionsLocation>suppressions.xml</suppressionsLocation>
+					<suppressionsLocation>src/main/resources/suppressions.xml</suppressionsLocation>
+					<suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
 				</configuration>
 			</plugin>
 		</plugins>
