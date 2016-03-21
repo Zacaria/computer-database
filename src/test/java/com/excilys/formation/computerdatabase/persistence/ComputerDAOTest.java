@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
-import com.excilys.formation.computerdatabase.util.DateConverter;
 
 public class ComputerDAOTest {
 	

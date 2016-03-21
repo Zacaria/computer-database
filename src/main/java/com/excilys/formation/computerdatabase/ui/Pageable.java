@@ -1,6 +1,5 @@
 package com.excilys.formation.computerdatabase.ui;
 
-import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Page;
 
 /**

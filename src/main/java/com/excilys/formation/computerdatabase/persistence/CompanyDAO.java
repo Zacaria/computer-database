@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.mapper.CompanyMapper;
 import com.excilys.formation.computerdatabase.model.Company;
-import com.excilys.formation.computerdatabase.model.Computer;
 
 public enum CompanyDAO implements Crudable<Company> {
 	INSTANCE;
