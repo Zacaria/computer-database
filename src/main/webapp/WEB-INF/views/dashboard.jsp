@@ -91,7 +91,7 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="0"></td>
-							<td><a href="editComputer" onclick="">${computer.getName()}</a></td>
+							<td><a href="editComputer?id=${computer.getId()}" onclick="">${computer.getName()}</a></td>
 							<td>${computer.getIntroduced()}</td>
 							<td>${computer.getDiscontinued() }</td>
 							<td>${computer.getCompanyName()}</td>
@@ -108,12 +108,9 @@
 				range="${range}"></cdb:pagination>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<a href="dashboard?p=${currentPage}&r=10"
-					class="btn btn-default ${range == 10 || empty range ? 'active' : '' }">10</a>
-				<a href="dashboard?p=${currentPage}&r=50"
-					class="btn btn-default ${range== 50 ? 'active' : '' }">50</a> <a
-					href="dashboard?p=${currentPage}&r=100"
-					class="btn btn-default ${range== 100 ? 'active' : '' }">100</a>
+				<cdb:link target="dashboard" label="10" page="${currentPage}" limit="10" classes="btn btn-default ${range == 10 || empty range ? 'active' : '' }"/>
+				<cdb:link target="dashboard" label="50" page="${currentPage}" limit="50" classes="btn btn-default ${range== 50 ? 'active' : '' }"/>
+				<cdb:link target="dashboard" label="100" page="${currentPage}" limit="100" classes="btn btn-default ${range== 100 ? 'active' : '' }" />
 			</div>
 		</div>
 	</footer>

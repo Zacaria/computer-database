@@ -70,6 +70,7 @@ public class ComputerService implements Servable<Computer>{
 	@Override
 	public Long create(Computer computer) {
 		LOGGER.info("access");
+		LOGGER.debug(computer.toString());
 		if (computer.getName() == null || computer.getName().isEmpty()) {
 			LOGGER.error("ERROR Insert : Could not create an unnamed computer !");
 			return null;
@@ -90,16 +91,12 @@ public class ComputerService implements Servable<Computer>{
 	@Override
 	public Computer update(Computer computer) {
 		LOGGER.info("access");
-		Computer oldVersion = this.cdao.find(computer.getId());
-		if (oldVersion == null) {
-			LOGGER.error("ERROR Update : Could not update to an unnamed computer !");
-			return null;
-		}
+		LOGGER.debug(computer.toString());
 		
-		if (computer.getName() == null) {
+		//Illegal
+		if (computer.getName() == null || computer.getName().isEmpty()) {
 			LOGGER.error("ERROR Update : Could not update to an unnamed computer !");
 			return null;
-
 		}
 		if (computer.getCompany().getId() == null) {
 			LOGGER.error("ERROR Update : Could not update to a computer without it's company !!");

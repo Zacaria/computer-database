@@ -201,14 +201,16 @@ public enum ComputerDAO implements Crudable<Computer> {
 		Connection connection = connectionFactory.getConnection();
 
 		int affectedRows = 0;
-
 		
-
 		try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-
+			
 			statement.setString(1, computer.getName());
-			statement.setDate(2, Date.valueOf(computer.getIntroduced()));
-			statement.setDate(3, Date.valueOf(computer.getDiscontinued()));
+			
+			//Those null values are completely legal.
+			//Just check them in order to avoid nullpointer.
+			statement.setDate(2, computer.getIntroduced() != null ? Date.valueOf(computer.getIntroduced()) : null);
+			statement.setDate(3, computer.getDiscontinued() != null ? Date.valueOf(computer.getDiscontinued()) : null);
+			
 			statement.setLong(4, computer.getCompany().getId());
 			statement.setLong(5, computer.getId());
 
