@@ -21,6 +21,7 @@ import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
+import com.excilys.formation.computerdatabase.servlets.util.ParamValidator;
 import com.excilys.formation.computerdatabase.ui.Pager;
 import com.excilys.formation.computerdatabase.util.DateConverter;
 
@@ -33,59 +34,65 @@ public class EditComputer extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
 
+	private static final String COMPANY_ID_PARAM = "companyId";
+	private static final String COMPUTER_ID_PARAM = "id";
+	private static final String COMPUTER_NAME_PARAM = "name";
+	private static final String COMPUTER_INTRODUCED_PARAM = "introduced";
+	private static final String COMPUTER_DISCONTINUED_PARAM = "discontinued";
+
 	private final ComputerService cs;
 	private final CompanyService es;
-	
+
 	private Pager<Company> pager;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public EditComputer() {
-        super();
-        this.cs = ComputerService.getInstance();
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public EditComputer() {
+		super();
+		this.cs = ComputerService.getInstance();
 		this.es = CompanyService.getInstance();
 
-		this.pager = new Pager<Company>(this.es.count(),
-				(offset, max) -> this.es.get(offset, max),
+		this.pager = new Pager<Company>(this.es.count(), (offset, max) -> this.es.get(offset, max),
 				company -> new CompanyDTO(company));
-		
+
 		// FIXME : This is ugly and hard code
-				this.pager.setRange(100);
-    }
+		this.pager.setRange(100);
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " " + request.getQueryString());
-		
-		Long id;
+
+		ParamValidator validator = new ParamValidator();
+
+		Long id = validator.getLong(request, COMPUTER_ID_PARAM);
 		Computer computerModel;
-		
-		if (request.getParameter("id") != null && INT_PATTERN.matcher(request.getParameter("id")).matches()) {
-			id = Long.parseLong(request.getParameter("id"));
-		} else {
-			//redirect if no id was given.
+
+		if (id == null) {
+			// redirect if no id was given.
 			response.sendRedirect("dashboard");
 			return;
 		}
-		
+
 		computerModel = this.cs.get(id);
-		
-		if(computerModel == null) {
-			//redirect if no id was given.
+
+		if (computerModel == null) {
+			// redirect if no computer with this id was found.
 			response.sendRedirect("404");
 			return;
 		}
-		
+
 		PageDTO<Company> companies = this.pager.getPage();
-		
+
 		ComputerDTO computer = new ComputerDTO(computerModel);
 
 		request.setAttribute("companies", companies);
 		request.setAttribute("computer", computer);
-		
+
 		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
 
 		view.forward(request, response);
@@ -94,57 +101,34 @@ public class EditComputer extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " " + request.getQueryString());
 
-		Long id = null;
-		Long companyId = null;
-		String name = null;
-		LocalDate introduced = null;
-		LocalDate discontinued = null;
+		ParamValidator validator = new ParamValidator();
 
-		boolean warning = false;
+		Long id = validator.getLong(request, COMPUTER_ID_PARAM);
+		Long companyId = validator.getLong(request, COMPANY_ID_PARAM);
+		String name = validator.getString(request, COMPUTER_NAME_PARAM);
+		LocalDate introduced = validator.getDate(request, COMPUTER_INTRODUCED_PARAM);
+		LocalDate discontinued = validator.getDate(request, COMPUTER_DISCONTINUED_PARAM);
 
-		if (request.getParameter("id") != null
-				&& INT_PATTERN.matcher(request.getParameter("id")).matches()) {
-			id = Long.parseLong(request.getParameter("id"));
+		if (validator.getErrors().isEmpty()) {
+			// Safe strings with prepared queries
+			Computer computer = Computer.builder(name).id(id).introduced(introduced).discontinued(discontinued)
+					.company(Company.builder(companyId).build()).build();
+
+			cs.update(computer);
+		} else {
+//			System.out.println("errors");
 		}
+
+		request.setAttribute("success", validator.getErrors().isEmpty() ? true : false);
+		request.setAttribute("errors", validator.getErrors());
+
+//		response.sendRedirect("editComputer?id=" + id);
 		
-		if (request.getParameter("companyId") != null
-				&& INT_PATTERN.matcher(request.getParameter("companyId")).matches()) {
-			companyId = Long.parseLong(request.getParameter("companyId"));
-		}
-
-		if (request.getParameter("name") != null && !request.getParameter("name").trim().isEmpty()) {
-			name = request.getParameter("name").trim();
-			System.out.println(name);
-		}
-
-		if (!request.getParameter("introduced").isEmpty()) {
-			introduced = DateConverter.stringToDate(request.getParameter("introduced"));
-			if (introduced == null) {
-				warning = true;
-			}
-		}
-
-		if (!request.getParameter("discontinued").isEmpty()) {
-			discontinued = DateConverter.stringToDate(request.getParameter("discontinued"));
-			if (discontinued == null) {
-				warning = true;
-			}
-		}
-
-		// Safe strings with prepared queries
-		Computer computer = Computer.builder(name).id(id).introduced(introduced)
-				.discontinued(discontinued).company(Company.builder(companyId).build()).build();
-
-		Computer newComputer = cs.update(computer);
-
-		request.setAttribute("success", newComputer != null ? true : false);
-		request.setAttribute("warning", warning);
-
 		doGet(request, response);
-
 	}
 
 }

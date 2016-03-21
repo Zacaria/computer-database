@@ -37,25 +37,16 @@
 							added
 						</div>
 					</c:if>
-					<c:if test="${success == false && warning == false}">
-						<div class="alert alert-danger alert-dismissible" role="alert">
-							<button type="button" class="close" data-dismiss="alert"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<strong>Oops!</strong> Something happened, if you are an
-							administrator, check the logs
-						</div>
-					</c:if>
-					<c:if test="${warning == true}">
-						<div class="alert alert-warning alert-dismissible" role="alert">
-							<button type="button" class="close" data-dismiss="alert"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-							<strong>Warning!</strong> There was a problem parsing the given
-							dates
-						</div>
+					<c:if test="${success == false}">
+						<c:forEach items="${errors}" var="error">
+							<div class="alert alert-danger alert-dismissible" role="alert">
+								<button type="button" class="close" data-dismiss="alert"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								<strong>Oops!</strong> Something happened : ${error}
+							</div>
+						</c:forEach>
 					</c:if>
 					<h1>Add Computer</h1>
 					<form action="addComputer" method="POST">
