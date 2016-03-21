@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
+import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
@@ -25,15 +26,16 @@ import com.excilys.formation.computerdatabase.ui.Pager;
 import com.excilys.formation.computerdatabase.util.DateConverter;
 
 /**
- * Servlet implementation class AddComputer
+ * Servlet implementation class EditComputer
  */
-@WebServlet("/addComputer")
-public class AddComputer extends HttpServlet {
+@WebServlet("/editComputer")
+public class EditComputer extends HttpServlet {
 	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 	private static final long serialVersionUID = 1L;
 	private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
-	
+
 	private static final String COMPANY_ID_PARAM = "companyId";
+	private static final String COMPUTER_ID_PARAM = "id";
 	private static final String COMPUTER_NAME_PARAM = "name";
 	private static final String COMPUTER_INTRODUCED_PARAM = "introduced";
 	private static final String COMPUTER_DISCONTINUED_PARAM = "discontinued";
@@ -46,66 +48,86 @@ public class AddComputer extends HttpServlet {
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public AddComputer() {
+	public EditComputer() {
 		super();
 		this.cs = ComputerService.getInstance();
 		this.es = CompanyService.getInstance();
 
-		this.pager = new Pager<Company>(this.es.count(),
-				(offset, max) -> this.es.get(offset, max),
+		this.pager = new Pager<Company>(this.es.count(), (offset, max) -> this.es.get(offset, max),
 				company -> new CompanyDTO(company));
 
 		// FIXME : This is ugly and hard code
 		this.pager.setRange(100);
-
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " " + request.getQueryString());
+
+		ParamValidator validator = new ParamValidator();
+
+		Long id = validator.getLong(request, COMPUTER_ID_PARAM);
+		Computer computerModel;
+
+		if (id == null) {
+			// redirect if no id was given.
+			response.sendRedirect("dashboard");
+			return;
+		}
+
+		computerModel = this.cs.get(id);
+
+		if (computerModel == null) {
+			// redirect if no computer with this id was found.
+			response.sendRedirect("404");
+			return;
+		}
 
 		PageDTO<Company> companies = this.pager.getPage();
 
-		request.setAttribute("companies", companies);
+		ComputerDTO computer = new ComputerDTO(computerModel);
 
-		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
+		request.setAttribute("companies", companies);
+		request.setAttribute("computer", computer);
+
+		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
 
 		view.forward(request, response);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " " + request.getQueryString());
-		
-		ParamValidator validator = new ParamValidator();
-		
 
+		ParamValidator validator = new ParamValidator();
+
+		Long id = validator.getLong(request, COMPUTER_ID_PARAM);
 		Long companyId = validator.getLong(request, COMPANY_ID_PARAM);
 		String name = validator.getString(request, COMPUTER_NAME_PARAM);
 		LocalDate introduced = validator.getDate(request, COMPUTER_INTRODUCED_PARAM);
 		LocalDate discontinued = validator.getDate(request, COMPUTER_DISCONTINUED_PARAM);
 
-		if(validator.getErrors().isEmpty()){
+		if (validator.getErrors().isEmpty()) {
 			// Safe strings with prepared queries
-			Computer computer = Computer.builder(name).introduced(introduced)
-					.discontinued(discontinued).company(Company.builder(companyId).build()).build();
+			Computer computer = Computer.builder(name).id(id).introduced(introduced).discontinued(discontinued)
+					.company(Company.builder(companyId).build()).build();
 
-			cs.create(computer);
+			cs.update(computer);
+		} else {
+//			System.out.println("errors");
 		}
 
 		request.setAttribute("success", validator.getErrors().isEmpty() ? true : false);
 		request.setAttribute("errors", validator.getErrors());
 
+//		response.sendRedirect("editComputer?id=" + id);
+		
 		doGet(request, response);
 	}
 

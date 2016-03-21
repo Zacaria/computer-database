@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
 <!DOCTYPE html>
 <html>
@@ -48,37 +49,46 @@
 							</div>
 						</c:forEach>
 					</c:if>
-					<h1>Add Computer</h1>
-					<form action="addComputer" method="POST">
+					<div class="label label-default pull-right">id:
+						${computer.getId()}</div>
+					<h1>Edit Computer</h1>
+
+					<form action="editComputer" method="POST">
+						<input name="id" type="hidden" value="${computer.getId()}" />
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName">Computer name</label> <input
 									type="text" class="form-control" id="computerName"
-									placeholder="Computer name" name="name" required>
+									value="${computer.getName()}" placeholder="Computer name"
+									name="name" required>
 							</div>
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									type="date" class="form-control form_datetime" id="introduced"
-									placeholder="Click to pick a date" name="introduced" readonly>
+									value="${computer.getIntroduced()}"
+									placeholder="Introduced date" name="introduced" readonly>
 							</div>
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									type="date" class="form-control form_datetime"
-									id="discontinued" placeholder="Click to pick a date"
-									name="discontinued" readonly>
+									id="discontinued" placeholder="Discontinued date"
+									value="${computer.getDiscontinued()}" name="discontinued"
+									readonly>
 							</div>
 							<div class="form-group">
 								<label for="companyId">Company</label> <select
 									class="form-control selectpicker" id="companyId"
-									title="Pick a company" name="companyId" required>
+									name="companyId" required>
 									<c:forEach items="${companies.getElements()}" var="company">
-										<option value="${company.getId()}">${company.getName()}</option>
+										<option
+											${computer.getCompanyId() == company.getId() ? "selected" : ''}
+											value="${company.getId()}">${company.getName()}</option>
 									</c:forEach>
 								</select>
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Add" class="btn btn-primary">
+							<input type="submit" value="Edit" class="btn btn-primary">
 							or <a href="dashboard" class="btn btn-default">Cancel</a>
 						</div>
 					</form>
@@ -86,7 +96,6 @@
 			</div>
 		</div>
 	</section>
-
 	<script src="${root}/js/jquery.min.js"></script>
 	<script src="${root}/js/bootstrap.min.js"></script>
 	<script src="${root}/js/bootstrap-datetimepicker.min.js"></script>
