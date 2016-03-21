@@ -40,8 +40,8 @@ public class ConsoleUI {
 
 		CommandLineParser parser = new DefaultParser();
 
-		computerPager = new Pager<>(COMPUTER_SERVICE.count(), (offset, max) -> COMPUTER_SERVICE.get(offset, max));
-		companyPager = new Pager<>(COMPANY_SERVICE.count(), (offset, max) -> COMPANY_SERVICE.get(offset, max));
+		computerPager = new Pager<>(COMPUTER_SERVICE.count(), (offset, max) -> COMPUTER_SERVICE.get(offset, max), computer -> new ComputerDTO(computer));
+		companyPager = new Pager<>(COMPANY_SERVICE.count(), (offset, max) -> COMPANY_SERVICE.get(offset, max), company -> new CompanyDTO(company));
 
 		computerPager.setRange(defaultMax);
 

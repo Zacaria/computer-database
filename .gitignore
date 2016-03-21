@@ -1,13 +1,15 @@
 *.class
 *.jar
 *.log
-*.html
+
+WEB-INF/views/*.html
 
 .settings/
 .classpath
 .project
 .tern-project
 .gitignore~
+.metadata/
 
 WebContent/*
 config/*

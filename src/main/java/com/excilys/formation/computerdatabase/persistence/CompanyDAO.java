@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.mapper.CompanyMapper;
 import com.excilys.formation.computerdatabase.model.Company;
-import com.excilys.formation.computerdatabase.model.Computer;
 
 public enum CompanyDAO implements Crudable<Company> {
 	INSTANCE;
@@ -30,7 +29,7 @@ public enum CompanyDAO implements Crudable<Company> {
 	private final String countQuery = "SELECT COUNT(*) as count from `computer-database-db`.company;";
 
 	@Override
-	public synchronized int count() {
+	public int count() {
 		Connection connection = connectionFactory.getConnection();
 
 		int count = 0;
@@ -55,7 +54,7 @@ public enum CompanyDAO implements Crudable<Company> {
 	private final String findAllQuery = "SELECT " + FIELDS + " FROM `computer-database-db`.company;";
 
 	@Override
-	public synchronized List<Company> find() {
+	public List<Company> find() {
 		Connection connection = connectionFactory.getConnection();
 
 		List<Company> companies = null;
@@ -80,14 +79,11 @@ public enum CompanyDAO implements Crudable<Company> {
 	private final String findWithRangeQuery = "SELECT " + FIELDS + " FROM `computer-database-db`.company limit ?, ?;";
 
 	@Override
-	public synchronized List<Company> find(int from, int max) {
+	public List<Company> find(int from, int max) {
 		Connection connection = connectionFactory.getConnection();
 		List<Company> companies = null;
 
-		PreparedStatement statement = null;
-
-		try {
-			statement = connection.prepareStatement(findWithRangeQuery);
+		try (PreparedStatement statement = connection.prepareStatement(findWithRangeQuery)){		
 			statement.setLong(1, from);
 			statement.setLong(2, max);
 			ResultSet resultSet = statement.executeQuery();
@@ -98,13 +94,6 @@ public enum CompanyDAO implements Crudable<Company> {
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
 		} finally {
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-			}
 			connectionFactory.closeConnection(connection);
 		}
 
@@ -114,14 +103,11 @@ public enum CompanyDAO implements Crudable<Company> {
 	private final String findByIdQuery = "SELECT " + FIELDS + " FROM `computer-database-db`.company WHERE id = ? ;";
 
 	@Override
-	public synchronized Company find(Long id) {
+	public Company find(Long id) {
 		Connection connection = connectionFactory.getConnection();
 		Company company = null;
 
-		PreparedStatement statement = null;
-
-		try {
-			statement = connection.prepareStatement(findByIdQuery);
+		try (PreparedStatement statement = connection.prepareStatement(findByIdQuery)){
 			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
 			CompanyMapper mapper = new CompanyMapper();
@@ -132,32 +118,9 @@ public enum CompanyDAO implements Crudable<Company> {
 		} catch (SQLException e) {
 			LOGGER.error(e.getMessage());
 		} finally {
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (Exception e2) {
-					LOGGER.error(e2.getMessage());
-				}
-			}
 			connectionFactory.closeConnection(connection);
 		}
 
 		return company;
 	}
-
-	@Override
-	public Company update(Company toUpdate) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Long create(Company toCreate) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean delete(Long id) {
-		throw new UnsupportedOperationException();
-	}
-
 }

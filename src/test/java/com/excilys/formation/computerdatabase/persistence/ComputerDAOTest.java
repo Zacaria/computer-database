@@ -10,7 +10,6 @@ import org.junit.Test;
 
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
-import com.excilys.formation.computerdatabase.util.DateConverter;
 
 public class ComputerDAOTest {
 	
@@ -117,7 +116,8 @@ public class ComputerDAOTest {
 		
 		this.computerMockNullToCUD.setCompany(Company.builder(1l).name("Apple Inc.").build());
 		this.computerMockNullToCUD.setName(null);
-		assertNull(this.cdao.create(this.computerMockNullToCUD));
+		//This is not illegal for the DAO
+		assertTrue(1 == this.cdao.create(this.computerMockNullToCUD));
 	}
 	
 	@Test

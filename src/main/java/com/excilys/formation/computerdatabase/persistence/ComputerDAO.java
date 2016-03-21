@@ -16,6 +16,7 @@ import com.excilys.formation.computerdatabase.model.Computer;
 
 /**
  * The enum Singleton is not vulnerable against Reflection API.
+ * 
  * @author Zacaria
  *
  */
@@ -26,26 +27,16 @@ public enum ComputerDAO implements Crudable<Computer> {
 
 	private final static String FIELDS = "computer.id as computer_id, computer.name as computer_name, introduced, discontinued, company_id";
 
-	private final String countQuery = "SELECT COUNT(*) as total from `computer-database-db`.computer;";
-	private final String findAllQuery = "SELECT " + FIELDS
-			+ " , company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id;";
-	private final String findWithRangeQuery = "SELECT " + FIELDS
-			+ ", company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id limit ?, ?;";
-	private final String findByIdQuery = "SELECT " + FIELDS
-			+ ", company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id where computer.id = ?;";
-
-	private final String insertQuery = "INSERT INTO `computer-database-db`.computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
-	private final String updateQuery = "UPDATE `computer-database-db`.computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
-	private final String deleteQuery = "DELETE FROM `computer-database-db`.computer WHERE id = ?;";
-
 	private ConnectionFactory connectionFactory;
 
 	ComputerDAO() {
 		this.connectionFactory = ConnectionFactory.getInstance();
 	}
 
+	private final String countQuery = "SELECT COUNT(*) as total from `computer-database-db`.computer;";
+
 	@Override
-	public synchronized int count() {
+	public int count() {
 		Connection connection = connectionFactory.getConnection();
 
 		int count = 0;
@@ -67,8 +58,11 @@ public enum ComputerDAO implements Crudable<Computer> {
 		return count;
 	}
 
+	private final String findAllQuery = "SELECT " + FIELDS
+			+ " , company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id;";
+
 	@Override
-	public synchronized List<Computer> find() {
+	public List<Computer> find() {
 		Connection connection = connectionFactory.getConnection();
 
 		List<Computer> computers = null;
@@ -89,8 +83,11 @@ public enum ComputerDAO implements Crudable<Computer> {
 		return computers;
 	}
 
+	private final String findWithRangeQuery = "SELECT " + FIELDS
+			+ ", company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id limit ?, ?;";
+
 	@Override
-	public synchronized List<Computer> find(int from, int max) {
+	public List<Computer> find(int from, int max) {
 		Connection connection = connectionFactory.getConnection();
 
 		List<Computer> computers = null;
@@ -113,8 +110,11 @@ public enum ComputerDAO implements Crudable<Computer> {
 		return computers;
 	}
 
+	private final String findByIdQuery = "SELECT " + FIELDS
+			+ ", company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id where computer.id = ?;";
+
 	@Override
-	public synchronized Computer find(Long id) {
+	public Computer find(Long id) {
 		Connection connection = connectionFactory.getConnection();
 
 		Computer computer = null;
@@ -127,6 +127,7 @@ public enum ComputerDAO implements Crudable<Computer> {
 			if (resultSet.first()) {
 				computer = mapper.map(resultSet);
 			} else {
+				LOGGER.info("Computer not found with id " + id);
 				return null;
 			}
 		} catch (SQLException e) {
@@ -138,21 +139,15 @@ public enum ComputerDAO implements Crudable<Computer> {
 		return computer;
 	}
 
+	private final String insertQuery = "INSERT INTO `computer-database-db`.computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
+
 	@Override
-	public synchronized Long create(Computer computer) {
+	public Long create(Computer computer) {
 		Connection connection = connectionFactory.getConnection();
 
 		Long newId = null;
 
 		try (PreparedStatement statement = connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
-			if (computer.getName() == null || computer.getName().isEmpty()) {
-				LOGGER.error("ERROR Insert : Could not create an unnamed computer !");
-				return null;
-			}
-			if (computer.getCompany().getId() == null) {
-				LOGGER.error("ERROR Insert : Could not create a computer without it's company !!");
-				return null;
-			}
 
 			statement.setString(1, computer.getName());
 			statement.setDate(2, computer.getIntroduced() != null ? Date.valueOf(computer.getIntroduced()) : null);
@@ -177,8 +172,10 @@ public enum ComputerDAO implements Crudable<Computer> {
 		return newId;
 	}
 
+	private final String deleteQuery = "DELETE FROM `computer-database-db`.computer WHERE id = ?;";
+
 	@Override
-	public synchronized boolean delete(Long id) {
+	public boolean delete(Long id) {
 		Connection connection = connectionFactory.getConnection();
 
 		int affectedRows = 0;
@@ -197,30 +194,17 @@ public enum ComputerDAO implements Crudable<Computer> {
 		return affectedRows != 0 ? true : false;
 	}
 
+	private final String updateQuery = "UPDATE `computer-database-db`.computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
+
 	@Override
-	public synchronized Computer update(Computer computer) {
+	public Computer update(Computer computer) {
 		Connection connection = connectionFactory.getConnection();
 
 		int affectedRows = 0;
 
-		Computer oldVersion = this.find(computer.getId());
-		if (oldVersion == null) {
-			return null;
-		}
+		
 
 		try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-//			ComputerMapper mapper = new ComputerMapper();
-//			mapper.merge(computer, oldVersion);
-
-			if (computer.getName() == null) {
-				LOGGER.error("ERROR Insert : Could not update to an unnamed computer !");
-				return null;
-
-			}
-			if (computer.getCompany().getId() == null) {
-				LOGGER.error("ERROR Insert : Could not update to a computer without it's company !!");
-				return null;
-			}
 
 			statement.setString(1, computer.getName());
 			statement.setDate(2, Date.valueOf(computer.getIntroduced()));

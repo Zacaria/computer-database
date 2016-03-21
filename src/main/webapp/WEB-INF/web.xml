@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <servlet>
+    <servlet-name>Home</servlet-name>
+    <servlet-class>com.excilys.formation.computerdatabase.servlets.Home</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>Dashboard</servlet-name>
+    <servlet-class>com.excilys.formation.computerdatabase.servlets.Dashboard</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AddComputer</servlet-name>
+    <servlet-class>com.excilys.formation.computerdatabase.servlets.AddComputer</servlet-class>
+  </servlet>
+</web-app>
