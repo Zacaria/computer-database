@@ -4,8 +4,6 @@ package com.excilys.formation.computerdatabase.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
-import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
@@ -22,7 +20,7 @@ import com.excilys.formation.computerdatabase.persistence.Crudable;
  * @author Zacaria
  *
  */
-public class ComputerService{
+public class ComputerService implements Servable<Computer>{
 	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
 	private final Crudable<Computer> cdao;
@@ -45,6 +43,7 @@ public class ComputerService{
 		return ComputerServiceHolder.instance;
 	}
 
+	@Override
 	public int count() {
 		LOGGER.info("access");
 
@@ -53,34 +52,59 @@ public class ComputerService{
 		return count;
 	}
 
-	public PageDTO<Computer> get(int from, int max) {
+	@Override
+	public Page<Computer> get(int offset, int limit) {
 		LOGGER.info("access");
 
-		Page<Computer> computerPage = new Page<>(from, this.cdao.find(from, max), this.cdao.count());
-		
-		PageDTO<Computer> computers = new PageDTO<>(computerPage, computer -> new ComputerDTO(computer));
+		Page<Computer> computerPage = new Page<>(offset, this.cdao.find(offset, limit), this.cdao.count());
 
-		return computers;
+		return computerPage;
 	}
 
+	@Override
 	public Computer get(Long id) {
 		LOGGER.info("access");
 		return this.cdao.find(id);
 	}
 
+	@Override
 	public Long create(Computer computer) {
 		LOGGER.info("access");
+		if (computer.getName() == null || computer.getName().isEmpty()) {
+			LOGGER.error("ERROR Insert : Could not create an unnamed computer !");
+			return null;
+		}
+		if (computer.getCompany().getId() == null) {
+			LOGGER.error("ERROR Insert : Could not create a computer without it's company !!");
+			return null;
+		}
 		return this.cdao.create(computer);
 	}
 
-
+	@Override
 	public boolean delete(Long id) {
 		LOGGER.info("access");
 		return this.cdao.delete(id);
 	}
 
+	@Override
 	public Computer update(Computer computer) {
 		LOGGER.info("access");
+		Computer oldVersion = this.cdao.find(computer.getId());
+		if (oldVersion == null) {
+			LOGGER.error("ERROR Update : Could not update to an unnamed computer !");
+			return null;
+		}
+		
+		if (computer.getName() == null) {
+			LOGGER.error("ERROR Update : Could not update to an unnamed computer !");
+			return null;
+
+		}
+		if (computer.getCompany().getId() == null) {
+			LOGGER.error("ERROR Update : Could not update to a computer without it's company !!");
+			return null;
+		}
 
 		return this.cdao.update(computer);
 	}

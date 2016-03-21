@@ -32,19 +32,25 @@ public interface Crudable<T> {
 	 * @param toUpdate the new object to persist.
 	 * @return the number of affected rows.
 	 */
-	T update(T toUpdate);
+	default T update(T toUpdate){
+		throw new UnsupportedOperationException();
+	}
 
 	/**
 	 * 
 	 * @param toCreate the new object to persist.
 	 * @return the generated if.
 	 */
-	Long create(T toCreate);
+	default Long create(T toCreate){
+		throw new UnsupportedOperationException();
+	}	
 
 	/**
 	 * 
 	 * @param id the id of the row to delete.
 	 * @return the number of affected rows.
 	 */
-	boolean delete(Long id);
+	default boolean delete(Long id){
+		throw new UnsupportedOperationException();
+	}
 }
