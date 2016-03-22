@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.excilys.formation.computerdatabase.util.DateConverter;
 
 public class Computer {
+	
 	private Long id;
 	private String name;
 	private LocalDate introduced;
@@ -88,7 +89,7 @@ public class Computer {
 	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
-	
+
 	public void setIntroduced(String introduced) {
 		this.introduced = DateConverter.stringToDate(introduced);
 	}
@@ -100,7 +101,7 @@ public class Computer {
 	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
-	
+
 	public void setDiscontinued(String discontinued) {
 		this.discontinued = DateConverter.stringToDate(discontinued);
 	}

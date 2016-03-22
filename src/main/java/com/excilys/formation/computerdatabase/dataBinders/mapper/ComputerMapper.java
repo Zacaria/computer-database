@@ -57,7 +57,7 @@ public class ComputerMapper implements Mapable<Computer>{
 					.build();
 			
 		} catch (Exception e) {
-			LOGGER.error("mapping computer error");
+			LOGGER.error("mapping computer error " + e.getMessage());
 		}
 		
 		return computer;

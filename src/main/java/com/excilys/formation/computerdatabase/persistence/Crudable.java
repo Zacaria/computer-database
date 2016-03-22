@@ -2,6 +2,8 @@ package com.excilys.formation.computerdatabase.persistence;
 
 import java.util.List;
 
+import com.excilys.formation.computerdatabase.model.SelectOptions;
+
 public interface Crudable<T> {
 	int count();
 
@@ -18,7 +20,7 @@ public interface Crudable<T> {
 	 * @param count is the maximum number of results.
 	 * @return 
 	 */
-	List<T> find(int from, int max);
+	List<T> find(SelectOptions options);
 
 	/**
 	 * 

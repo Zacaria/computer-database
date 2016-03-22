@@ -51,7 +51,7 @@ public class EditComputer extends HttpServlet {
 		this.cs = ComputerService.getInstance();
 		this.es = CompanyService.getInstance();
 
-		this.pager = new Pager<Company>(this.es.count(), (offset, max) -> this.es.get(offset, max),
+		this.pager = new Pager<Company>(this.es.count(), (options) -> this.es.get(options),
 				company -> new CompanyDTO(company));
 
 		// FIXME : This is ugly and hard code

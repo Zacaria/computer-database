@@ -1,14 +1,14 @@
 package com.excilys.formation.computerdatabase.service;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.model.ComputerFields;
 import com.excilys.formation.computerdatabase.model.Page;
+import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
 import com.excilys.formation.computerdatabase.persistence.Crudable;
-
 
 /**
  * This is a Singleton.
@@ -20,7 +20,7 @@ import com.excilys.formation.computerdatabase.persistence.Crudable;
  * @author Zacaria
  *
  */
-public class ComputerService implements Servable<Computer>{
+public class ComputerService implements Servable<Computer> {
 	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
 	private final Crudable<Computer> cdao;
@@ -45,7 +45,7 @@ public class ComputerService implements Servable<Computer>{
 
 	@Override
 	public int count() {
-		LOGGER.info("access");
+		LOGGER.info("count " + this.getClass());
 
 		int count = this.cdao.count();
 
@@ -53,23 +53,23 @@ public class ComputerService implements Servable<Computer>{
 	}
 
 	@Override
-	public Page<Computer> get(int offset, int limit) {
-		LOGGER.info("access");
+	public Page<Computer> get(SelectOptions options) {
+		LOGGER.info("get options " + this.getClass());
 
-		Page<Computer> computerPage = new Page<>(offset, this.cdao.find(offset, limit), this.cdao.count());
+		Page<Computer> computerPage = new Page<>(options.getOffset(), this.cdao.find(options), this.cdao.count());
 
 		return computerPage;
 	}
 
 	@Override
 	public Computer get(Long id) {
-		LOGGER.info("access");
+		LOGGER.info("get id " + this.getClass());
 		return this.cdao.find(id);
 	}
 
 	@Override
 	public Long create(Computer computer) {
-		LOGGER.info("access");
+		LOGGER.info("create " + this.getClass());
 		LOGGER.debug(computer.toString());
 		if (computer.getName() == null || computer.getName().isEmpty()) {
 			LOGGER.error("ERROR Insert : Could not create an unnamed computer !");
@@ -84,17 +84,17 @@ public class ComputerService implements Servable<Computer>{
 
 	@Override
 	public boolean delete(Long id) {
-		LOGGER.info("access");
+		LOGGER.info("delete " + this.getClass());
 		LOGGER.debug("Delete Computer with id " + id);
 		return this.cdao.delete(id);
 	}
 
 	@Override
 	public Computer update(Computer computer) {
-		LOGGER.info("access");
+		LOGGER.info("update " + this.getClass());
 		LOGGER.debug(computer.toString());
-		
-		//Illegal
+
+		// Illegal
 		if (computer.getName() == null || computer.getName().isEmpty()) {
 			LOGGER.error("ERROR Update : Could not update to an unnamed computer !");
 			return null;

@@ -6,6 +6,7 @@
 <%@ attribute name="limit" required="false" type="java.lang.Integer" description="Page range" %>
 
 <%@ attribute name="classes" required="false" type="java.lang.String" description="classes" %>
+<%@ attribute name="search" required="false" type="java.lang.String" description="search" %>
 
 <c:if test="${empty page}">
 	<c:set var="page" value="1"/>
@@ -14,8 +15,11 @@
 	<c:set var="limit" value="10"/>
 </c:if>
 
-<%-- <c:if test="${class}"> --%>
-<%-- 	<c:set var="class" value=" "/> --%>
-<%-- </c:if> --%>
+<c:set var="link" value="${target}?p=${page}&r=${limit}"/>
 
-<a class="${classes}" href="${target}?p=${page}&r=${limit}">${label}</a>
+
+<c:if test="${not empty search}">
+	<c:set var="link" value="${link}&s=${search}"/>
+</c:if>
+
+<a class="${classes}" href="${link}">${label}</a>

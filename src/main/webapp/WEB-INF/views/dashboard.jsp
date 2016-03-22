@@ -64,9 +64,9 @@
 			<h1 id="homeTitle">${count}&nbsp;Computers&nbsp;found</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
-					<form id="searchForm" action="#" method="GET" class="form-inline">
+					<form id="searchForm" action="dashboard" method="GET" class="form-inline">
 
-						<input type="search" id="searchbox" name="search"
+						<input type="search" id="searchbox" name="s"
 							class="form-control" placeholder="Search name" /> <input
 							type="submit" id="searchsubmit" value="Filter by name"
 							class="btn btn-primary" />
@@ -126,17 +126,17 @@
 	</section>
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
-			<cdb:pagination total="${totalPage}" current="${currentPage}"
+			<cdb:pagination total="${totalPage}" search="${param.s}" current="${currentPage}"
 				range="${range}"></cdb:pagination>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
 				<cdb:link target="dashboard" label="10" page="${currentPage}"
-					limit="10"
+					limit="10" search="${param.s}"
 					classes="btn btn-default ${range == 10 || empty range ? 'active' : '' }" />
 				<cdb:link target="dashboard" label="50" page="${currentPage}"
-					limit="50" classes="btn btn-default ${range== 50 ? 'active' : '' }" />
+					limit="50" search="${param.s}" classes="btn btn-default ${range== 50 ? 'active' : '' }" />
 				<cdb:link target="dashboard" label="100" page="${currentPage}"
-					limit="100"
+					limit="100" search="${param.s}"
 					classes="btn btn-default ${range== 100 ? 'active' : '' }" />
 			</div>
 		</div>

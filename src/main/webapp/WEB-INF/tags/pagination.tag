@@ -1,36 +1,44 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
-
+<%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <%@ attribute name="current" required="true" type="java.lang.Integer"
 	description="Current page"%>
 <%@ attribute name="total" required="true" type="java.lang.Integer"
 	description="Total page"%>
 <%@ attribute name="range" required="true" type="java.lang.Integer"
 	description="The limit of displayed computers"%>
+<%@ attribute name="search" required="false" type="java.lang.String"
+	description="search"%>
 
+<c:set var="link" value="${target}?p=${page}&r=${limit}" />
 
 <ul class="pagination">
-	<li><a href="./dashboard?p=1&r=${range}" aria-label="Previous"> <span
-			aria-hidden="true">&laquo;</span>
-	</a></li>
+	<li><cdb:link target="dashboard" page="1" limit="${range}"
+			search="${search}" label="&laquo;" classes="btn btn-default" /></li>
+
 	<c:if test="${current > 2 }">
-		<li><a class="btn btn-default" role="button"
-			href="./dashboard?p=${current - 2}&r=${range}">${current - 2}</a></li>
+		<li><cdb:link target="dashboard" page="${current - 2}"
+				limit="${range}" search="${search}" label="${current - 2}"
+				classes="btn btn-default" /></li>
 	</c:if>
 	<c:if test="${current > 1 }">
-		<li><a class="btn btn-default" role="button"
-			href="./dashboard?p=${current - 1}&r=${range}">${current - 1}</a></li>
+		<li><cdb:link target="dashboard" page="${current - 1}"
+				limit="${range}" search="${search}" label="${current - 1}"
+				classes="btn btn-default" /></li>
 	</c:if>
-	<li><a class="btn btn-primary active" role="button" href="#">${current}</a></li>
+	<li><cdb:link target="dashboard" page="${current}"
+			limit="${range}" search="${search}" label="${current}"
+			classes="btn btn-primary active" /></li>
 	<c:if test="${current < total}">
-		<li><a class="btn btn-default" role="button"
-			href="./dashboard?p=${current + 1}&r=${range}">${current + 1}</a></li>
+		<li><cdb:link target="dashboard" page="${current + 1}"
+				limit="${range}" search="${search}" label="${current + 1}"
+				classes="btn btn-default" /></li>
 	</c:if>
 	<c:if test="${current < total - 1}">
-		<li><a class="btn btn-default" role="button"
-			href="./dashboard?p=${current + 2}&r=${range}">${current + 2}</a></li>
+		<li><cdb:link target="dashboard" page="${current + 2}"
+				limit="${range}" search="${search}" label="${current + 2}"
+				classes="btn btn-default" /></li>
 	</c:if>
 
-	<li><a href="./dashboard?p=${total}&r=${range}" aria-label="Next">
-			<span aria-hidden="true">&raquo;</span>
-	</a></li>
+	<li><cdb:link target="dashboard" page="${total}" limit="${range}"
+			search="${search}" label="&raquo;" classes="btn btn-default" /></li>
 </ul>

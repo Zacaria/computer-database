@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.mapper.CompanyMapper;
 import com.excilys.formation.computerdatabase.model.Company;
+import com.excilys.formation.computerdatabase.model.SelectOptions;
 
 public enum CompanyDAO implements Crudable<Company> {
 	INSTANCE;
@@ -79,13 +80,13 @@ public enum CompanyDAO implements Crudable<Company> {
 	private final String findWithRangeQuery = "SELECT " + FIELDS + " FROM `computer-database-db`.company limit ?, ?;";
 
 	@Override
-	public List<Company> find(int from, int max) {
+	public List<Company> find(SelectOptions options) {
 		Connection connection = connectionFactory.getConnection();
 		List<Company> companies = null;
 
 		try (PreparedStatement statement = connection.prepareStatement(findWithRangeQuery)){		
-			statement.setLong(1, from);
-			statement.setLong(2, max);
+			statement.setLong(1, options.getOffset());
+			statement.setLong(2, options.getRange());
 			ResultSet resultSet = statement.executeQuery();
 			CompanyMapper mapper = new CompanyMapper();
 

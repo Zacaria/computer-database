@@ -52,7 +52,7 @@ public class AddComputer extends HttpServlet {
 		this.es = CompanyService.getInstance();
 
 		this.pager = new Pager<Company>(this.es.count(),
-				(offset, max) -> this.es.get(offset, max),
+				(options) -> this.es.get(options),
 				company -> new CompanyDTO(company));
 
 		// FIXME : This is ugly and hard code

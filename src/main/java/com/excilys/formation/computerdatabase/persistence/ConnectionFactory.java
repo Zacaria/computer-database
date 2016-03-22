@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.exceptions.DBConnectionException;
+import com.jolbox.bonecp.BoneCP;
+import com.jolbox.bonecp.BoneCPConfig;
 
 /**
  * This Factory is a Singleton.
@@ -29,6 +31,8 @@ public class ConnectionFactory {
 
 	private String user;
 	private String password;
+	
+	private BoneCP connectionPool = null;
 
 	private ConnectionFactory() {
 		Properties prop = new Properties();
@@ -51,8 +55,20 @@ public class ConnectionFactory {
 			
 			// Register JDBC Driver.
 			Class.forName(prop.getProperty("driver"));
+			
+			BoneCPConfig config = new BoneCPConfig();
+			
+			config.setJdbcUrl(this.url + "?" + this.options);
+			config.setUsername(this.user);
+			config.setPassword(this.password);
+			
+			config.setMinConnectionsPerPartition(5);
+			config.setMaxConnectionsPerPartition(10);
+			config.setPartitionCount(2);
+			
+			this.connectionPool = new BoneCP(config);
 
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (IOException | ClassNotFoundException | SQLException e) {
 			throw new DBConnectionException(e);
 		}
 	}
@@ -75,8 +91,7 @@ public class ConnectionFactory {
 		Connection connection;
 
 		try {
-			connection = DriverManager.getConnection(this.url + this.database + "?" + this.options, this.user,
-					this.password);
+			connection = connectionPool.getConnection();
 		} catch (SQLException e) {
 			throw new DBConnectionException(e);
 		}

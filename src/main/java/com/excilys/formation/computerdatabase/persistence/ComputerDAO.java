@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,6 +14,9 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.mapper.ComputerMapper;
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.model.ComputerFields;
+import com.excilys.formation.computerdatabase.model.SelectOptions;
+import com.mysql.jdbc.DatabaseMetaData;
 
 /**
  * The enum Singleton is not vulnerable against Reflection API.
@@ -83,18 +87,32 @@ public enum ComputerDAO implements Crudable<Computer> {
 		return computers;
 	}
 
-	private final String findWithRangeQuery = "SELECT " + FIELDS
-			+ ", company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id limit ?, ?;";
+//	private final String findWithRangeQuery = "SELECT " + FIELDS
+//			+ ", company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id order by ? ? limit ?, ?;";
+	private final String findWithRangeQuery = "SELECT computer.id as computer_id, computer.name as computer_name, introduced, discontinued, company.id as company_id, company.name as company_name "
+			+ " FROM `computer-database-db`.computer "
+			+ " LEFT JOIN `computer-database-db`.company ON computer.company_id = company.id "
+			+ " WHERE computer.name LIKE ?"
+			+ " ORDER BY %s %s" + " LIMIT ?, ?";
 
 	@Override
-	public List<Computer> find(int from, int max) {
+	public List<Computer> find(SelectOptions options) {
+		LOGGER.debug(options.toString());
+
 		Connection connection = connectionFactory.getConnection();
 
-		List<Computer> computers = null;
-
-		try (PreparedStatement statement = connection.prepareStatement(findWithRangeQuery)) {
-			statement.setInt(1, from);
-			statement.setInt(2, max);
+		List<Computer> computers = null;		
+		
+		/**
+		 * Considering that the Selectoptions class is safe,
+		 * The following line remains safe against sql inject.
+		 */
+		String sql = String.format(findWithRangeQuery, options.getOrderBy(), options.getAsc());
+		try (PreparedStatement statement = connection.prepareStatement(sql)) {
+			
+			statement.setString(1, options.getSearch());
+			statement.setInt(2, options.getOffset());
+			statement.setInt(3, options.getRange());
 
 			ResultSet resultSet = statement.executeQuery();
 			ComputerMapper mapper = new ComputerMapper();
@@ -201,16 +219,16 @@ public enum ComputerDAO implements Crudable<Computer> {
 		Connection connection = connectionFactory.getConnection();
 
 		int affectedRows = 0;
-		
+
 		try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-			
+
 			statement.setString(1, computer.getName());
-			
-			//Those null values are completely legal.
-			//Just check them in order to avoid nullpointer.
+
+			// Those null values are completely legal.
+			// Just check them in order to avoid nullpointer.
 			statement.setDate(2, computer.getIntroduced() != null ? Date.valueOf(computer.getIntroduced()) : null);
 			statement.setDate(3, computer.getDiscontinued() != null ? Date.valueOf(computer.getDiscontinued()) : null);
-			
+
 			statement.setLong(4, computer.getCompany().getId());
 			statement.setLong(5, computer.getId());
 

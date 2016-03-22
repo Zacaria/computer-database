@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.servlets.util.ParamValidator;
 import com.excilys.formation.computerdatabase.ui.Pager;
@@ -32,6 +33,9 @@ public class Dashboard extends HttpServlet {
 
 	private static final String PAGE_PARAM = "p";
 	private static final String RANGE_PARAM = "r";
+	private static final String COLUMN_PARAM = "col";
+	private static final String DIR_PARAM = "dir";
+	private static final String SEARCH_PARAM = "s";
 	private static final int DEFAULT_PAGE = 1;
 	private static final int DEFAULT_RANGE = 10;
 
@@ -59,7 +63,9 @@ public class Dashboard extends HttpServlet {
 
 		int page = validator.getInt(request, PAGE_PARAM, DEFAULT_PAGE);
 		int range = validator.getInt(request, RANGE_PARAM, DEFAULT_RANGE);
-		int totalPage;
+		String orderByColumn = validator.getString(request, COLUMN_PARAM, false);
+		boolean orderByDir = validator.getString(request, DIR_PARAM, false) == "d" ? false : true;
+		String search = validator.getString(request, SEARCH_PARAM, false);
 
 		/**
 		 * Init the pager in the client's session if it doesn't exist.
@@ -69,7 +75,7 @@ public class Dashboard extends HttpServlet {
 		HttpSession session = request.getSession();
 
 		if (session.getAttribute("pager") == null || !(session.getAttribute("pager") instanceof Pager)) {
-			pager = new Pager<>(this.cs.count(), (offset, max) -> this.cs.get(offset, max),
+			pager = new Pager<>(this.cs.count(), (options) -> this.cs.get(options),
 					computer -> new ComputerDTO(computer));
 			session.setAttribute("pager", pager);
 		} else {
@@ -84,6 +90,7 @@ public class Dashboard extends HttpServlet {
 		 * I need to know how much computers there is before asking any page.
 		 */
 		int count = this.cs.count();
+		int totalPage;
 
 		totalPage = (count + range - 1) / range;
 
@@ -92,7 +99,15 @@ public class Dashboard extends HttpServlet {
 		/**
 		 * Get that page and give it to the view.
 		 */
-		PageDTO<Computer> computers = pager.getPage(page);
+		SelectOptions options = SelectOptions.builder()
+				.page(page)
+				.range(range)
+				.search(search)
+				.orderBy(orderByColumn)
+				.asc(orderByDir)
+				.build();
+		
+		PageDTO<Computer> computers = pager.getPage(options);
 
 		request.setAttribute("count", count);
 		request.setAttribute("computers", computers);

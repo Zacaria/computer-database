@@ -77,7 +77,7 @@ public class ParamValidator {
 	}
 
 	public String getString(HttpServletRequest request, String field, boolean required) {
-		String result = request.getParameter(field).trim();
+		String result = request.getParameter(field);
 		if(required && this.isNullOrEmpty(field, result)){
 			return null;
 		}

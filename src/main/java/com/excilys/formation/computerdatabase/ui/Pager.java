@@ -3,6 +3,7 @@ package com.excilys.formation.computerdatabase.ui;
 import com.excilys.formation.computerdatabase.dataBinders.dto.DTOable;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Page;
+import com.excilys.formation.computerdatabase.model.SelectOptions;
 
 public class Pager<T> {
 	private PageDTO<T> data;
@@ -30,29 +31,42 @@ public class Pager<T> {
 		this.dtoizer = dtoizer;
 	}
 
-	public PageDTO<T> next() {
-		return this.getPage(++this.currentPageNumber);
-	}
-
-	public PageDTO<T> previous() {
-		return this.getPage(--this.currentPageNumber);
-	}
-
+//	public PageDTO<T> next() {
+//		return this.getPage(++this.currentPageNumber);
+//	}
+//
+//	public PageDTO<T> previous() {
+//		return this.getPage(--this.currentPageNumber);
+//	}
+//
 	public PageDTO<T> getPage() {
-		return this.getPage(this.currentPageNumber);
+		
+		return this.getPage(SelectOptions.builder().page(this.currentPageNumber).build());
 	}
 
-	public PageDTO<T> getPage(int pageNum) {
-
-		if (pageNum < 1) {
-			pageNum = 1;
-		}
-
-		Page<T> page = this.dataRetreiver.get((pageNum * this.range) - this.range, this.range);
+//	public PageDTO<T> getPage(int pageNum) {
+//
+//		if (pageNum < 1) {
+//			pageNum = 1;
+//		}
+//		
+//		int offset = (pageNum * this.range) - this.range;
+//
+//		Page<T> page = this.dataRetreiver.get(offset, this.range, "id", true);
+//		this.data = new PageDTO<>(page, this.dtoizer);
+//
+//		this.setTotal(this.data.getTotal());
+//		this.currentPageNumber = pageNum;
+//
+//		return this.data;
+//	}
+	
+	public PageDTO<T> getPage(SelectOptions options) {
+		Page<T> page = this.dataRetreiver.get(options);
 		this.data = new PageDTO<>(page, this.dtoizer);
 
 		this.setTotal(this.data.getTotal());
-		this.currentPageNumber = pageNum;
+		this.currentPageNumber = options.getPage();
 
 		return this.data;
 	}
