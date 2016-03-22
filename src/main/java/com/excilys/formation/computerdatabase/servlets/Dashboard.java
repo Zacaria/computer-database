@@ -1,7 +1,6 @@
 package com.excilys.formation.computerdatabase.servlets;
 
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -18,6 +17,7 @@ import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.ComputerService;
+import com.excilys.formation.computerdatabase.servlets.util.ParamValidator;
 import com.excilys.formation.computerdatabase.ui.Pager;
 
 /**
@@ -26,9 +26,10 @@ import com.excilys.formation.computerdatabase.ui.Pager;
 @WebServlet("/dashboard")
 public class Dashboard extends HttpServlet {
 	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
-
-	private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
 	private static final long serialVersionUID = 1L;
+
+	private static final String PAGE_PARAM = "p";
+	private static final String RANGE_PARAM = "r";
 	private static final int DEFAULT_PAGE = 1;
 	private static final int DEFAULT_RANGE = 10;
 
@@ -52,50 +53,43 @@ public class Dashboard extends HttpServlet {
 
 		LOGGER.info("access to : " + request.getRequestURL() + " " + request.getQueryString());
 
-		int page;
-		int range;
-		int totalPage;
+		ParamValidator validator = new ParamValidator();
 
-		Pager<Computer> pager = null;		
-		
-		HttpSession session = request.getSession();
+		int page = validator.getInt(request, PAGE_PARAM, DEFAULT_PAGE);
+		int range = validator.getInt(request, RANGE_PARAM, DEFAULT_RANGE);
+		int totalPage;
 
 		/**
 		 * Init the pager in the client's session if it doesn't exist.
 		 */
+		Pager<Computer> pager = null;
+
+		HttpSession session = request.getSession();
+
 		if (session.getAttribute("pager") == null || !(session.getAttribute("pager") instanceof Pager)) {
-			pager = new Pager<>(this.cs.count(), (offset, max) -> this.cs.get(offset, max), computer -> new ComputerDTO(computer));
+			pager = new Pager<>(this.cs.count(), (offset, max) -> this.cs.get(offset, max),
+					computer -> new ComputerDTO(computer));
 			session.setAttribute("pager", pager);
 		} else {
-			
-			//Here's the unchecked, safe enough
+
+			// Here's the unchecked, safe enough.
 			pager = (Pager<Computer>) session.getAttribute("pager");
-		}
-
-		
-
-		if (request.getParameter("p") != null && INT_PATTERN.matcher(request.getParameter("p")).matches()) {
-			page = Integer.parseInt(request.getParameter("p"));
-		} else {
-			page = DEFAULT_PAGE;
-		}
-
-		if (request.getParameter("r") != null && INT_PATTERN.matcher(request.getParameter("r")).matches()) {
-			range = Integer.parseInt(request.getParameter("r"));
-		} else {
-			range = DEFAULT_RANGE;
 		}
 		pager.setRange(range);
 
-		// I need to know how much computers there is before asking any page
+		/**
+		 * Determine the page we need.
+		 * I need to know how much computers there is before asking any page.
+		 */
 		int count = this.cs.count();
 
 		totalPage = (count + range - 1) / range;
 
-		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
-
 		page = page > totalPage ? totalPage : page;
 
+		/**
+		 * Get that page and give it to the view.
+		 */
 		PageDTO<Computer> computers = pager.getPage(page);
 
 		request.setAttribute("count", count);
@@ -104,6 +98,7 @@ public class Dashboard extends HttpServlet {
 		request.setAttribute("range", range);
 		request.setAttribute("current", page);
 
+		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
 		view.forward(request, response);
 	}
 }

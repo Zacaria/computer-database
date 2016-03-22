@@ -2,7 +2,6 @@ package com.excilys.formation.computerdatabase.servlets;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -23,7 +22,6 @@ import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.servlets.util.ParamValidator;
 import com.excilys.formation.computerdatabase.ui.Pager;
-import com.excilys.formation.computerdatabase.util.DateConverter;
 
 /**
  * Servlet implementation class EditComputer
@@ -32,7 +30,6 @@ import com.excilys.formation.computerdatabase.util.DateConverter;
 public class EditComputer extends HttpServlet {
 	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 	private static final long serialVersionUID = 1L;
-	private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
 
 	private static final String COMPANY_ID_PARAM = "companyId";
 	private static final String COMPUTER_ID_PARAM = "id";
@@ -109,7 +106,7 @@ public class EditComputer extends HttpServlet {
 
 		Long id = validator.getLong(request, COMPUTER_ID_PARAM);
 		Long companyId = validator.getLong(request, COMPANY_ID_PARAM);
-		String name = validator.getString(request, COMPUTER_NAME_PARAM);
+		String name = validator.getString(request, COMPUTER_NAME_PARAM, true);
 		LocalDate introduced = validator.getDate(request, COMPUTER_INTRODUCED_PARAM);
 		LocalDate discontinued = validator.getDate(request, COMPUTER_DISCONTINUED_PARAM);
 
@@ -119,15 +116,11 @@ public class EditComputer extends HttpServlet {
 					.company(Company.builder(companyId).build()).build();
 
 			cs.update(computer);
-		} else {
-//			System.out.println("errors");
 		}
 
 		request.setAttribute("success", validator.getErrors().isEmpty() ? true : false);
 		request.setAttribute("errors", validator.getErrors());
 
-//		response.sendRedirect("editComputer?id=" + id);
-		
 		doGet(request, response);
 	}
 

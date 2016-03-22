@@ -2,8 +2,10 @@ package com.excilys.formation.computerdatabase.servlets.util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -57,9 +59,29 @@ public class ParamValidator {
 
 		return result;
 	}
+	
+	public List<Long> getLongs(HttpServletRequest request, String field){
+		String serialIds = request.getParameter("selection");
+		if(this.isNullOrEmpty(serialIds)){
+			return null;
+		}
+		
+		List<String> stringIds = Arrays.asList(serialIds.split(","));
+		
+		List<Long> ids = stringIds
+				.stream()
+				.filter(s -> this.isNumber(s))
+				.map(Long::parseLong)
+				.collect(Collectors.toCollection(ArrayList::new));
+		return ids;
+	}
 
-	public String getString(HttpServletRequest request, String field) {
-		return request.getParameter(field).trim();
+	public String getString(HttpServletRequest request, String field, boolean required) {
+		String result = request.getParameter(field).trim();
+		if(required && this.isNullOrEmpty(result)){
+			return null;
+		}
+		return result;
 	}
 
 	public LocalDate getDate(HttpServletRequest request, String field) {

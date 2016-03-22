@@ -85,6 +85,7 @@ public class ComputerService implements Servable<Computer>{
 	@Override
 	public boolean delete(Long id) {
 		LOGGER.info("access");
+		LOGGER.debug("Delete Computer with id " + id);
 		return this.cdao.delete(id);
 	}
 

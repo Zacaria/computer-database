@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
 <!DOCTYPE html>
 <html>
@@ -19,8 +20,8 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database </a>
+			<cdb:link target="dashboard" label="Application - Computer Database"
+				classes="navbar-brand" />
 		</div>
 	</header>
 	<section id="main">
@@ -79,7 +80,8 @@
 						</fieldset>
 						<div class="actions pull-right">
 							<input type="submit" value="Add" class="btn btn-primary">
-							or <a href="dashboard" class="btn btn-default">Cancel</a>
+							or <cdb:link target="dashboard" label="Cancel"
+								classes="btn btn-default" />
 						</div>
 					</form>
 				</div>

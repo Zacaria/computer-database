@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
 <!DOCTYPE html>
 <html>
@@ -20,8 +20,8 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<a class="navbar-brand" href="dashboard"> Application - Computer
-				Database </a>
+			<cdb:link target="dashboard" label="Application - Computer Database"
+				classes="navbar-brand" />
 		</div>
 	</header>
 	<section id="main">
@@ -35,7 +35,7 @@
 								<span aria-hidden="true">&times;</span>
 							</button>
 							<strong>Success!</strong> Your computer has been successfully
-							added
+							updated
 						</div>
 					</c:if>
 					<c:if test="${success == false}">
@@ -89,7 +89,8 @@
 						</fieldset>
 						<div class="actions pull-right">
 							<input type="submit" value="Edit" class="btn btn-primary">
-							or <a href="dashboard" class="btn btn-default">Cancel</a>
+							or <cdb:link target="dashboard" label="Cancel"
+								classes="btn btn-default" />
 						</div>
 					</form>
 				</div>

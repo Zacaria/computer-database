@@ -91,7 +91,7 @@ public class AddComputer extends HttpServlet {
 		
 
 		Long companyId = validator.getLong(request, COMPANY_ID_PARAM);
-		String name = validator.getString(request, COMPUTER_NAME_PARAM);
+		String name = validator.getString(request, COMPUTER_NAME_PARAM, true);
 		LocalDate introduced = validator.getDate(request, COMPUTER_INTRODUCED_PARAM);
 		LocalDate discontinued = validator.getDate(request, COMPUTER_DISCONTINUED_PARAM);
 
