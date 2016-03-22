@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,10 +69,14 @@ public class EditComputer extends HttpServlet {
 
 		Long id = validator.getLong(request, COMPUTER_ID_PARAM);
 		Computer computerModel;
+		
+		HttpSession session = request.getSession();
 
 		if (id == null) {
 			// redirect if no id was given.
-			response.sendRedirect("dashboard");
+			session.setAttribute("errors", validator.getErrors());
+			System.out.println(validator.getErrors());
+			response.sendRedirect("dashboard?p=1&r=10");
 			return;
 		}
 
@@ -79,6 +84,8 @@ public class EditComputer extends HttpServlet {
 
 		if (computerModel == null) {
 			// redirect if no computer with this id was found.
+//			session.setAttribute("errors", {"The id was not found"});
+			response.setStatus(404);
 			response.sendRedirect("404");
 			return;
 		}

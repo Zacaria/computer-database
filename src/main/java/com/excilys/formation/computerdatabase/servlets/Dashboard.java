@@ -1,6 +1,8 @@
 package com.excilys.formation.computerdatabase.servlets;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -98,6 +100,12 @@ public class Dashboard extends HttpServlet {
 		request.setAttribute("range", range);
 		request.setAttribute("current", page);
 
+		List<String> errors = validator.getErrors();
+		if (session.getAttribute("errors") != null) {
+			errors.addAll((Collection<? extends String>) session.getAttribute("errors"));
+		}
+
+		request.setAttribute("errors", validator.getErrors());
 		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
 		view.forward(request, response);
 	}
