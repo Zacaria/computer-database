@@ -18,33 +18,32 @@ import com.excilys.formation.computerdatabase.servlets.util.ParamValidator;
  */
 @WebServlet("/deleteComputer")
 public class DeleteComputer extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	
-	private final ComputerService cs;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public DeleteComputer() {
-        super();
-        this.cs = ComputerService.getInstance();
-    }
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {		
-		ParamValidator validator = new ParamValidator();
-		
-		List<Long> ids = validator.getLongs(request, "selection");
-		
-		ids
-			.stream()
-			.forEach(this.cs::delete);
-		
-		HttpSession session = request.getSession();
-		session.setAttribute("success", validator.getErrors().isEmpty() ? true : false);
-		session.setAttribute("errors", validator.getErrors());
-		response.sendRedirect("dashboard");
-	}
+  private final ComputerService cs;
+
+  /**
+   * @see HttpServlet#HttpServlet()
+   */
+  public DeleteComputer() {
+    super();
+    this.cs = ComputerService.getInstance();
+  }
+
+  /**
+   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+   */
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    ParamValidator validator = new ParamValidator();
+
+    List<Long> ids = validator.getLongs(request, "selection");
+
+    ids.stream().forEach(this.cs::delete);
+
+    HttpSession session = request.getSession();
+    session.setAttribute("success", validator.getErrors().isEmpty() ? true : false);
+    session.setAttribute("errors", validator.getErrors());
+    response.sendRedirect("dashboard");
+  }
 }

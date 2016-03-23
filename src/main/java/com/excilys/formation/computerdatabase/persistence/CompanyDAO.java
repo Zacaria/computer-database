@@ -15,113 +15,116 @@ import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 
 public enum CompanyDAO implements Crudable<Company> {
-	INSTANCE;
+  INSTANCE;
 
-	private final static Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
-	
-	private final static String FIELDS = "company.id as company_id, company.name as company_name";
+  private final static Logger LOGGER =
+      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
-	ConnectionFactory connectionFactory;
+  private final static String FIELDS = "company.id as company_id, company.name as company_name";
 
-	CompanyDAO() {
-		this.connectionFactory = ConnectionFactory.getInstance();
-	}
+  ConnectionFactory connectionFactory;
 
-	private final String countQuery = "SELECT COUNT(*) as count from `computer-database-db`.company;";
+  CompanyDAO() {
+    this.connectionFactory = ConnectionFactory.getInstance();
+  }
 
-	@Override
-	public int count() {
-		Connection connection = connectionFactory.getConnection();
+  private final String countQuery = "SELECT COUNT(*) as count from `computer-database-db`.company;";
 
-		int count = 0;
+  @Override
+  public int count() {
+    Connection connection = connectionFactory.getConnection();
 
-		try (Statement statement = connection.createStatement()) {
+    int count = 0;
 
-			ResultSet resultSet = statement.executeQuery(countQuery);
+    try (Statement statement = connection.createStatement()) {
 
-			if (resultSet.first()) {
-				count = resultSet.getInt("count");
-			}
+      ResultSet resultSet = statement.executeQuery(countQuery);
 
-		} catch (SQLException e) {
-			LOGGER.error(e.getMessage());
-		} finally {
-			connectionFactory.closeConnection(connection);
-		}
+      if (resultSet.first()) {
+        count = resultSet.getInt("count");
+      }
 
-		return count;
-	}
+    } catch (SQLException e) {
+      LOGGER.error(e.getMessage());
+    } finally {
+      connectionFactory.closeConnection(connection);
+    }
 
-	private final String findAllQuery = "SELECT " + FIELDS + " FROM `computer-database-db`.company;";
+    return count;
+  }
 
-	@Override
-	public List<Company> find() {
-		Connection connection = connectionFactory.getConnection();
+  private final String findAllQuery = "SELECT " + FIELDS + " FROM `computer-database-db`.company;";
 
-		List<Company> companies = null;
+  @Override
+  public List<Company> find() {
+    Connection connection = connectionFactory.getConnection();
 
-		try (Statement statement = connection.createStatement()) {
+    List<Company> companies = null;
 
-			ResultSet resultSet = statement.executeQuery(findAllQuery);
+    try (Statement statement = connection.createStatement()) {
 
-			CompanyMapper mapper = new CompanyMapper();
+      ResultSet resultSet = statement.executeQuery(findAllQuery);
 
-			companies = mapper.mapList(resultSet);
+      CompanyMapper mapper = new CompanyMapper();
 
-		} catch (SQLException e) {
-			LOGGER.error(e.getMessage());
-		} finally {
-			connectionFactory.closeConnection(connection);
-		}
+      companies = mapper.mapList(resultSet);
 
-		return companies;
-	}
+    } catch (SQLException e) {
+      LOGGER.error(e.getMessage());
+    } finally {
+      connectionFactory.closeConnection(connection);
+    }
 
-	private final String findWithRangeQuery = "SELECT " + FIELDS + " FROM `computer-database-db`.company limit ?, ?;";
+    return companies;
+  }
 
-	@Override
-	public List<Company> find(SelectOptions options) {
-		Connection connection = connectionFactory.getConnection();
-		List<Company> companies = null;
+  private final String findWithRangeQuery =
+      "SELECT " + FIELDS + " FROM `computer-database-db`.company limit ?, ?;";
 
-		try (PreparedStatement statement = connection.prepareStatement(findWithRangeQuery)){		
-			statement.setLong(1, options.getOffset());
-			statement.setLong(2, options.getRange());
-			ResultSet resultSet = statement.executeQuery();
-			CompanyMapper mapper = new CompanyMapper();
+  @Override
+  public List<Company> find(SelectOptions options) {
+    Connection connection = connectionFactory.getConnection();
+    List<Company> companies = null;
 
-			companies = mapper.mapList(resultSet);
+    try (PreparedStatement statement = connection.prepareStatement(findWithRangeQuery)) {
+      statement.setLong(1, options.getOffset());
+      statement.setLong(2, options.getRange());
+      ResultSet resultSet = statement.executeQuery();
+      CompanyMapper mapper = new CompanyMapper();
 
-		} catch (SQLException e) {
-			LOGGER.error(e.getMessage());
-		} finally {
-			connectionFactory.closeConnection(connection);
-		}
+      companies = mapper.mapList(resultSet);
 
-		return companies;
-	}
+    } catch (SQLException e) {
+      LOGGER.error(e.getMessage());
+    } finally {
+      connectionFactory.closeConnection(connection);
+    }
 
-	private final String findByIdQuery = "SELECT " + FIELDS + " FROM `computer-database-db`.company WHERE id = ? ;";
+    return companies;
+  }
 
-	@Override
-	public Company find(Long id) {
-		Connection connection = connectionFactory.getConnection();
-		Company company = null;
+  private final String findByIdQuery =
+      "SELECT " + FIELDS + " FROM `computer-database-db`.company WHERE id = ? ;";
 
-		try (PreparedStatement statement = connection.prepareStatement(findByIdQuery)){
-			statement.setLong(1, id);
-			ResultSet resultSet = statement.executeQuery();
-			CompanyMapper mapper = new CompanyMapper();
+  @Override
+  public Company find(Long id) {
+    Connection connection = connectionFactory.getConnection();
+    Company company = null;
 
-			if (resultSet.first()) {
-				company = mapper.map(resultSet);
-			}
-		} catch (SQLException e) {
-			LOGGER.error(e.getMessage());
-		} finally {
-			connectionFactory.closeConnection(connection);
-		}
+    try (PreparedStatement statement = connection.prepareStatement(findByIdQuery)) {
+      statement.setLong(1, id);
+      ResultSet resultSet = statement.executeQuery();
+      CompanyMapper mapper = new CompanyMapper();
 
-		return company;
-	}
+      if (resultSet.first()) {
+        company = mapper.map(resultSet);
+      }
+    } catch (SQLException e) {
+      LOGGER.error(e.getMessage());
+    } finally {
+      connectionFactory.closeConnection(connection);
+    }
+
+    return company;
+  }
 }

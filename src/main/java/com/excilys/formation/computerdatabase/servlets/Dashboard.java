@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.model.ComputerFields;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.servlets.util.ParamValidator;
@@ -28,100 +29,116 @@ import com.excilys.formation.computerdatabase.ui.Pager;
  */
 @WebServlet("/dashboard")
 public class Dashboard extends HttpServlet {
-	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
-	private static final long serialVersionUID = 1L;
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+  private static final long serialVersionUID = 1L;
 
-	private static final String PAGE_PARAM = "p";
-	private static final String RANGE_PARAM = "r";
-	private static final String COLUMN_PARAM = "col";
-	private static final String DIR_PARAM = "dir";
-	private static final String SEARCH_PARAM = "s";
-	private static final int DEFAULT_PAGE = 1;
-	private static final int DEFAULT_RANGE = 10;
+  private static final String PAGE_PARAM = "p";
+  private static final String RANGE_PARAM = "r";
+  private static final String COLUMN_PARAM = "col";
+  private static final String DIR_PARAM = "asc";
+  private static final String SEARCH_PARAM = "s";
+  private static final int DEFAULT_PAGE = 1;
+  private static final int DEFAULT_RANGE = 10;
 
-	private final ComputerService cs;
+  /**
+   * Possible values are found in the SQL query.
+   * computer_id | computer_name | introduced | discontinued | company_id | company_name
+   */
+  private static final String DEFAULT_ORDER_BY = "computer_id"; 
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public Dashboard() {
-		super();
-		this.cs = ComputerService.getInstance();
-	}
+  private final ComputerService cs;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	@SuppressWarnings("unchecked")
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+  /**
+   * @see HttpServlet#HttpServlet()
+   */
+  public Dashboard() {
+    super();
+    this.cs = ComputerService.getInstance();
+  }
 
-		LOGGER.info("access to : " + request.getRequestURL() + " " + request.getQueryString());
+  /**
+   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+   *      response)
+   */
+  @SuppressWarnings("unchecked")
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-		ParamValidator validator = new ParamValidator();
+    LOGGER.info("access to : " + request.getRequestURL() + " " + request.getQueryString());
 
-		int page = validator.getInt(request, PAGE_PARAM, DEFAULT_PAGE);
-		int range = validator.getInt(request, RANGE_PARAM, DEFAULT_RANGE);
-		String orderByColumn = validator.getString(request, COLUMN_PARAM, false);
-		boolean orderByDir = validator.getString(request, DIR_PARAM, false) == "d" ? false : true;
-		String search = validator.getString(request, SEARCH_PARAM, false);
+    ParamValidator validator = new ParamValidator();
 
-		/**
-		 * Init the pager in the client's session if it doesn't exist.
-		 */
-		Pager<Computer> pager = null;
+    int page = validator.getInt(request, PAGE_PARAM, DEFAULT_PAGE);
+    int range = validator.getInt(request, RANGE_PARAM, DEFAULT_RANGE);
+    String orderByDir = validator.getString(request, DIR_PARAM, false);
+    String search = validator.getString(request, SEARCH_PARAM, false);
+    
+    /**
+     * We're not injecting directly the parameter received by GET.
+     * First we check if it corresponds to a list of columns defined in an enumeration.
+     * 
+     */
+    String orderByColumn = validator.getString(request, COLUMN_PARAM, false);
+    if (!ComputerFields.contains(orderByColumn)) {
+      orderByColumn = ComputerFields.ID.getValue();
+    }
 
-		HttpSession session = request.getSession();
+    /**
+     * Init the pager in the client's session if it doesn't exist.
+     */
+    Pager<Computer> pager = null;
 
-		if (session.getAttribute("pager") == null || !(session.getAttribute("pager") instanceof Pager)) {
-			pager = new Pager<>(this.cs.count(), (options) -> this.cs.get(options),
-					computer -> new ComputerDTO(computer));
-			session.setAttribute("pager", pager);
-		} else {
+    HttpSession session = request.getSession();
 
-			// Here's the unchecked, safe enough.
-			pager = (Pager<Computer>) session.getAttribute("pager");
-		}
-		pager.setRange(range);
+    if (session.getAttribute("pager") == null
+        || !(session.getAttribute("pager") instanceof Pager)) {
+      pager = new Pager<>(this.cs.count(), (options) -> this.cs.get(options),
+          computer -> new ComputerDTO(computer));
+      session.setAttribute("pager", pager);
+    } else {
 
-		/**
-		 * Determine the page we need.
-		 * I need to know how much computers there is before asking any page.
-		 */
-		int count = this.cs.count();
-		int totalPage;
+      // Here's the unchecked, safe enough.
+      pager = (Pager<Computer>) session.getAttribute("pager");
+    }
+    pager.setRange(range);
 
-		totalPage = (count + range - 1) / range;
+    SelectOptions options = SelectOptions.builder().range(range).search(search)
+        .orderBy(orderByColumn).asc(orderByDir).build();
 
-		page = page > totalPage ? totalPage : page;
+    /**
+     * Determine the page we need.
+     * I need to know how much computers there is before asking any page.
+     */
+    int count = this.cs.count(options);
+    int totalPage;
 
-		/**
-		 * Get that page and give it to the view.
-		 */
-		SelectOptions options = SelectOptions.builder()
-				.page(page)
-				.range(range)
-				.search(search)
-				.orderBy(orderByColumn)
-				.asc(orderByDir)
-				.build();
-		
-		PageDTO<Computer> computers = pager.getPage(options);
+    totalPage = (count + range - 1) / range;
 
-		request.setAttribute("count", count);
-		request.setAttribute("computers", computers);
-		request.setAttribute("totalPage", totalPage);
-		request.setAttribute("range", range);
-		request.setAttribute("current", page);
+    page = page > totalPage ? totalPage : page;
 
-		List<String> errors = validator.getErrors();
-		if (session.getAttribute("errors") != null) {
-			errors.addAll((Collection<? extends String>) session.getAttribute("errors"));
-		}
+    /**
+     * Get that page and give it to the view.
+     */
 
-		request.setAttribute("errors", validator.getErrors());
-		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
-		view.forward(request, response);
-	}
+    options.setPage(page);
+    options.computeOffset();
+
+    PageDTO<Computer> computers = pager.getPage(options);
+
+    request.setAttribute("count", count);
+    request.setAttribute("computers", computers);
+    request.setAttribute("totalPage", totalPage);
+    request.setAttribute("range", range);
+    request.setAttribute("current", page);
+
+    List<String> errors = validator.getErrors();
+    if (session.getAttribute("errors") != null) {
+      errors.addAll((Collection<? extends String>) session.getAttribute("errors"));
+    }
+
+    request.setAttribute("errors", validator.getErrors());
+    RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
+    view.forward(request, response);
+  }
 }
