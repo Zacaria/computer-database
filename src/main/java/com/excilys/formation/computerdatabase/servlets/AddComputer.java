@@ -22,91 +22,91 @@ import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.servlets.util.ParamValidator;
 import com.excilys.formation.computerdatabase.ui.Pager;
-import com.excilys.formation.computerdatabase.util.DateConverter;
 
 /**
  * Servlet implementation class AddComputer
  */
 @WebServlet("/addComputer")
 public class AddComputer extends HttpServlet {
-	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
-	private static final long serialVersionUID = 1L;
-	private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
-	
-	private static final String COMPANY_ID_PARAM = "companyId";
-	private static final String COMPUTER_NAME_PARAM = "name";
-	private static final String COMPUTER_INTRODUCED_PARAM = "introduced";
-	private static final String COMPUTER_DISCONTINUED_PARAM = "discontinued";
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+  private static final long serialVersionUID = 1L;
+  private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
 
-	private final ComputerService cs;
-	private final CompanyService es;
+  private static final String COMPANY_ID_PARAM = "companyId";
+  private static final String COMPUTER_NAME_PARAM = "name";
+  private static final String COMPUTER_INTRODUCED_PARAM = "introduced";
+  private static final String COMPUTER_DISCONTINUED_PARAM = "discontinued";
 
-	private Pager<Company> pager;
+  private final ComputerService cs;
+  private final CompanyService es;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public AddComputer() {
-		super();
-		this.cs = ComputerService.getInstance();
-		this.es = CompanyService.getInstance();
+  private Pager<Company> pager;
 
-		this.pager = new Pager<Company>(this.es.count(),
-				(offset, max) -> this.es.get(offset, max),
-				company -> new CompanyDTO(company));
+  /**
+   * @see HttpServlet#HttpServlet()
+   */
+  public AddComputer() {
+    super();
+    this.cs = ComputerService.getInstance();
+    this.es = CompanyService.getInstance();
 
-		// FIXME : This is ugly and hard code
-		this.pager.setRange(100);
+    this.pager = new Pager<Company>(this.es.count(), (options) -> this.es.get(options),
+        company -> new CompanyDTO(company));
 
-	}
+    // FIXME : This is ugly and hard code
+    this.pager.setRange(100);
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+  }
 
-		LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " " + request.getQueryString());
+  /**
+   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+   *      response)
+   */
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-		PageDTO<Company> companies = this.pager.getPage();
+    LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
+        + request.getQueryString());
 
-		request.setAttribute("companies", companies);
+    PageDTO<Company> companies = this.pager.getPage();
 
-		RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
+    request.setAttribute("companies", companies);
 
-		view.forward(request, response);
-	}
+    RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    view.forward(request, response);
+  }
 
-		LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " " + request.getQueryString());
-		
-		ParamValidator validator = new ParamValidator();
-		
+  /**
+   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+   *      response)
+   */
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
 
-		Long companyId = validator.getLong(request, COMPANY_ID_PARAM);
-		String name = validator.getString(request, COMPUTER_NAME_PARAM);
-		LocalDate introduced = validator.getDate(request, COMPUTER_INTRODUCED_PARAM);
-		LocalDate discontinued = validator.getDate(request, COMPUTER_DISCONTINUED_PARAM);
+    LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
+        + request.getQueryString());
 
-		if(validator.getErrors().isEmpty()){
-			// Safe strings with prepared queries
-			Computer computer = Computer.builder(name).introduced(introduced)
-					.discontinued(discontinued).company(Company.builder(companyId).build()).build();
+    ParamValidator validator = new ParamValidator();
 
-			cs.create(computer);
-		}
+    Long companyId = validator.getLong(request, COMPANY_ID_PARAM);
+    String name = validator.getString(request, COMPUTER_NAME_PARAM, true);
+    LocalDate introduced = validator.getDate(request, COMPUTER_INTRODUCED_PARAM);
+    LocalDate discontinued = validator.getDate(request, COMPUTER_DISCONTINUED_PARAM);
 
-		request.setAttribute("success", validator.getErrors().isEmpty() ? true : false);
-		request.setAttribute("errors", validator.getErrors());
+    if (validator.getErrors().isEmpty()) {
+      // Safe strings with prepared queries
+      Computer computer = Computer.builder(name).introduced(introduced).discontinued(discontinued)
+          .company(Company.builder(companyId).build()).build();
 
-		doGet(request, response);
-	}
+      cs.create(computer);
+    }
+
+    request.setAttribute("success", validator.getErrors().isEmpty() ? true : false);
+    request.setAttribute("errors", validator.getErrors());
+
+    doGet(request, response);
+  }
 
 }
