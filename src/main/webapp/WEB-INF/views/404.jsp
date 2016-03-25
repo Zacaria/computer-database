@@ -37,7 +37,7 @@
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<strong>Oops!</strong> Something happened : ${error}
+							<strong>Oops!</strong> Something happened : <c:out value="${error}"></c:out>
 						</div>
 					</c:forEach>
 					<c:remove var="errors" scope="session" />
