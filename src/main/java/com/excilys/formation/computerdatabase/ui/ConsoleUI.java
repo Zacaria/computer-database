@@ -57,6 +57,8 @@ public class ConsoleUI {
 
       if (cmd.hasOption("h") || cmd.getOptions().length == 0) {
         handleMenu(options);
+      } else if (cmd.hasOption("e") && cmd.hasOption("del")) {
+        handleDeleteCompany(cmd);
       } else if (cmd.hasOption("e")) {
         handleShowCompanies(cmd);
       } else if (cmd.hasOption("c") && !cmd.hasOption("id")) {
@@ -84,9 +86,15 @@ public class ConsoleUI {
     formatter.printHelp("ant", options);
   }
 
+  public static void handleDeleteCompany(CommandLine cmd) {
+    boolean success = COMPANY_SERVICE.delete(Long.parseLong(cmd.getOptionValue("del")));
+    
+    System.out.println("Delete " + success);
+  }
+
   public static void handleShowCompanies(CommandLine cmd) {
     SelectOptions options = SelectOptions.builder().build();
-    
+
     PageDTO<Company> companies = companyPager.getPage(options);
 
     Iterator<DTO> iterator = companies.getElements().iterator();
@@ -101,7 +109,7 @@ public class ConsoleUI {
     Scanner sc = new Scanner(System.in);
 
     SelectOptions options = SelectOptions.builder().page(1).build();
-    
+
     int command = 4;
 
     do {
@@ -111,7 +119,7 @@ public class ConsoleUI {
       Iterator<DTO> iterator = computerPager.getPage().getElements().iterator();
 
       if (command == 4) {
-        
+
         options.setPage(computerPager.getCurrentPageNumber() - 1);
         iterator = computerPager.getPage(options).getElements().iterator();
       } else if (command == 6) {
@@ -249,7 +257,7 @@ public class ConsoleUI {
     } else {
       System.out.println("Delete Cancelled");
     }
-    
+
     scanner.close();
   }
 

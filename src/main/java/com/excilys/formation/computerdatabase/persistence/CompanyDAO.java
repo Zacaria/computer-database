@@ -14,7 +14,6 @@ import com.excilys.formation.computerdatabase.dataBinders.mapper.CompanyMapper;
 import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
-import com.excilys.formation.computerdatabase.service.CompanyService;
 
 public enum CompanyDAO implements CompanyDAOable {
   INSTANCE;
@@ -24,15 +23,14 @@ public enum CompanyDAO implements CompanyDAOable {
 
   private final static String FIELDS = "company.id as company_id, company.name as company_name";
 
-  CompanyDAO() {
-  }
+  CompanyDAO() { }
 
   private final String countQuery = "SELECT COUNT(*) as count from `computer-database-db`.company;";
 
   @Override
   public int count() throws DAOException {
     LOGGER.info("counting in " + this.getClass().getSimpleName());
-    Connection connection = CompanyService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     int count = 0;
 
@@ -58,7 +56,7 @@ public enum CompanyDAO implements CompanyDAOable {
   @Override
   public List<Company> find() throws DAOException {
     LOGGER.info("finding in " + this.getClass().getSimpleName());
-    Connection connection = CompanyService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     List<Company> companies = null;
 
@@ -82,7 +80,7 @@ public enum CompanyDAO implements CompanyDAOable {
   public List<Company> find(SelectOptions options) throws DAOException {
     LOGGER.info("finding in " + this.getClass().getSimpleName());
     LOGGER.debug("With params " + options);
-    Connection connection = CompanyService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
     List<Company> companies = null;
 
     try (PreparedStatement statement = connection.prepareStatement(findWithRangeQuery)) {
@@ -108,7 +106,7 @@ public enum CompanyDAO implements CompanyDAOable {
     LOGGER.info("finding in " + this.getClass().getSimpleName());
     LOGGER.debug("With params " + id);
 
-    Connection connection = CompanyService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
     Company company = null;
 
     try (PreparedStatement statement = connection.prepareStatement(findByIdQuery)) {
@@ -133,7 +131,7 @@ public enum CompanyDAO implements CompanyDAOable {
     LOGGER.info("deleting in " + this.getClass().getSimpleName());
     LOGGER.debug("With params " + id);
 
-    Connection connection = CompanyService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     int affectedRows = 0;
 

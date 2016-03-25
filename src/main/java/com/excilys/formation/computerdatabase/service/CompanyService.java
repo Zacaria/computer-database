@@ -18,7 +18,7 @@ import com.excilys.formation.computerdatabase.persistence.ConnectionFactory;
 
 public class CompanyService implements Servable<Company> {
 
-  public static final ThreadLocal<Connection> localConnection = new ThreadLocal<>();
+//  public static final ThreadLocal<Connection> localConnection = new ThreadLocal<>();
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
@@ -46,7 +46,7 @@ public class CompanyService implements Servable<Company> {
   public Page<Company> get(SelectOptions options) {
     LOGGER.info("get with options" + this.getClass());
     
-    this.initConnection();
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
     Page<Company> companyPage = null;
     
@@ -57,7 +57,7 @@ public class CompanyService implements Servable<Company> {
     } catch (DAOException e){
       LOGGER.error("failed");
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
 
     return companyPage;
@@ -67,7 +67,7 @@ public class CompanyService implements Servable<Company> {
   public Company get(Long id) {
     LOGGER.info("get id" + this.getClass());
 
-    this.initConnection();
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
     Company result = null;
     try {
@@ -75,7 +75,7 @@ public class CompanyService implements Servable<Company> {
     } catch (DAOException e) {
       LOGGER.error("failed get id");
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
     
     return result;
@@ -85,7 +85,7 @@ public class CompanyService implements Servable<Company> {
   public int count() {
     LOGGER.info("count " + this.getClass());
 
-    this.initConnection();
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
     int result = 0;
     try {
@@ -93,7 +93,7 @@ public class CompanyService implements Servable<Company> {
     } catch (DAOException e) {
       LOGGER.error("count failed");
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
     
     return result;
@@ -103,16 +103,20 @@ public class CompanyService implements Servable<Company> {
   public boolean delete(Long id) {
     LOGGER.info("delete " + this.getClass());
 
-    Connection connection = this.initConnection();
-
+    Connection connection = this.connectionFactory.getConnection();
+    
+    ConnectionFactory.initLocalConnection(connection);
+    
     // no try with resource because we need to rollback in the catch.
+    
+    boolean success = false;
     try {
 
       connection.setAutoCommit(false);
 
-      this.computerDAO.deleteWithCompanyId(id);
+      success = this.computerDAO.deleteWithCompanyId(id);
 
-      this.cdao.delete(id);
+      success = this.cdao.delete(id);
 
       connection.commit();
 
@@ -124,36 +128,9 @@ public class CompanyService implements Servable<Company> {
         LOGGER.error("Rollback failed :(", e1);
       }
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
 
-    return false;
-  }
-
-  
-  /**
-   * Those to functions areNot in the interface.
-   * It would be dangerous to expose that.
-   */
-  
-  /**
-   * Sets the connection object in the LocalThread and returns it.
-   * @return
-   */
-  private Connection initConnection() {
-    Connection connection = this.connectionFactory.getConnection();
-
-    CompanyService.localConnection.set(connection);
-
-    return connection;
-  }
-  /**
-   * Closes the connection.
-   * And cleans the LocalThread
-   * @param connection
-   */
-  private void closeConnection(){
-    this.connectionFactory.closeConnection(CompanyService.localConnection.get());
-    CompanyService.localConnection.remove();
+    return success;
   }
 }

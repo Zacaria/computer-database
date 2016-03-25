@@ -1,7 +1,5 @@
 package com.excilys.formation.computerdatabase.service;
 
-import java.sql.Connection;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +23,7 @@ import com.excilys.formation.computerdatabase.persistence.ConnectionFactory;
  */
 public class ComputerService implements Servable<Computer> {
   
-  public static final ThreadLocal<Connection> localConnection = new ThreadLocal<>();
+//  public static final ThreadLocal<Connection> localConnection = new ThreadLocal<>();
   
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
@@ -37,7 +35,6 @@ public class ComputerService implements Servable<Computer> {
   private ComputerService() {
     this.cdao = ComputerDAO.INSTANCE;
     this.connectionFactory = ConnectionFactory.getInstance();
-//    this.localConnection = new ThreadLocal<>();
   }
 
   /**
@@ -58,7 +55,7 @@ public class ComputerService implements Servable<Computer> {
   public int count() {
     LOGGER.info("count " + this.getClass());
     
-    this.initConnection();
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
     int count = 0;
     try {
@@ -66,7 +63,7 @@ public class ComputerService implements Servable<Computer> {
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
 
     return count;
@@ -76,7 +73,7 @@ public class ComputerService implements Servable<Computer> {
   public int count(SelectOptions options) {
     LOGGER.info("count with options" + this.getClass());
     
-    this.initConnection();
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
     int count = 0;
     try {
@@ -84,7 +81,7 @@ public class ComputerService implements Servable<Computer> {
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
 
     return count;
@@ -94,7 +91,7 @@ public class ComputerService implements Servable<Computer> {
   public Page<Computer> get(SelectOptions options) {
     LOGGER.info("get options " + this.getClass());
 
-    this.initConnection();
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
     
     Page<Computer> computerPage = null;
     try {
@@ -102,7 +99,7 @@ public class ComputerService implements Servable<Computer> {
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
 
     return computerPage;
@@ -112,7 +109,7 @@ public class ComputerService implements Servable<Computer> {
   public Computer get(Long id) {
     LOGGER.info("get id " + this.getClass());
     
-    this.initConnection();
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
     
     Computer result = null;
     try {
@@ -120,7 +117,7 @@ public class ComputerService implements Servable<Computer> {
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
     
     return result;
@@ -131,7 +128,7 @@ public class ComputerService implements Servable<Computer> {
     LOGGER.info("create " + this.getClass());
     LOGGER.debug(computer.toString());
     
-    this.initConnection();
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
     
     if (computer.getName() == null || computer.getName().isEmpty()) {
       LOGGER.error("ERROR Insert : Could not create an unnamed computer !");
@@ -144,7 +141,7 @@ public class ComputerService implements Servable<Computer> {
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
     
     return result;
@@ -159,7 +156,7 @@ public class ComputerService implements Servable<Computer> {
     
     LOGGER.debug("Delete Computer with id " + id);
 
-    this.initConnection();
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
     
     boolean result = false;
     try {
@@ -167,7 +164,7 @@ public class ComputerService implements Servable<Computer> {
     } catch (DAOException e) {
       LOGGER.error("Delete : failed, no rows affected");
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
 
     return result;
@@ -188,7 +185,7 @@ public class ComputerService implements Servable<Computer> {
       return null;
     }
     
-    this.initConnection();
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
     
     Computer result = null;
 
@@ -197,35 +194,9 @@ public class ComputerService implements Servable<Computer> {
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
     } finally {
-      this.closeConnection();
+      this.connectionFactory.closeLocalConnection();
     }
     
     return result;
-  }
-  
-  /**
-   * Those to functions areNot in the interface.
-   * It would be dangerous to expose that.
-   */
-  
-  /**
-   * Sets the connection object in the LocalThread and returns it.
-   * @return
-   */
-  private Connection initConnection() {
-    Connection connection = this.connectionFactory.getConnection();
-
-    ComputerService.localConnection.set(connection);
-
-    return connection;
-  }
-  /**
-   * Closes the connection.
-   * And cleans the LocalThread
-   * @param connection
-   */
-  private void closeConnection(){
-    this.connectionFactory.closeConnection(ComputerService.localConnection.get());
-    ComputerService.localConnection.remove();
   }
 }

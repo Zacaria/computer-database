@@ -24,6 +24,8 @@ public class ConnectionFactory {
 
   private final static Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+  
+  public final static ThreadLocal<Connection> local = new ThreadLocal<>();
 
   private BoneCP connectionPool = null;
 
@@ -92,6 +94,14 @@ public class ConnectionFactory {
   public static ConnectionFactory getInstance() {
     return ConnectionFactoryHolder.instance;
   }
+  
+  public static void initLocalConnection(Connection connection){
+    ConnectionFactory.local.set(connection);
+  }
+  
+  public static Connection getLocalConnection(){
+    return ConnectionFactory.local.get();
+  }
 
   public Connection getConnection() {
     Connection connection;
@@ -103,13 +113,15 @@ public class ConnectionFactory {
     } catch (SQLException e) {
       throw new DBConnectionException("Open connection failed", e);
     }
-
+    
     return connection;
   }
 
-  public void closeConnection(Connection connection) {
+  public void closeLocalConnection() {
     try {
-      connection.close();
+      ConnectionFactory.local.get().close();
+      ConnectionFactory.local.remove();
+      LOGGER.debug("Db connection closed");
     } catch (SQLException e) {
       throw new DBConnectionException("Connection did not close properly !", e);
     }

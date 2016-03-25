@@ -15,7 +15,6 @@ import com.excilys.formation.computerdatabase.dataBinders.mapper.ComputerMapper;
 import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
-import com.excilys.formation.computerdatabase.service.ComputerService;
 
 /**
  * The enum Singleton is not vulnerable against Reflection API.
@@ -40,7 +39,7 @@ public enum ComputerDAO implements ComputerDAOable {
 
   @Override
   public int count() throws DAOException {
-    Connection connection = ComputerService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     int count = 0;
 
@@ -64,7 +63,7 @@ public enum ComputerDAO implements ComputerDAOable {
 
   @Override
   public int count(SelectOptions options) throws DAOException {
-    Connection connection = ComputerService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     int count = 0;
 
@@ -92,7 +91,7 @@ public enum ComputerDAO implements ComputerDAOable {
 
   @Override
   public List<Computer> find() throws DAOException {
-    Connection connection = ComputerService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     List<Computer> computers = null;
 
@@ -124,7 +123,7 @@ public enum ComputerDAO implements ComputerDAOable {
   public List<Computer> find(SelectOptions options) throws DAOException {
     LOGGER.debug(options.toString());
 
-    Connection connection = ComputerService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     List<Computer> computers = null;
 
@@ -158,7 +157,7 @@ public enum ComputerDAO implements ComputerDAOable {
 
   @Override
   public Computer find(Long id) throws DAOException {
-    Connection connection = ComputerService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     Computer computer = null;
 
@@ -187,7 +186,7 @@ public enum ComputerDAO implements ComputerDAOable {
   public Long create(Computer computer) throws DAOException {
     LOGGER.debug("Creating this computer : " + computer);
 
-    Connection connection = ComputerService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     Long newId = null;
 
@@ -228,7 +227,7 @@ public enum ComputerDAO implements ComputerDAOable {
   @Override
   public boolean delete(Long id) throws DAOException {
 
-    Connection connection = ComputerService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     int affectedRows = 0;
     try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
@@ -247,7 +246,7 @@ public enum ComputerDAO implements ComputerDAOable {
   @Override
   public boolean deleteWithCompanyId(Long id) throws DAOException {
 
-    Connection connection = ComputerService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     int affectedRows = 0;
 
@@ -267,7 +266,7 @@ public enum ComputerDAO implements ComputerDAOable {
 
   @Override
   public Computer update(Computer computer) throws DAOException {
-    Connection connection = ComputerService.localConnection.get();
+    Connection connection = ConnectionFactory.getLocalConnection();
 
     int affectedRows = 0;
 
