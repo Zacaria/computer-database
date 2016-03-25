@@ -1,7 +1,6 @@
 package com.excilys.formation.computerdatabase.service;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
 import com.excilys.formation.computerdatabase.persistence.ComputerDAOable;
 import com.excilys.formation.computerdatabase.persistence.ConnectionFactory;
-import com.excilys.formation.computerdatabase.persistence.Crudable;
 
 /**
  * This is a Singleton.

@@ -16,7 +16,6 @@ import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.service.ComputerService;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 /**
  * The enum Singleton is not vulnerable against Reflection API.
@@ -33,10 +32,7 @@ public enum ComputerDAO implements ComputerDAOable {
   private final static String FIELDS =
       "computer.id as computer_id, computer.name as computer_name, introduced, discontinued, company_id";
 
-  private final ConnectionFactory connectionFactory;
-
   ComputerDAO() {
-    this.connectionFactory = ConnectionFactory.getInstance();
   }
 
   private final String countQuery =
@@ -276,7 +272,7 @@ public enum ComputerDAO implements ComputerDAOable {
     int affectedRows = 0;
 
     try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
-      
+
       LOGGER.debug("Trying to update computer with this : " + computer);
 
       statement.setString(1, computer.getName());

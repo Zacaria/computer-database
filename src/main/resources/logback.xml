@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<property name="LOG_HOME" value="${user.dir}/cdb-logs" />
+	<property name="LOG_HOME" value="cdb-logs" />
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>
-				%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+				%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level - %msg%n
 			</Pattern>
 		</encoder>
 	</appender>
@@ -35,13 +35,13 @@
 	</appender>
 
 	<!-- Send logs to both console and file audit -->
-	<logger name="com.excilys.formation.computerdatabase" level="trace"
+	<logger name="com.excilys.formation.computerdatabase" level="info"
 		additivity="false">
 		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />
 	</logger>
 
-	<root level="trace">
+	<root level="error">
 		<appender-ref ref="FILE" />
 	</root>
 

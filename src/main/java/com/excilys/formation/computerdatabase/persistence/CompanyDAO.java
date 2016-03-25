@@ -24,12 +24,14 @@ public enum CompanyDAO implements CompanyDAOable {
 
   private final static String FIELDS = "company.id as company_id, company.name as company_name";
 
-  CompanyDAO() {}
+  CompanyDAO() {
+  }
 
   private final String countQuery = "SELECT COUNT(*) as count from `computer-database-db`.company;";
 
   @Override
   public int count() throws DAOException {
+    LOGGER.info("counting in " + this.getClass().getSimpleName());
     Connection connection = CompanyService.localConnection.get();
 
     int count = 0;
@@ -37,7 +39,7 @@ public enum CompanyDAO implements CompanyDAOable {
     Statement statement;
     try {
       statement = connection.createStatement();
-      
+
       ResultSet resultSet = statement.executeQuery(countQuery);
 
       if (resultSet.first()) {
@@ -47,7 +49,7 @@ public enum CompanyDAO implements CompanyDAOable {
     } catch (SQLException e) {
       throw new DAOException(e);
     }
-    
+
     return count;
   }
 
@@ -55,11 +57,12 @@ public enum CompanyDAO implements CompanyDAOable {
 
   @Override
   public List<Company> find() throws DAOException {
+    LOGGER.info("finding in " + this.getClass().getSimpleName());
     Connection connection = CompanyService.localConnection.get();
 
     List<Company> companies = null;
 
-    try (Statement statement = connection.createStatement()){
+    try (Statement statement = connection.createStatement()) {
       ResultSet resultSet = statement.executeQuery(findAllQuery);
 
       CompanyMapper mapper = new CompanyMapper();
@@ -67,7 +70,7 @@ public enum CompanyDAO implements CompanyDAOable {
       companies = mapper.mapList(resultSet);
     } catch (SQLException e) {
       throw new DAOException(e);
-    }  
+    }
 
     return companies;
   }
@@ -77,6 +80,8 @@ public enum CompanyDAO implements CompanyDAOable {
 
   @Override
   public List<Company> find(SelectOptions options) throws DAOException {
+    LOGGER.info("finding in " + this.getClass().getSimpleName());
+    LOGGER.debug("With params " + options);
     Connection connection = CompanyService.localConnection.get();
     List<Company> companies = null;
 
@@ -100,6 +105,9 @@ public enum CompanyDAO implements CompanyDAOable {
 
   @Override
   public Company find(Long id) throws DAOException {
+    LOGGER.info("finding in " + this.getClass().getSimpleName());
+    LOGGER.debug("With params " + id);
+
     Connection connection = CompanyService.localConnection.get();
     Company company = null;
 
@@ -122,18 +130,21 @@ public enum CompanyDAO implements CompanyDAOable {
 
   @Override
   public boolean delete(Long id) throws DAOException {
+    LOGGER.info("deleting in " + this.getClass().getSimpleName());
+    LOGGER.debug("With params " + id);
+
     Connection connection = CompanyService.localConnection.get();
 
     int affectedRows = 0;
-    
-    try (PreparedStatement statement = connection.prepareStatement(deleteQuery)){
-      
+
+    try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+
       statement.setLong(1, id);
 
       affectedRows = statement.executeUpdate();
     } catch (SQLException e) {
       throw new DAOException(e);
-    }   
+    }
 
     return affectedRows != 0 ? true : false;
   }

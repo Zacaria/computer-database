@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
@@ -15,7 +16,6 @@
 	<c:set var="currentPage" value="${empty current ? 1 : current}" />
 	<c:set var="range" value="${empty range ? 10 : range}" />
 </c:if>
-<!DOCTYPE html>
 <html>
 <head>
 <title>Computer Database</title>

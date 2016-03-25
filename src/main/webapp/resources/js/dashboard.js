@@ -33,7 +33,7 @@ $(function() {
 		link += '&col=' + $(this).data().column;
 
 		// switch asc and desc
-		link += '&asc=' + (getURLParameter('asc') == '0' ? '1' : '0');
+		link += '&asc=' + ((getURLParameter('asc') == undefined) || (getURLParameter('asc') == '0') ? '1' : '0');
 
 		window.location.href = link;
 	});

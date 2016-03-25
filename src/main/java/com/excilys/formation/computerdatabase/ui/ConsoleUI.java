@@ -226,11 +226,13 @@ public class ConsoleUI {
 
     if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
       System.out.println("Please specify the id of the computer you want to delete !");
+      scanner.close();
       return;
     }
 
     if (!ID_PATTERN.matcher(cmd.getOptionValue("id")).matches()) {
       System.out.println("Please specify ids as numbers");
+      scanner.close();
       return;
     }
     Long computerId = Long.parseLong(cmd.getOptionValue("id"));
@@ -247,6 +249,8 @@ public class ConsoleUI {
     } else {
       System.out.println("Delete Cancelled");
     }
+    
+    scanner.close();
   }
 
 }

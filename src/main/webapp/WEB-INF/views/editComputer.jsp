@@ -1,7 +1,7 @@
+<!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
-<!DOCTYPE html>
 <html>
 <head>
 <title>Computer Database</title>
