@@ -45,7 +45,7 @@ public class Dashboard extends HttpServlet {
    * Possible values are found in the SQL query.
    * computer_id | computer_name | introduced | discontinued | company_id | company_name
    */
-  private static final String DEFAULT_ORDER_BY = "computer_id"; 
+  private static final String DEFAULT_ORDER_BY = ComputerFields.ID_ALIAS.getValue(); 
 
   private final ComputerService cs;
 
@@ -75,13 +75,13 @@ public class Dashboard extends HttpServlet {
     String search = validator.getString(request, SEARCH_PARAM, false);
     
     /**
-     * We're not injecting directly the parameter received by GET.
+     * We're not injecting directly the parameter received from GET.
      * First we check if it corresponds to a list of columns defined in an enumeration.
      * 
      */
     String orderByColumn = validator.getString(request, COLUMN_PARAM, false);
     if (!ComputerFields.contains(orderByColumn)) {
-      orderByColumn = ComputerFields.ID.getValue();
+      orderByColumn = DEFAULT_ORDER_BY;
     }
 
     /**
@@ -122,7 +122,7 @@ public class Dashboard extends HttpServlet {
      */
 
     options.setPage(page);
-    options.computeOffset();
+//    options.computeOffset();
 
     PageDTO<Computer> computers = pager.getPage(options);
 

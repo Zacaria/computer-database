@@ -1,5 +1,7 @@
 package com.excilys.formation.computerdatabase.model;
 
+import ch.qos.logback.classic.Logger;
+
 /**
  * This class is designed to transfer options to a select query.
  * It is placed in the model package only because it's only role is to hold data.
@@ -15,7 +17,7 @@ public final class SelectOptions {
   private String asc = "asc";
   private String search = "%";
 
-  private SelectOptions() {
+  public SelectOptions() {
   }
 
   public static Builder builder() {
@@ -27,6 +29,7 @@ public final class SelectOptions {
 
     public Builder range(int range) {
       instance.range = range;
+      instance.computeOffset();
       return this;
     }
 
@@ -68,8 +71,9 @@ public final class SelectOptions {
   /**
    * Computes the offset with page and range
    */
-  public void computeOffset() {
+  private void computeOffset() {
     this.offset = (this.page * this.range) - this.range;
+    this.offset = this.offset < 0 ? 0 : this.offset; 
   }
 
   public int getRange() {
@@ -94,6 +98,7 @@ public final class SelectOptions {
 
   public void setPage(int page) {
     this.page = page;
+    this.computeOffset();
   }
 
   @Override

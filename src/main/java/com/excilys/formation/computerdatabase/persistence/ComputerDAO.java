@@ -12,8 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.mapper.ComputerMapper;
+import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
+import com.excilys.formation.computerdatabase.service.ComputerService;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 
 /**
  * The enum Singleton is not vulnerable against Reflection API.
@@ -21,7 +24,7 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
  * @author Zacaria
  *
  */
-public enum ComputerDAO implements Crudable<Computer> {
+public enum ComputerDAO implements ComputerDAOable {
 
   INSTANCE;
   private final static Logger LOGGER =
@@ -30,7 +33,7 @@ public enum ComputerDAO implements Crudable<Computer> {
   private final static String FIELDS =
       "computer.id as computer_id, computer.name as computer_name, introduced, discontinued, company_id";
 
-  private ConnectionFactory connectionFactory;
+  private final ConnectionFactory connectionFactory;
 
   ComputerDAO() {
     this.connectionFactory = ConnectionFactory.getInstance();
@@ -40,8 +43,8 @@ public enum ComputerDAO implements Crudable<Computer> {
       "SELECT COUNT(*) as total from `computer-database-db`.computer;";
 
   @Override
-  public int count() {
-    Connection connection = connectionFactory.getConnection();
+  public int count() throws DAOException {
+    Connection connection = ComputerService.localConnection.get();
 
     int count = 0;
 
@@ -54,9 +57,7 @@ public enum ComputerDAO implements Crudable<Computer> {
       }
 
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
 
     return count;
@@ -66,8 +67,8 @@ public enum ComputerDAO implements Crudable<Computer> {
       + " FROM `computer-database-db`.computer " + " WHERE computer.name LIKE ?;";
 
   @Override
-  public int count(SelectOptions options) {
-    Connection connection = connectionFactory.getConnection();
+  public int count(SelectOptions options) throws DAOException {
+    Connection connection = ComputerService.localConnection.get();
 
     int count = 0;
 
@@ -84,9 +85,7 @@ public enum ComputerDAO implements Crudable<Computer> {
       }
 
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
 
     return count;
@@ -96,8 +95,8 @@ public enum ComputerDAO implements Crudable<Computer> {
       + " , company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id;";
 
   @Override
-  public List<Computer> find() {
-    Connection connection = connectionFactory.getConnection();
+  public List<Computer> find() throws DAOException {
+    Connection connection = ComputerService.localConnection.get();
 
     List<Computer> computers = null;
 
@@ -109,9 +108,7 @@ public enum ComputerDAO implements Crudable<Computer> {
       computers = mapper.mapList(resultSet);
 
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
 
     return computers;
@@ -128,10 +125,10 @@ public enum ComputerDAO implements Crudable<Computer> {
           + " WHERE computer.name LIKE ?" + " ORDER BY %s %s" + " LIMIT ?, ?";
 
   @Override
-  public List<Computer> find(SelectOptions options) {
+  public List<Computer> find(SelectOptions options) throws DAOException {
     LOGGER.debug(options.toString());
 
-    Connection connection = connectionFactory.getConnection();
+    Connection connection = ComputerService.localConnection.get();
 
     List<Computer> computers = null;
 
@@ -154,9 +151,7 @@ public enum ComputerDAO implements Crudable<Computer> {
       LOGGER.debug("executed : " + statement);
 
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
 
     return computers;
@@ -166,8 +161,8 @@ public enum ComputerDAO implements Crudable<Computer> {
       + ", company.id as company_id, company.name as company_name FROM `computer-database-db`.computer left join `computer-database-db`.company on computer.company_id = company.id where computer.id = ?;";
 
   @Override
-  public Computer find(Long id) {
-    Connection connection = connectionFactory.getConnection();
+  public Computer find(Long id) throws DAOException {
+    Connection connection = ComputerService.localConnection.get();
 
     Computer computer = null;
 
@@ -183,9 +178,7 @@ public enum ComputerDAO implements Crudable<Computer> {
         return null;
       }
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
 
     return computer;
@@ -195,20 +188,28 @@ public enum ComputerDAO implements Crudable<Computer> {
       "INSERT INTO `computer-database-db`.computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
 
   @Override
-  public Long create(Computer computer) {
-    Connection connection = connectionFactory.getConnection();
+  public Long create(Computer computer) throws DAOException {
+    LOGGER.debug("Creating this computer : " + computer);
+
+    Connection connection = ComputerService.localConnection.get();
 
     Long newId = null;
 
     try (PreparedStatement statement =
         connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
 
+      // FIXME : this needs a statement mapper.
       statement.setString(1, computer.getName());
       statement.setDate(2,
           computer.getIntroduced() != null ? Date.valueOf(computer.getIntroduced()) : null);
       statement.setDate(3,
           computer.getDiscontinued() != null ? Date.valueOf(computer.getDiscontinued()) : null);
-      statement.setLong(4, computer.getCompany().getId());
+
+      if (computer.getCompany() != null) {
+        statement.setLong(4, computer.getCompany().getId());
+      } else {
+        statement.setNull(4, java.sql.Types.INTEGER);
+      }
 
       int affectedRows = statement.executeUpdate();
       if (affectedRows == 0) {
@@ -220,9 +221,7 @@ public enum ComputerDAO implements Crudable<Computer> {
         newId = generatedId.getLong(1);
       }
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
 
     return newId;
@@ -231,20 +230,37 @@ public enum ComputerDAO implements Crudable<Computer> {
   private final String deleteQuery = "DELETE FROM `computer-database-db`.computer WHERE id = ?;";
 
   @Override
-  public boolean delete(Long id) {
-    Connection connection = connectionFactory.getConnection();
+  public boolean delete(Long id) throws DAOException {
+
+    Connection connection = ComputerService.localConnection.get();
+
+    int affectedRows = 0;
+    try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+      statement.setLong(1, id);
+      affectedRows = statement.executeUpdate();
+    } catch (SQLException e) {
+      throw new DAOException(e);
+    }
+
+    return affectedRows != 0 ? true : false;
+  }
+
+  private final String deleteWithCompanyIdQuery =
+      "DELETE FROM `computer-database-db`.computer WHERE company_id = ?;";
+
+  @Override
+  public boolean deleteWithCompanyId(Long id) throws DAOException {
+
+    Connection connection = ComputerService.localConnection.get();
 
     int affectedRows = 0;
 
-    try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+    try (PreparedStatement statement = connection.prepareStatement(deleteWithCompanyIdQuery)) {
       statement.setLong(1, id);
 
       affectedRows = statement.executeUpdate();
-
     } catch (SQLException e) {
-      LOGGER.error("Delete : failed, no rows affected");
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
 
     return affectedRows != 0 ? true : false;
@@ -254,12 +270,14 @@ public enum ComputerDAO implements Crudable<Computer> {
       "UPDATE `computer-database-db`.computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?;";
 
   @Override
-  public Computer update(Computer computer) {
-    Connection connection = connectionFactory.getConnection();
+  public Computer update(Computer computer) throws DAOException {
+    Connection connection = ComputerService.localConnection.get();
 
     int affectedRows = 0;
 
     try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+      
+      LOGGER.debug("Trying to update computer with this : " + computer);
 
       statement.setString(1, computer.getName());
 
@@ -281,10 +299,7 @@ public enum ComputerDAO implements Crudable<Computer> {
       }
 
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-      return null;
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
 
     return computer;

@@ -21,220 +21,232 @@ import com.excilys.formation.computerdatabase.dataBinders.dto.DTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 
 public class ConsoleUI {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
-	private static final Pattern ID_PATTERN = Pattern.compile("^\\d+$");
-	private static final ComputerService COMPUTER_SERVICE = ComputerService.getInstance();
-	private static final CompanyService COMPANY_SERVICE = CompanyService.getInstance();
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+  private static final Pattern ID_PATTERN = Pattern.compile("^\\d+$");
+  private static final ComputerService COMPUTER_SERVICE = ComputerService.getInstance();
+  private static final CompanyService COMPANY_SERVICE = CompanyService.getInstance();
 
-	private static Pager<Computer> computerPager;
-	private static Pager<Company> companyPager;
-	private static int defaultMax = 10;
+  private static Pager<Computer> computerPager;
+  private static Pager<Company> companyPager;
+  private static int defaultMax = 10;
 
-	public static void main(String[] args) {
-		Options options = ConsoleConfig.getConfig();
+  public static void main(String[] args) {
+    Options options = ConsoleConfig.getConfig();
 
-		CommandLineParser parser = new DefaultParser();
+    CommandLineParser parser = new DefaultParser();
 
-		computerPager = new Pager<>(COMPUTER_SERVICE.count(), (offset, max) -> COMPUTER_SERVICE.get(offset, max), computer -> new ComputerDTO(computer));
-		companyPager = new Pager<>(COMPANY_SERVICE.count(), (offset, max) -> COMPANY_SERVICE.get(offset, max), company -> new CompanyDTO(company));
+    computerPager = new Pager<>(COMPUTER_SERVICE.count(),
+        (sOptions) -> COMPUTER_SERVICE.get(sOptions), computer -> new ComputerDTO(computer));
+    companyPager = new Pager<>(COMPANY_SERVICE.count(), (sOptions) -> COMPANY_SERVICE.get(sOptions),
+        company -> new CompanyDTO(company));
 
-		computerPager.setRange(defaultMax);
+    computerPager.setRange(defaultMax);
 
-		// FIXME : We always display all companies
-		companyPager.setRange(50);
+    // FIXME : We always display all companies
+    companyPager.setRange(50);
 
-		try {
-			CommandLine cmd = parser.parse(options, args);
+    try {
+      CommandLine cmd = parser.parse(options, args);
 
-			if (cmd.hasOption("h") || cmd.getOptions().length == 0) {
-				handleMenu(options);
-			} else if (cmd.hasOption("e")) {
-				handleShowCompanies(cmd);
-			} else if (cmd.hasOption("c") && !cmd.hasOption("id")) {
-				handleShowComputers(cmd);
-			} else if (cmd.hasOption("c") && cmd.hasOption("id")) {
-				handleShowComputer(cmd);
-			} else if (cmd.hasOption("new")) {
-				handleNewComputer(cmd);
-			} else if (cmd.hasOption("up")) {
-				handleUpdateComputer(cmd);
-			} else if (cmd.hasOption("del")) {
-				handleDeleteComputer(cmd);
-			}
-		} catch (UnrecognizedOptionException e) {
-			LOGGER.error("\n ERROR : Unrecognized option " + e.getOption());
-		} catch (ParseException e) {
-			LOGGER.error("The program encountered some problem :(");
-		}
-	}
+      if (cmd.hasOption("h") || cmd.getOptions().length == 0) {
+        handleMenu(options);
+      } else if (cmd.hasOption("e")) {
+        handleShowCompanies(cmd);
+      } else if (cmd.hasOption("c") && !cmd.hasOption("id")) {
+        handleShowComputers(cmd);
+      } else if (cmd.hasOption("c") && cmd.hasOption("id")) {
+        handleShowComputer(cmd);
+      } else if (cmd.hasOption("new")) {
+        handleNewComputer(cmd);
+      } else if (cmd.hasOption("up")) {
+        handleUpdateComputer(cmd);
+      } else if (cmd.hasOption("del")) {
+        handleDeleteComputer(cmd);
+      }
+    } catch (UnrecognizedOptionException e) {
+      LOGGER.error("\n ERROR : Unrecognized option " + e.getOption());
+    } catch (ParseException e) {
+      LOGGER.error("The program encountered some problem :(");
+    }
+  }
 
-	public static void handleMenu(Options options) {
+  public static void handleMenu(Options options) {
 
-		// TODO : tell about syntax and mandatory args
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("ant", options);
-	}
+    // TODO : tell about syntax and mandatory args
+    HelpFormatter formatter = new HelpFormatter();
+    formatter.printHelp("ant", options);
+  }
 
-	public static void handleShowCompanies(CommandLine cmd) {
-		PageDTO<Company> companies = companyPager.getPage(1);
+  public static void handleShowCompanies(CommandLine cmd) {
+    SelectOptions options = SelectOptions.builder().build();
+    
+    PageDTO<Company> companies = companyPager.getPage(options);
 
-		Iterator<DTO> iterator = companies.getElements().iterator();
-		while (iterator.hasNext()) {
-			CompanyDTO company = (CompanyDTO) iterator.next();
+    Iterator<DTO> iterator = companies.getElements().iterator();
+    while (iterator.hasNext()) {
+      CompanyDTO company = (CompanyDTO) iterator.next();
 
-			System.out.println(company.toString());
-		}
-	}
+      System.out.println(company.toString());
+    }
+  }
 
-	public static void handleShowComputers(CommandLine cmd) {
-		Scanner sc = new Scanner(System.in);
+  public static void handleShowComputers(CommandLine cmd) {
+    Scanner sc = new Scanner(System.in);
 
-		int command = 4;
+    SelectOptions options = SelectOptions.builder().page(1).build();
+    
+    int command = 4;
 
-		do {
-			System.out.println("Page " + computerPager.getCurrentPageNumber() + " of " + computerPager.getTotalPage());
+    do {
+      System.out.println(
+          "Page " + computerPager.getCurrentPageNumber() + " of " + computerPager.getTotalPage());
 
-			Iterator<DTO> iterator = computerPager.getPage().getElements().iterator();
+      Iterator<DTO> iterator = computerPager.getPage().getElements().iterator();
 
-			if (command == 4) {
-				iterator = computerPager.previous().getElements().iterator();
-			} else if (command == 6) {
-				iterator = computerPager.next().getElements().iterator();
-			}
+      if (command == 4) {
+        
+        options.setPage(computerPager.getCurrentPageNumber() - 1);
+        iterator = computerPager.getPage(options).getElements().iterator();
+      } else if (command == 6) {
+        options.setPage(computerPager.getCurrentPageNumber() + 1);
+        iterator = computerPager.getPage(options).getElements().iterator();
+      }
 
-			while (iterator.hasNext()) {
-				ComputerDTO computer = (ComputerDTO) iterator.next();
+      while (iterator.hasNext()) {
+        ComputerDTO computer = (ComputerDTO) iterator.next();
 
-				System.out.println(computer.toString());
-			}
+        System.out.println(computer.toString());
+      }
 
-			//FIXME : NextInt is not safe enough
-			System.out.println("Hit 4 to previous page or hit 6 to next ! \nExit with 9");
-			
-			command = sc.nextInt();
+      // FIXME : NextInt is not safe enough
+      System.out.println("Hit 4 to previous page or hit 6 to next ! \nExit with 9");
 
-		} while (command != 9);
-		sc.close();
+      command = sc.nextInt();
 
-		System.out.println("Computer database existing, bye !");
-	}
+    } while (command != 9);
+    sc.close();
 
-	public static void handleShowComputer(CommandLine cmd) {
-		if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
-			System.out.println("Please specify the id of the computer you want to see !");
-		}
+    System.out.println("Computer database existing, bye !");
+  }
 
-		if (!ID_PATTERN.matcher(cmd.getOptionValue("id")).matches()) {
-			System.out.println("Please specify ids as numbers");
-			return;
-		}
+  public static void handleShowComputer(CommandLine cmd) {
+    if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
+      System.out.println("Please specify the id of the computer you want to see !");
+    }
 
-		Long id = Long.parseLong(cmd.getOptionValue("id"));
+    if (!ID_PATTERN.matcher(cmd.getOptionValue("id")).matches()) {
+      System.out.println("Please specify ids as numbers");
+      return;
+    }
 
-		Computer computer = COMPUTER_SERVICE.get(id);
-		if (computer != null) {
-			System.out.println(computer);
-		} else {
-			System.out.println("We found nothing with this id");
-		}
-	}
+    Long id = Long.parseLong(cmd.getOptionValue("id"));
 
-	public static void handleNewComputer(CommandLine cmd) {
-		Company company = null;
-		Computer computer = null;
-		if (cmd.hasOption("com")) {
-			if (!ID_PATTERN.matcher(cmd.getOptionValue("com")).matches()) {
-				System.out.println("Please specify the company id as a number");
-				return;
-			}
+    Computer computer = COMPUTER_SERVICE.get(id);
+    if (computer != null) {
+      System.out.println(computer);
+    } else {
+      System.out.println("We found nothing with this id");
+    }
+  }
 
-			Long companyId = Long.parseLong(cmd.getOptionValue("com"));
+  public static void handleNewComputer(CommandLine cmd) {
+    Company company = null;
+    Computer computer = null;
+    if (cmd.hasOption("com")) {
+      if (!ID_PATTERN.matcher(cmd.getOptionValue("com")).matches()) {
+        System.out.println("Please specify the company id as a number");
+        return;
+      }
 
-			company = COMPANY_SERVICE.get(companyId);
-		}
-		computer = Computer.builder(cmd.getOptionValue("name")).introduced(cmd.getOptionValue("intro"))
-				.discontinued(cmd.getOptionValue("disco")).company(company).build();
+      Long companyId = Long.parseLong(cmd.getOptionValue("com"));
 
-		Long newId = COMPUTER_SERVICE.create(computer);
+      company = COMPANY_SERVICE.get(companyId);
+    }
+    computer = Computer.builder(cmd.getOptionValue("name")).introduced(cmd.getOptionValue("intro"))
+        .discontinued(cmd.getOptionValue("disco")).company(company).build();
 
-		System.out.println("New computer created with id " + newId);
-	}
+    Long newId = COMPUTER_SERVICE.create(computer);
 
-	public static void handleUpdateComputer(CommandLine cmd) {
-		if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
-			System.out.println("Please specify the id of the computer you want to update !");
-			return;
-		}
+    System.out.println("New computer created with id " + newId);
+  }
 
-		if (!ID_PATTERN.matcher(cmd.getOptionValue("id")).matches()
-				&& (!cmd.hasOption("com") || !ID_PATTERN.matcher(cmd.getOptionValue("com")).matches())) {
-			System.out.println("Please specify ids as numbers");
-			return;
-		}
+  public static void handleUpdateComputer(CommandLine cmd) {
+    if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
+      System.out.println("Please specify the id of the computer you want to update !");
+      return;
+    }
 
-		Long id = Long.parseLong(cmd.getOptionValue("id"));
+    if (!ID_PATTERN.matcher(cmd.getOptionValue("id")).matches()
+        && (!cmd.hasOption("com") || !ID_PATTERN.matcher(cmd.getOptionValue("com")).matches())) {
+      System.out.println("Please specify ids as numbers");
+      return;
+    }
 
-		// Get the actual computer to update it.
-		Computer computer = COMPUTER_SERVICE.get(id);
+    Long id = Long.parseLong(cmd.getOptionValue("id"));
 
-		if (computer == null) {
-			System.out.println("No computer was found with this id : " + id);
-			return;
-		}
+    // Get the actual computer to update it.
+    Computer computer = COMPUTER_SERVICE.get(id);
 
-		// Only change the given parameters, keep the other ones.
-		if (cmd.hasOption("name")) {
-			computer.setName(cmd.getOptionValue("name").trim());
-		}
-		if (cmd.hasOption("intro")) {
-			computer.setIntroduced(cmd.getOptionValue("intro").trim());
-		}
-		if (cmd.hasOption("disco")) {
-			computer.setDiscontinued(cmd.getOptionValue("disco").trim());
-		}
-		if (cmd.hasOption("com")) {
-			Long comId = Long.parseLong(cmd.getOptionValue("com").trim());
+    if (computer == null) {
+      System.out.println("No computer was found with this id : " + id);
+      return;
+    }
 
-			Company company = COMPANY_SERVICE.get(comId);
-			computer.setCompany(company);
-		}
+    // Only change the given parameters, keep the other ones.
+    if (cmd.hasOption("name")) {
+      computer.setName(cmd.getOptionValue("name").trim());
+    }
+    if (cmd.hasOption("intro")) {
+      computer.setIntroduced(cmd.getOptionValue("intro").trim());
+    }
+    if (cmd.hasOption("disco")) {
+      computer.setDiscontinued(cmd.getOptionValue("disco").trim());
+    }
+    if (cmd.hasOption("com")) {
+      Long comId = Long.parseLong(cmd.getOptionValue("com").trim());
 
-		computer = COMPUTER_SERVICE.update(computer);
+      Company company = COMPANY_SERVICE.get(comId);
+      computer.setCompany(company);
+    }
 
-		System.out.println("computer updated : " + computer);
-	}
+    computer = COMPUTER_SERVICE.update(computer);
 
-	public static void handleDeleteComputer(CommandLine cmd) {
-		Scanner scanner = new Scanner(System.in);
+    System.out.println("computer updated : " + computer);
+  }
 
-		if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
-			System.out.println("Please specify the id of the computer you want to delete !");
-			return;
-		}
+  public static void handleDeleteComputer(CommandLine cmd) {
+    Scanner scanner = new Scanner(System.in);
 
-		if (!ID_PATTERN.matcher(cmd.getOptionValue("id")).matches()) {
-			System.out.println("Please specify ids as numbers");
-			return;
-		}
-		Long computerId = Long.parseLong(cmd.getOptionValue("id"));
+    if (!cmd.hasOption("id") || cmd.getOptionValue("id") == null) {
+      System.out.println("Please specify the id of the computer you want to delete !");
+      return;
+    }
 
-		System.out.println("This operation is irreversible ? y/N :");
+    if (!ID_PATTERN.matcher(cmd.getOptionValue("id")).matches()) {
+      System.out.println("Please specify ids as numbers");
+      return;
+    }
+    Long computerId = Long.parseLong(cmd.getOptionValue("id"));
 
-		String answer = scanner.next("^\\w$");
-		System.out.println(answer);
-		if (answer.charAt(0) == 'y') {
-			boolean success = COMPUTER_SERVICE.delete(computerId);
+    System.out.println("This operation is irreversible ? y/N :");
 
-			System.out.println(success ? "Computer deleted !" : "Nothing happened");
+    String answer = scanner.next("^\\w$");
+    System.out.println(answer);
+    if (answer.charAt(0) == 'y') {
+      boolean success = COMPUTER_SERVICE.delete(computerId);
 
-		} else {
-			System.out.println("Delete Cancelled");
-		}
-	}
+      System.out.println(success ? "Computer deleted !" : "Nothing happened");
+
+    } else {
+      System.out.println("Delete Cancelled");
+    }
+  }
 
 }

@@ -11,10 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.mapper.CompanyMapper;
+import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
+import com.excilys.formation.computerdatabase.service.CompanyService;
 
-public enum CompanyDAO implements Crudable<Company> {
+public enum CompanyDAO implements CompanyDAOable {
   INSTANCE;
 
   private final static Logger LOGGER =
@@ -22,22 +24,20 @@ public enum CompanyDAO implements Crudable<Company> {
 
   private final static String FIELDS = "company.id as company_id, company.name as company_name";
 
-  ConnectionFactory connectionFactory;
-
-  CompanyDAO() {
-    this.connectionFactory = ConnectionFactory.getInstance();
-  }
+  CompanyDAO() {}
 
   private final String countQuery = "SELECT COUNT(*) as count from `computer-database-db`.company;";
 
   @Override
-  public int count() {
-    Connection connection = connectionFactory.getConnection();
+  public int count() throws DAOException {
+    Connection connection = CompanyService.localConnection.get();
 
     int count = 0;
 
-    try (Statement statement = connection.createStatement()) {
-
+    Statement statement;
+    try {
+      statement = connection.createStatement();
+      
       ResultSet resultSet = statement.executeQuery(countQuery);
 
       if (resultSet.first()) {
@@ -45,35 +45,29 @@ public enum CompanyDAO implements Crudable<Company> {
       }
 
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
-
+    
     return count;
   }
 
   private final String findAllQuery = "SELECT " + FIELDS + " FROM `computer-database-db`.company;";
 
   @Override
-  public List<Company> find() {
-    Connection connection = connectionFactory.getConnection();
+  public List<Company> find() throws DAOException {
+    Connection connection = CompanyService.localConnection.get();
 
     List<Company> companies = null;
 
-    try (Statement statement = connection.createStatement()) {
-
+    try (Statement statement = connection.createStatement()){
       ResultSet resultSet = statement.executeQuery(findAllQuery);
 
       CompanyMapper mapper = new CompanyMapper();
 
       companies = mapper.mapList(resultSet);
-
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-    } finally {
-      connectionFactory.closeConnection(connection);
-    }
+      throw new DAOException(e);
+    }  
 
     return companies;
   }
@@ -82,8 +76,8 @@ public enum CompanyDAO implements Crudable<Company> {
       "SELECT " + FIELDS + " FROM `computer-database-db`.company limit ?, ?;";
 
   @Override
-  public List<Company> find(SelectOptions options) {
-    Connection connection = connectionFactory.getConnection();
+  public List<Company> find(SelectOptions options) throws DAOException {
+    Connection connection = CompanyService.localConnection.get();
     List<Company> companies = null;
 
     try (PreparedStatement statement = connection.prepareStatement(findWithRangeQuery)) {
@@ -95,9 +89,7 @@ public enum CompanyDAO implements Crudable<Company> {
       companies = mapper.mapList(resultSet);
 
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
 
     return companies;
@@ -107,8 +99,8 @@ public enum CompanyDAO implements Crudable<Company> {
       "SELECT " + FIELDS + " FROM `computer-database-db`.company WHERE id = ? ;";
 
   @Override
-  public Company find(Long id) {
-    Connection connection = connectionFactory.getConnection();
+  public Company find(Long id) throws DAOException {
+    Connection connection = CompanyService.localConnection.get();
     Company company = null;
 
     try (PreparedStatement statement = connection.prepareStatement(findByIdQuery)) {
@@ -120,11 +112,29 @@ public enum CompanyDAO implements Crudable<Company> {
         company = mapper.map(resultSet);
       }
     } catch (SQLException e) {
-      LOGGER.error(e.getMessage());
-    } finally {
-      connectionFactory.closeConnection(connection);
+      throw new DAOException(e);
     }
 
     return company;
+  }
+
+  private final String deleteQuery = "DELETE FROM `computer-database-db`.company WHERE id = ?;";
+
+  @Override
+  public boolean delete(Long id) throws DAOException {
+    Connection connection = CompanyService.localConnection.get();
+
+    int affectedRows = 0;
+    
+    try (PreparedStatement statement = connection.prepareStatement(deleteQuery)){
+      
+      statement.setLong(1, id);
+
+      affectedRows = statement.executeUpdate();
+    } catch (SQLException e) {
+      throw new DAOException(e);
+    }   
+
+    return affectedRows != 0 ? true : false;
   }
 }

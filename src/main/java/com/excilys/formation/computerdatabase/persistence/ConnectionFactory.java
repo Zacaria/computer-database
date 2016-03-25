@@ -25,13 +25,6 @@ public class ConnectionFactory {
   private final static Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
-  private String url;
-  private String database;
-  private String options;
-
-  private String user;
-  private String password;
-
   private BoneCP connectionPool = null;
 
   private ConnectionFactory() {
@@ -45,27 +38,39 @@ public class ConnectionFactory {
     try {
       prop.load(publicPropStream);
 
-      this.url = prop.getProperty("url");
-      this.database = prop.getProperty("database");
-      this.options = prop.getProperty("options");
+      String url = prop.getProperty("url");
+      String database = prop.getProperty("database");
+      String options = prop.getProperty("options");
 
       prop.load(privatePropStream);
 
-      this.user = prop.getProperty("user");
-      this.password = prop.getProperty("password");
+      String user = prop.getProperty("user");
+      String password = prop.getProperty("password");
 
       // Register JDBC Driver.
       Class.forName(prop.getProperty("driver"));
 
       BoneCPConfig config = new BoneCPConfig();
 
-      config.setJdbcUrl(this.url + "?" + this.options);
-      config.setUsername(this.user);
-      config.setPassword(this.password);
+      config.setJdbcUrl(url + database + "?" + options);
+      config.setUsername(user);
+      config.setPassword(password);
 
+      /**
+       * Tomcat default max threads : 200
+       * Mysql default max parallel conection : 151
+       * 
+       * So set the total pool to : partitions * maxPerPool < 151 = 150 
+       */
+      
       config.setMinConnectionsPerPartition(5);
-      config.setMaxConnectionsPerPartition(10);
-      config.setPartitionCount(2);
+      config.setMaxConnectionsPerPartition(30);
+
+      /**
+       * Each partition has a number of connections.
+       * The number of partitions allows better concurrency efficiency on delivering connection.
+       */
+      config.setPartitionCount(5);
 
       this.connectionPool = new BoneCP(config);
 
@@ -90,11 +95,13 @@ public class ConnectionFactory {
 
   public Connection getConnection() {
     Connection connection;
+    
+    LOGGER.debug("Requesting new db connection");
 
     try {
       connection = connectionPool.getConnection();
     } catch (SQLException e) {
-      throw new DBConnectionException(e);
+      throw new DBConnectionException("Open connection failed", e);
     }
 
     return connection;
@@ -104,7 +111,7 @@ public class ConnectionFactory {
     try {
       connection.close();
     } catch (SQLException e) {
-      throw new DBConnectionException("Connection did not close properly !");
+      throw new DBConnectionException("Connection did not close properly !", e);
     }
   }
 }
