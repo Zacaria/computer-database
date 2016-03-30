@@ -3,11 +3,13 @@ package com.excilys.formation.computerdatabase.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
-import com.excilys.formation.computerdatabase.persistence.Crudable;
+import com.excilys.formation.computerdatabase.persistence.ComputerDAOable;
+import com.excilys.formation.computerdatabase.persistence.ConnectionFactory;
 
 /**
  * This is a Singleton.
@@ -20,13 +22,19 @@ import com.excilys.formation.computerdatabase.persistence.Crudable;
  *
  */
 public class ComputerService implements Servable<Computer> {
+  
+//  public static final ThreadLocal<Connection> localConnection = new ThreadLocal<>();
+  
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
-  private final Crudable<Computer> cdao;
+  private final ConnectionFactory connectionFactory;
+
+  private final ComputerDAOable cdao;
 
   private ComputerService() {
     this.cdao = ComputerDAO.INSTANCE;
+    this.connectionFactory = ConnectionFactory.getInstance();
   }
 
   /**
@@ -46,8 +54,17 @@ public class ComputerService implements Servable<Computer> {
   @Override
   public int count() {
     LOGGER.info("count " + this.getClass());
+    
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
-    int count = this.cdao.count();
+    int count = 0;
+    try {
+      count = this.cdao.count();
+    } catch (DAOException e) {
+      LOGGER.error(e.getMessage());
+    } finally {
+      this.connectionFactory.closeLocalConnection();
+    }
 
     return count;
   }
@@ -55,8 +72,17 @@ public class ComputerService implements Servable<Computer> {
   @Override
   public int count(SelectOptions options) {
     LOGGER.info("count with options" + this.getClass());
+    
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
-    int count = this.cdao.count(options);
+    int count = 0;
+    try {
+      count = this.cdao.count(options);
+    } catch (DAOException e) {
+      LOGGER.error(e.getMessage());
+    } finally {
+      this.connectionFactory.closeLocalConnection();
+    }
 
     return count;
   }
@@ -65,8 +91,16 @@ public class ComputerService implements Servable<Computer> {
   public Page<Computer> get(SelectOptions options) {
     LOGGER.info("get options " + this.getClass());
 
-    Page<Computer> computerPage =
-        new Page<>(options.getOffset(), this.cdao.find(options), this.cdao.count());
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
+    
+    Page<Computer> computerPage = null;
+    try {
+      computerPage = new Page<>(options.getOffset(), this.cdao.find(options), this.cdao.count());
+    } catch (DAOException e) {
+      LOGGER.error(e.getMessage());
+    } finally {
+      this.connectionFactory.closeLocalConnection();
+    }
 
     return computerPage;
   }
@@ -74,29 +108,66 @@ public class ComputerService implements Servable<Computer> {
   @Override
   public Computer get(Long id) {
     LOGGER.info("get id " + this.getClass());
-    return this.cdao.find(id);
+    
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
+    
+    Computer result = null;
+    try {
+      result = this.cdao.find(id);
+    } catch (DAOException e) {
+      LOGGER.error(e.getMessage());
+    } finally {
+      this.connectionFactory.closeLocalConnection();
+    }
+    
+    return result;
   }
 
   @Override
   public Long create(Computer computer) {
     LOGGER.info("create " + this.getClass());
     LOGGER.debug(computer.toString());
+    
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
+    
     if (computer.getName() == null || computer.getName().isEmpty()) {
       LOGGER.error("ERROR Insert : Could not create an unnamed computer !");
       return null;
     }
-    if (computer.getCompany().getId() == null) {
-      LOGGER.error("ERROR Insert : Could not create a computer without it's company !!");
-      return null;
+    
+    Long result = null;
+    try {
+      result = this.cdao.create(computer);
+    } catch (DAOException e) {
+      LOGGER.error(e.getMessage());
+    } finally {
+      this.connectionFactory.closeLocalConnection();
     }
-    return this.cdao.create(computer);
+    
+    return result;
   }
 
   @Override
   public boolean delete(Long id) {
     LOGGER.info("delete " + this.getClass());
+    if(id == null){
+      return false;
+    }
+    
     LOGGER.debug("Delete Computer with id " + id);
-    return this.cdao.delete(id);
+
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
+    
+    boolean result = false;
+    try {
+      result = this.cdao.delete(id);
+    } catch (DAOException e) {
+      LOGGER.error("Delete : failed, no rows affected");
+    } finally {
+      this.connectionFactory.closeLocalConnection();
+    }
+
+    return result;
   }
 
   @Override
@@ -113,7 +184,19 @@ public class ComputerService implements Servable<Computer> {
       LOGGER.error("ERROR Update : Could not update to a computer without it's company !!");
       return null;
     }
+    
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
+    
+    Computer result = null;
 
-    return this.cdao.update(computer);
+    try {
+      result = this.cdao.update(computer);
+    } catch (DAOException e) {
+      LOGGER.error(e.getMessage());
+    } finally {
+      this.connectionFactory.closeLocalConnection();
+    }
+    
+    return result;
   }
 }

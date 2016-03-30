@@ -3,6 +3,7 @@ package com.excilys.formation.computerdatabase.servlets.util;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -24,12 +25,10 @@ public class ParamValidator {
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
   private static final Pattern NUMBER_PATTERN = Pattern.compile("^\\d+$");
 
-  // private List<ProcessedParam> params;
-  // private List<ProcessedParam> errors;
   private List<String> errors;
 
   public ParamValidator() {
-    this.errors = new ArrayList<>();
+    this.errors = new LinkedList<>();
   }
 
   /**

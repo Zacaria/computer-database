@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
@@ -15,7 +16,6 @@
 	<c:set var="currentPage" value="${empty current ? 1 : current}" />
 	<c:set var="range" value="${empty range ? 10 : range}" />
 </c:if>
-<!DOCTYPE html>
 <html>
 <head>
 <title>Computer Database</title>
@@ -49,13 +49,15 @@
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
-						<strong>Oops!</strong> Something happened : ${error}
+						<strong>Oops!</strong> Something happened :
+						<c:out value="${error}" />
 					</div>
 				</c:forEach>
 				<c:remove var="errors" scope="session" />
 			</c:if>
 			<h1 id="homeTitle">${count}&nbsp;Computers&nbsp;found
-				<c:if test="${not empty param.s}"> for : ${param.s}</c:if>
+				<c:if test="${not empty param.s}"> for : <c:out value="${param.s}" />
+				</c:if>
 			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
@@ -106,10 +108,11 @@
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb" class="cb"
 								value="${computer.getId()}"></td>
-							<td><a href="editComputer?id=${computer.getId()}" onclick="">${computer.getName()}</a></td>
-							<td>${computer.getIntroduced()}</td>
-							<td>${computer.getDiscontinued() }</td>
-							<td>${computer.getCompanyName()}</td>
+							<td><a href="editComputer?id=${computer.getId()}" onclick=""><c:out
+										value="${computer.getName()}" /></a></td>
+							<td><c:out value="${computer.getIntroduced()}" /></td>
+							<td><c:out value="${computer.getDiscontinued()}" /></td>
+							<td><c:out value="${computer.getCompanyName()}" /></td>
 
 						</tr>
 					</c:forEach>
@@ -120,7 +123,8 @@
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
 			<cdb:pagination total="${totalPage}" search="${param.s}" current="${currentPage}"
-				range="${range}" orderBy="${param.col}" asc="${param.asc}"> </cdb:pagination>
+				range="${range}" orderBy="${param.col}" asc="${param.asc}">
+			</cdb:pagination>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
 				<cdb:link target="dashboard" label="10" page="${currentPage}" limit="10" search="${param.s}"

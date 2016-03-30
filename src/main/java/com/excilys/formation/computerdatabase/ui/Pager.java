@@ -31,34 +31,9 @@ public class Pager<T> {
     this.dtoizer = dtoizer;
   }
 
-  // public PageDTO<T> next() {
-  // return this.getPage(++this.currentPageNumber);
-  // }
-  //
-  // public PageDTO<T> previous() {
-  // return this.getPage(--this.currentPageNumber);
-  // }
-  //
   public PageDTO<T> getPage() {
     return this.getPage(SelectOptions.builder().page(this.currentPageNumber).build());
   }
-
-  // public PageDTO<T> getPage(int pageNum) {
-  //
-  // if (pageNum < 1) {
-  // pageNum = 1;
-  // }
-  //
-  // int offset = (pageNum * this.range) - this.range;
-  //
-  // Page<T> page = this.dataRetreiver.get(offset, this.range, "id", true);
-  // this.data = new PageDTO<>(page, this.dtoizer);
-  //
-  // this.setTotal(this.data.getTotal());
-  // this.currentPageNumber = pageNum;
-  //
-  // return this.data;
-  // }
 
   public PageDTO<T> getPage(SelectOptions options) {
     Page<T> page = this.dataRetreiver.get(options);

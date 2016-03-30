@@ -5,13 +5,13 @@ package com.excilys.formation.computerdatabase.model;
  * @author Zacaria
  *
  */
-public enum ComputerFields {
-  ID("computer_id"), NAME("computer_name"), INTRODUCED("introduced"), DISCONTINUED(
+public enum ComputerFields implements Fields{
+  ID("id"),ID_ALIAS("computer_id"), NAME("name"),NAME_ALIAS("computer_name"), INTRODUCED("introduced"), DISCONTINUED(
       "discontinued"), COMPANY_ID("company_id"), COMPANY_NAME("company_name");
 
   private String value;
 
-  ComputerFields(String s) {
+  private ComputerFields(String s) {
     this.value = s;
   }
 

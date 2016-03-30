@@ -1,7 +1,7 @@
+<!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
-<!DOCTYPE html>
 <html>
 <head>
 <title>Computer Database</title>
@@ -37,7 +37,7 @@
 								aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<strong>Oops!</strong> Something happened : ${error}
+							<strong>Oops!</strong> Something happened : <c:out value="${error}"></c:out>
 						</div>
 					</c:forEach>
 					<c:remove var="errors" scope="session" />

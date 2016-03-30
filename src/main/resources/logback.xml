@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-	<property name="LOG_HOME" value="${user.dir}/cdb-logs" />
+	<property name="LOG_HOME" value="cdb-logs" />
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>
-				%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+				%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level - %msg%n
 			</Pattern>
 		</encoder>
 	</appender>
@@ -20,18 +20,18 @@
 			</Pattern>
 		</encoder>
 
-		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${LOG_HOME}/archived/logs.%d{yyyy-MM-dd}.%i.log
 			</fileNamePattern>
 			<MinIndex>1</MinIndex>
 			<MaxIndex>10</MaxIndex>
+			<!-- rollover daily -->
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<!-- or whenever the file size reaches 10MB -->
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
 		</rollingPolicy>
-
-		<triggeringPolicy
-			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-			<maxFileSize>1MB</maxFileSize>
-		</triggeringPolicy>
-
 	</appender>
 
 	<!-- Send logs to both console and file audit -->
@@ -41,7 +41,7 @@
 		<appender-ref ref="STDOUT" />
 	</logger>
 
-	<root level="trace">
+	<root level="error">
 		<appender-ref ref="FILE" />
 	</root>
 

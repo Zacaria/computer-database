@@ -32,7 +32,12 @@ public class ConsoleConfig {
 		
 		//Enablers
 		Option newParam = new Option("new", "enables the creation of computer");
-		Option del = new Option("del", "enables the deletion of computer");
+		Option del = Option
+		    .builder("del")
+		    .desc("id of the object to delete")
+		    .hasArg()
+		    .type(Long.class)
+		    .build();
 		Option updateParam = new Option("up", "enables the update of computer");
 		
 		//Data

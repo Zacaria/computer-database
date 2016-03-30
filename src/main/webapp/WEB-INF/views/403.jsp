@@ -1,6 +1,6 @@
+<!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <c:set var="root" value="${pageContext.request.contextPath}/resources"/>
-<!DOCTYPE html>
 <html xmlns:h="http://java.sun.com/jsf/html">
 <head>
 	<title>Computer Database</title>
