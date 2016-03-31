@@ -25,32 +25,35 @@ public class ConnectionFactory {
   private final static Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
   
-  public final static ThreadLocal<Connection> local = new ThreadLocal<>();
+  private final String PROP_FILE_LINK = "db.properties";
+  private final String PROP_URL = "url";
+  private final String PROP_DB = "database";
+  private final String PROP_OPTIONS = "options";
+  private final String PROP_USER = "user";
+  private final String PROP_PASSWORD = "password";
+  private final String PROP_DRIVER = "driver";
 
   private BoneCP connectionPool = null;
+  
+  public final static ThreadLocal<Connection> local = new ThreadLocal<>();
 
   private ConnectionFactory() {
     Properties prop = new Properties();
-    String propFilePublic = "db.public.properties";
-    String propFilePrivate = "db.private.properties";
 
-    InputStream publicPropStream = getClass().getClassLoader().getResourceAsStream(propFilePublic);
-    InputStream privatePropStream =
-        getClass().getClassLoader().getResourceAsStream(propFilePrivate);
+    InputStream propStream =
+        getClass().getClassLoader().getResourceAsStream(PROP_FILE_LINK);
     try {
-      prop.load(publicPropStream);
+      prop.load(propStream);
 
-      String url = prop.getProperty("url");
-      String database = prop.getProperty("database");
-      String options = prop.getProperty("options");
+      String url = prop.getProperty(PROP_URL);
+      String database = prop.getProperty(PROP_DB);
+      String options = prop.getProperty(PROP_OPTIONS);
 
-      prop.load(privatePropStream);
-
-      String user = prop.getProperty("user");
-      String password = prop.getProperty("password");
+      String user = prop.getProperty(PROP_USER);
+      String password = prop.getProperty(PROP_PASSWORD);
 
       // Register JDBC Driver.
-      Class.forName(prop.getProperty("driver"));
+      Class.forName(prop.getProperty(PROP_DRIVER));
 
       BoneCPConfig config = new BoneCPConfig();
 
