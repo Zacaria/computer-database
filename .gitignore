@@ -12,7 +12,6 @@ WEB-INF/views/*.html
 .metadata/
 
 WebContent/*
-config/*
 static/*
 /build/
 /bin/

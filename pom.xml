@@ -6,6 +6,8 @@
 	<artifactId>computerdatabase</artifactId>
 	<version>0.3.0</version>
 	<name>computer-database</name>
+	<!-- target war -->
+	<packaging>war</packaging>
 	<build>
 		<plugins>
 			<plugin>

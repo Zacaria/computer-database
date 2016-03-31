@@ -17,8 +17,14 @@ import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.service.CompanyService;
 
 public class CompanyDAOTest {
+  private final ConnectionFactory connectionFactory;
+  
   private CompanyDAO cdao;
   private CompanyService service;  
+  
+  public CompanyDAOTest() {
+    this.connectionFactory = ConnectionFactory.getInstance();
+  }
   
   @Before
   public void setUp() throws Exception {
@@ -28,18 +34,13 @@ public class CompanyDAOTest {
      * init the connection in the ThreadLocal
      */
     this.service = CompanyService.getInstance();
-    Method init = CompanyService.class.getDeclaredMethod("initConnection");
-    
-    init.setAccessible(true);
-    init.invoke(this.service);
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
   }
 
   @After
   public void tearDown() throws Exception {
     cdao = null;
-    Method close = CompanyService.class.getDeclaredMethod("closeConnection");
-    close.setAccessible(true);
-    close.invoke(this.service);
+    this.connectionFactory.closeLocalConnection();
   }
 
   @Test
