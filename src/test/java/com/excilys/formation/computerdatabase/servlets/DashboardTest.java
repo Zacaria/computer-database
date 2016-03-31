@@ -22,6 +22,7 @@ public class DashboardTest {
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
 
+	@Ignore
 	@Test
 	public void testDashboard() throws Exception {
 		String relativeUrl = baseUrl + "/computer-database/dashboard";

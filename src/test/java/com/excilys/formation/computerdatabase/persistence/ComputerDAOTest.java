@@ -21,6 +21,7 @@ import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 
 public class ComputerDAOTest {
+  private final ConnectionFactory connectionFactory;
 
   private ComputerDAO cdao;
   private CompanyDAO companyDao;
@@ -35,15 +36,15 @@ public class ComputerDAOTest {
   private Computer computerMock63DateZero;
   private Computer computerMockNullToCUD;
   private Computer computerMockFull;
+  
+  public ComputerDAOTest() {
+    this.connectionFactory = ConnectionFactory.getInstance();
+  }
 
   @Before
   public void setUp() throws Exception {
     this.service = ComputerService.getInstance();
-    Method init = ComputerService.class.getDeclaredMethod("initConnection");
-
-    init.setAccessible(true);
-    init.invoke(this.service);
-    init.setAccessible(false);
+    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
     this.cdao = ComputerDAO.INSTANCE;
     this.companyDao = CompanyDAO.INSTANCE;
@@ -74,10 +75,7 @@ public class ComputerDAOTest {
     this.computerMock63DateZero = null;
     this.computerMockNullToCUD = null;
     
-    Method close = ComputerService.class.getDeclaredMethod("closeConnection");
-    close.setAccessible(true);
-    close.invoke(this.service);
-    close.setAccessible(false);
+    this.connectionFactory.closeLocalConnection();
   }
 
   @Test
