@@ -1,0 +1,15 @@
+--- 
+networks: 
+  cdb_network: ~
+services: 
+  cdb_db: 
+    image: "zacaria/computer-database-db:v1.1"
+    networks: 
+      - cdb_network
+    privileged: true
+  cdb_ut: 
+    image: "zacaria/computer-database-env"
+    networks: 
+      - cdb_network
+    privileged: true
+version: "2"
