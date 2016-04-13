@@ -94,7 +94,7 @@ public class EditComputer extends HttpServlet {
 
     PageDTO<Company> companies = this.pager.getPage();
 
-    ComputerDTO computer = new ComputerDTO(computerModel);
+    ComputerDTO computer = ComputerDTO.builder(computerModel).build();
 
     request.setAttribute("companies", companies);
     request.setAttribute("computer", computer);
