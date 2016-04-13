@@ -23,7 +23,6 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<c:out value="${data.keySet()}"></c:out>
 					<c:if test='${messages.get("success") == true}'>
 						<div class="alert alert-success alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class StringChecker {
+  // Validates positive integers
   private static final Pattern NUMBER_PATTERN = Pattern.compile("^\\d+$");
 
   private StringChecker() {

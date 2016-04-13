@@ -2,12 +2,17 @@ package com.excilys.formation.computerdatabase.servlets.requestValidator;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.excilys.formation.computerdatabase.servlets.requestDTO.AddComputerDTO;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
 public class AddComputerRequestValidator implements RequestValidator {
-
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+  
   @Override
   public List<String> validate(RequestDTO requestDTO, List<String> errors) {
     // TODO : catch cast error ?
@@ -29,7 +34,9 @@ public class AddComputerRequestValidator implements RequestValidator {
       errors.add("The company id was not a number");
     }
     
-    System.out.println(errors);
+    if(!errors.isEmpty()){
+      LOGGER.error(errors.toString());
+    }
     
     return errors;
   }

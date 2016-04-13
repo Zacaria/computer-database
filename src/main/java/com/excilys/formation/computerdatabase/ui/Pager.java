@@ -70,5 +70,9 @@ public class Pager<T> {
     this.total = total;
     this.setTotalPage();
   }
+  
+  public int getTotal(){
+    return this.total;
+  }
 
 }

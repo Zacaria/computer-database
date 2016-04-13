@@ -9,7 +9,7 @@ import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.AddComputerDTO;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
 
-public class AddComputerRequestMapper implements RequestMapper {
+public class AddComputerRequestMapper implements RequestMapper<Computer> {
 
   private static final String COMPANY_ID_PARAM = "companyId";
   private static final String COMPUTER_NAME_PARAM = "name";
