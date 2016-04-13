@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.AddComputerDTO;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
 
 public class ComputerMapper implements Mapable<Computer> {
   private static final Logger LOGGER =
@@ -75,34 +77,4 @@ public class ComputerMapper implements Mapable<Computer> {
     }
     return computers;
   }
-
-  /**
-   * Merges the right computer into the left computer
-   * It means that each null value of the left will be replaced by the corresponding one in the right
-   * @param left receptacle
-   * @param right input
-   * @return nothing, the modification is operated by reference
-   */
-  // public void merge(Computer left, Computer right){
-  // if(left == null || right == null){
-  // LOGGER.warn("The merge function received at least one null object");
-  // }
-  //
-  // if(left.getId() == null){
-  // left.setId(right.getId());
-  // }
-  // if(left.getName() == null){
-  // left.setName(right.getName());
-  // }
-  // if(left.getIntroduced() == null){
-  // left.setIntroduced(right.getIntroduced());
-  // }
-  // if(left.getDiscontinued() == null){
-  // left.setDiscontinued(right.getDiscontinued());
-  // }
-  // if(left.getCompany() == null){
-  // left.setCompany(right.getCompany());
-  // }
-  // }
-
 }

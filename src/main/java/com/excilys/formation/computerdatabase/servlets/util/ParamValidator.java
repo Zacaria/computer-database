@@ -3,8 +3,11 @@ package com.excilys.formation.computerdatabase.servlets.util;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -14,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.util.DateConverter;
+import com.google.common.base.Function;
 
 /**
  * In order to keep a track of errors, the methods are not static.
@@ -61,7 +65,8 @@ public class ParamValidator {
   }
 
   public List<Long> getLongs(HttpServletRequest request, String field) {
-    String serialIds = request.getParameter("selection");
+//    String serialIds = request.getParameter("selection");
+    String serialIds = request.getParameter(field);
     if (this.isNullOrEmpty(field, serialIds)) {
       return null;
     }

@@ -1,8 +1,10 @@
 package com.excilys.formation.computerdatabase.servlets;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -17,10 +19,11 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
-import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
-import com.excilys.formation.computerdatabase.servlets.util.ParamValidator;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.AddComputerDTO;
+import com.excilys.formation.computerdatabase.servlets.requestMapping.AddComputerRequestMapper;
+import com.excilys.formation.computerdatabase.servlets.requestValidator.AddComputerRequestValidator;
 import com.excilys.formation.computerdatabase.ui.Pager;
 
 /**
@@ -31,13 +34,13 @@ public class AddComputer extends HttpServlet {
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
   private static final long serialVersionUID = 1L;
-  private static final Pattern INT_PATTERN = Pattern.compile("^\\d+$");
-
-  private static final String COMPANY_ID_PARAM = "companyId";
-  private static final String COMPUTER_NAME_PARAM = "name";
-  private static final String COMPUTER_INTRODUCED_PARAM = "introduced";
-  private static final String COMPUTER_DISCONTINUED_PARAM = "discontinued";
-
+  
+  private static final String ATTR_RESULT = "data";
+  private static final String ATTR_MESSAGES = "messages";
+  private static final String ATTR_SUCCESS = "success";
+  private static final String ATTR_ERROR = "errors";
+  private static final String ATTR_COMPANIES = "companies";
+  
   private final ComputerService cs;
   private final CompanyService es;
 
@@ -68,45 +71,50 @@ public class AddComputer extends HttpServlet {
 
     LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
         + request.getQueryString());
+    
+    Map<String, Object> result = new HashMap<>();
 
     PageDTO<Company> companies = this.pager.getPage();
+    
+    result.put(ATTR_COMPANIES, companies);
 
-    request.setAttribute("companies", companies);
+    request.setAttribute(ATTR_RESULT, result);
 
     RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
 
     view.forward(request, response);
   }
-
-  /**
-   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-   *      response)
-   */
+  
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
         + request.getQueryString());
+    
+    Map<String, Object> messages = new HashMap<>();
+    boolean success = false;
+    
+    AddComputerRequestMapper mapper = new AddComputerRequestMapper();
+    
+    //map request into a DTO
+    AddComputerDTO dto = (AddComputerDTO) mapper.toDTO(request);
+    
+    List<String> errors = new LinkedList<>();
+    //validate the dto
+    errors = new AddComputerRequestValidator().validate(dto, errors);
 
-    ParamValidator validator = new ParamValidator();
-
-    Long companyId = validator.getLong(request, COMPANY_ID_PARAM);
-    String name = validator.getString(request, COMPUTER_NAME_PARAM, true);
-    LocalDate introduced = validator.getDate(request, COMPUTER_INTRODUCED_PARAM);
-    LocalDate discontinued = validator.getDate(request, COMPUTER_DISCONTINUED_PARAM);
-
-    if (validator.getErrors().isEmpty()) {
-      // Safe strings with prepared queries
-      Computer computer = Computer.builder(name).introduced(introduced).discontinued(discontinued)
-          .company(Company.builder(companyId).build()).build();
-
-      cs.create(computer);
+    //check errors
+    if (errors.isEmpty()) {
+      cs.create(mapper.fromDTO(dto));
+      success = true;
     }
-
-    request.setAttribute("success", validator.getErrors().isEmpty() ? true : false);
-    request.setAttribute("errors", validator.getErrors());
+    
+    //send results    
+    messages.put(ATTR_ERROR, errors);
+    messages.put(ATTR_SUCCESS, success);
+    
+    request.setAttribute(ATTR_MESSAGES, messages);
 
     doGet(request, response);
   }
-
 }

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.model.Company;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
 
 public class CompanyMapper implements Mapable<Company> {
 
@@ -55,5 +56,4 @@ public class CompanyMapper implements Mapable<Company> {
 
     return companies;
   }
-
 }

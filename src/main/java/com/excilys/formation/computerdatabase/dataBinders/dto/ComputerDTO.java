@@ -10,16 +10,71 @@ public class ComputerDTO implements DTO {
   private long companyId;
   private String companyName;
 
-  public ComputerDTO(Computer computer) {
-    this.id = computer.getId();
-    this.name = computer.getName() != null ? computer.getName() : null;
-    this.introduced = computer.getIntroduced() != null ? computer.getIntroduced().toString() : null;
-    this.discontinued =
-        computer.getDiscontinued() != null ? computer.getDiscontinued().toString() : null;
+  public ComputerDTO() {
 
-    if (computer.getCompany() != null) {
-      this.companyId = computer.getCompany().getId();
-      this.companyName = computer.getCompany() != null ? computer.getCompany().getName() : null;
+  }
+
+  public static Builder builder() {
+    return new ComputerDTO.Builder();
+  }
+
+  public static Builder builder(Computer computer) {
+    return new ComputerDTO.Builder(computer);
+  }
+
+  public static class Builder {
+    private ComputerDTO instance = new ComputerDTO();
+
+    public Builder() {
+    }
+
+    public Builder(Computer computer) {
+      instance.id = computer.getId();
+      instance.name = computer.getName() != null ? computer.getName() : null;
+      instance.introduced =
+          computer.getIntroduced() != null ? computer.getIntroduced().toString() : null;
+      instance.discontinued =
+          computer.getDiscontinued() != null ? computer.getDiscontinued().toString() : null;
+
+      if (computer.getCompany() != null) {
+        instance.companyId = computer.getCompany().getId();
+        instance.companyName =
+            computer.getCompany() != null ? computer.getCompany().getName() : null;
+      }
+    }
+
+    public Builder id(long id) {
+      instance.id = id;
+      return this;
+    }
+
+    public Builder name(String name) {
+      instance.name = name;
+      return this;
+    }
+
+    public Builder introduced(String introduced) {
+      instance.introduced = introduced;
+      return this;
+    }
+
+    public Builder discontinued(String discontinued) {
+      instance.discontinued = discontinued;
+      return this;
+    }
+
+    public Builder companyId(long companyId) {
+      instance.companyId = companyId;
+      return this;
+    }
+
+    public Builder companyName(String compayName) {
+      instance.companyName = compayName;
+      return this;
+    }
+
+    public ComputerDTO build() {
+      return instance;
     }
   }
 

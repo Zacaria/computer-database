@@ -3,6 +3,8 @@ package com.excilys.formation.computerdatabase.dataBinders.mapper;
 import java.sql.ResultSet;
 import java.util.List;
 
+import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
+
 public interface Mapable<T> {
   /**
    * Map a resultSet object into a target Object

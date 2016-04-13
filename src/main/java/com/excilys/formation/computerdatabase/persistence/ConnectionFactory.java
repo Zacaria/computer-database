@@ -80,7 +80,7 @@ public class ConnectionFactory {
       this.connectionPool = new BoneCP(config);
 
     } catch (IOException | ClassNotFoundException | SQLException e) {
-      throw new DBConnectionException(e);
+      throw new DBConnectionException(e.getMessage(), e);
     }
   }
 
