@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.AddComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
 
 public class ComputerMapper implements Mapable<Computer> {
   private static final Logger LOGGER =
