@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
 <html>
@@ -23,7 +23,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<c:if test="${success == true}">
+					<c:if test="${messages.get('success') == true}">
 						<div class="alert alert-success alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -31,8 +31,8 @@
 							<strong>Success!</strong> Your computer has been successfully added
 						</div>
 					</c:if>
-					<c:if test="${success == false}">
-						<c:forEach items="${errors}" var="error">
+					<c:if test="${not empty messages.get('errors')}">
+						<c:forEach items="${messages.get('errors')}" var="error">
 							<div class="alert alert-danger alert-dismissible" role="alert">
 								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
@@ -62,7 +62,7 @@
 								<label for="companyId">Company</label>
 								<select class="form-control selectpicker" id="companyId" title="Pick a company"
 									name="companyId" required>
-									<c:forEach items="${companies.getElements()}" var="company">
+									<c:forEach items="${data.get('companies').getElements()}" var="company">
 										<option value="${company.getId()}"><c:out value="${company.getName()}" /></option>
 									</c:forEach>
 								</select>

@@ -55,5 +55,4 @@ public class CompanyMapper implements Mapable<Company> {
 
     return companies;
   }
-
 }

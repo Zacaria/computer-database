@@ -1,7 +1,10 @@
 package com.excilys.formation.computerdatabase.servlets;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,12 +19,12 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
-import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
-import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
-import com.excilys.formation.computerdatabase.servlets.util.ParamValidator;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.EditComputerDTO;
+import com.excilys.formation.computerdatabase.servlets.requestMapping.EditComputerRequestMapper;
+import com.excilys.formation.computerdatabase.servlets.requestValidator.EditComputerRequestValidator;
 import com.excilys.formation.computerdatabase.ui.Pager;
 
 /**
@@ -33,11 +36,11 @@ public class EditComputer extends HttpServlet {
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
   private static final long serialVersionUID = 1L;
 
-  private static final String COMPANY_ID_PARAM = "companyId";
-  private static final String COMPUTER_ID_PARAM = "id";
-  private static final String COMPUTER_NAME_PARAM = "name";
-  private static final String COMPUTER_INTRODUCED_PARAM = "introduced";
-  private static final String COMPUTER_DISCONTINUED_PARAM = "discontinued";
+  private static final String ATTR_RESULT = "data";
+  private static final String ATTR_MESSAGES = "messages";
+  private static final String ATTR_SUCCESS = "success";
+  private static final String ATTR_ERROR = "errors";
+  private static final String ATTR_DTO = "dto";
 
   private final ComputerService cs;
   private final CompanyService es;
@@ -55,7 +58,7 @@ public class EditComputer extends HttpServlet {
     this.pager = new Pager<Company>(this.es.count(), (options) -> this.es.get(options),
         company -> new CompanyDTO(company));
 
-    // FIXME : This is ugly and hard code
+    // FIXME : This is ugly and hard code.
     this.pager.setRange(100);
   }
 
@@ -67,37 +70,28 @@ public class EditComputer extends HttpServlet {
     LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
         + request.getQueryString());
 
-    ParamValidator validator = new ParamValidator();
+    Map<String, Object> result = new HashMap<>();
+    Map<String, Object> messages = new HashMap<>();
+    EditComputerDTO dto = (EditComputerDTO) new EditComputerRequestMapper().getToDTO(request);
 
-    Long id = validator.getLong(request, COMPUTER_ID_PARAM);
-    Computer computerModel;
+    List<String> errors = new LinkedList<>();
+    errors = new EditComputerRequestValidator().validateGet(dto, errors);
 
-    HttpSession session = request.getSession();
-
-    if (id == null) {
-      // redirect if no id was given.
-      session.setAttribute("errors", validator.getErrors());
-      System.out.println(validator.getErrors());
-      response.sendRedirect("dashboard?p=1&r=10");
+    if (!errors.isEmpty()) {
+      LOGGER.error(errors.toString());
+      HttpSession session = request.getSession();
+      messages.put(ATTR_ERROR, errors);
+      session.setAttribute(ATTR_MESSAGES, messages);
+      response.sendRedirect("dashboard");
       return;
     }
 
-    computerModel = this.cs.get(id);
+    dto.setCompanies(this.pager.getPage());
+    dto.setComputer(ComputerDTO.builder(this.cs.get(Long.parseLong(dto.getId()))).build());
 
-    if (computerModel == null) {
-      // redirect if no computer with this id was found.
-      // session.setAttribute("errors", {"The id was not found"});
-      response.setStatus(404);
-      response.sendRedirect("404");
-      return;
-    }
-
-    PageDTO<Company> companies = this.pager.getPage();
-
-    ComputerDTO computer = new ComputerDTO(computerModel);
-
-    request.setAttribute("companies", companies);
-    request.setAttribute("computer", computer);
+    result.put(ATTR_MESSAGES, messages);
+    result.put(ATTR_DTO, dto);
+    request.setAttribute(ATTR_RESULT, result);
 
     RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
 
@@ -112,24 +106,25 @@ public class EditComputer extends HttpServlet {
     LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
         + request.getQueryString());
 
-    ParamValidator validator = new ParamValidator();
+    Map<String, Object> messages = new HashMap<>();
+    boolean success = false;
 
-    Long id = validator.getLong(request, COMPUTER_ID_PARAM);
-    Long companyId = validator.getLong(request, COMPANY_ID_PARAM);
-    String name = validator.getString(request, COMPUTER_NAME_PARAM, true);
-    LocalDate introduced = validator.getDate(request, COMPUTER_INTRODUCED_PARAM);
-    LocalDate discontinued = validator.getDate(request, COMPUTER_DISCONTINUED_PARAM);
+    EditComputerRequestMapper mapper = new EditComputerRequestMapper();
 
-    if (validator.getErrors().isEmpty()) {
-      // Safe strings with prepared queries
-      Computer computer = Computer.builder(name).id(id).introduced(introduced)
-          .discontinued(discontinued).company(Company.builder(companyId).build()).build();
+    EditComputerDTO dto = (EditComputerDTO) mapper.postToDTO(request);
 
-      cs.update(computer);
+    List<String> errors = new LinkedList<>();
+    errors = new EditComputerRequestValidator().validatePost(dto, errors);
+
+    if (errors.isEmpty()) {
+      cs.update(mapper.fromDTO(dto));
+      success = true;
     }
 
-    request.setAttribute("success", validator.getErrors().isEmpty() ? true : false);
-    request.setAttribute("errors", validator.getErrors());
+    messages.put(ATTR_ERROR, errors);
+    messages.put(ATTR_SUCCESS, success);
+
+    request.setAttribute(ATTR_MESSAGES, messages);
 
     doGet(request, response);
   }

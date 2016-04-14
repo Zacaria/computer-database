@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
+<c:set var="computer" value="${data.get('dto').getComputer()}"/>
+<c:set var="companies" value="${data.get('dto').getCompanies()}"/>
 <html>
 <head>
 <title>Computer Database</title>
@@ -23,7 +25,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-8 col-xs-offset-2 box">
-					<c:if test="${success == true}">
+					<c:if test="${messages.get('success') == true}">
 						<div class="alert alert-success alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
@@ -31,8 +33,8 @@
 							<strong>Success!</strong> Your computer has been successfully updated
 						</div>
 					</c:if>
-					<c:if test="${success == false}">
-						<c:forEach items="${errors}" var="error">
+					<c:if test="${messages.get('success') == false}">
+						<c:forEach items="${messages.get('errors')}" var="error">
 							<div class="alert alert-danger alert-dismissible" role="alert">
 								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 									<span aria-hidden="true">&times;</span>

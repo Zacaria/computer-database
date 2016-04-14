@@ -3,9 +3,11 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
+<c:set var="dto" value="${data.get('dto')}" />
 <c:catch var="paramError">
-	<fmt:parseNumber var="currentPage" integerOnly="true" type="number" value="${current}" />
-	<fmt:parseNumber var="range" integerOnly="true" type="number" value="${range}" />
+	<fmt:parseNumber var="currentPage" integerOnly="true" type="number" value="${dto.getPage()}" />
+	<fmt:parseNumber var="range" integerOnly="true" type="number"
+		value="${dto.getOptions().getRange()}" />
 </c:catch>
 <c:if test="${not empty paramError}">
 	<c:set var="currentPage" value="1" />
@@ -13,7 +15,7 @@
 </c:if>
 
 <c:if test="${empty paramError}">
-	<c:set var="currentPage" value="${empty current ? 1 : current}" />
+	<c:set var="currentPage" value="${empty currentPage ? 1 : currentPage}" />
 	<c:set var="range" value="${empty range ? 10 : range}" />
 </c:if>
 <html>
@@ -34,7 +36,7 @@
 	</header>
 	<section id="main">
 		<div class="container">
-			<c:if test="${success == true}">
+			<c:if test="${data.get('messages').get('success') == true}">
 				<div class="alert alert-success alert-dismissible" role="alert">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -43,8 +45,8 @@
 				</div>
 				<c:remove var="success" scope="session" />
 			</c:if>
-			<c:if test="${not empty errors}">
-				<c:forEach items="${sessionScope.errors}" var="error">
+			<c:if test="${not empty data.get('messages').get('errors')}">
+				<c:forEach items="${data.get('messages').get('errors')}" var="error">
 					<div class="alert alert-danger alert-dismissible" role="alert">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
@@ -55,7 +57,7 @@
 				</c:forEach>
 				<c:remove var="errors" scope="session" />
 			</c:if>
-			<h1 id="homeTitle">${count}&nbsp;Computers&nbsp;found
+			<h1 id="homeTitle">${dto.getPager().getTotal()}&nbsp;Computers&nbsp;found
 				<c:if test="${not empty param.s}"> for : <c:out value="${param.s}" />
 				</c:if>
 			</h1>
@@ -75,7 +77,7 @@
 		</div>
 
 		<form id="deleteForm" action="deleteComputer" method="POST">
-			<input type="hidden" name="selection" value="">
+			<input type="hidden" name="computersToDelete" value="">
 		</form>
 
 		<div class="container" style="margin-top: 10px;">
@@ -104,7 +106,7 @@
 				</thead>
 				<!-- Browse attribute computers -->
 				<tbody id="results">
-					<c:forEach items="${computers.getElements()}" var="computer">
+					<c:forEach items="${dto.getComputers().getElements()}" var="computer">
 						<tr>
 							<td class="editMode"><input type="checkbox" name="cb" class="cb"
 								value="${computer.getId()}"></td>
@@ -122,8 +124,8 @@
 	</section>
 	<footer class="navbar-fixed-bottom">
 		<div class="container text-center">
-			<cdb:pagination total="${totalPage}" search="${param.s}" current="${currentPage}"
-				range="${range}" orderBy="${param.col}" asc="${param.asc}">
+			<cdb:pagination total="${dto.getPager().getTotalPage()}" search="${param.s}"
+				current="${currentPage}" range="${range}" orderBy="${param.col}" asc="${param.asc}">
 			</cdb:pagination>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">

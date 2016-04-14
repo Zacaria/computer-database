@@ -61,7 +61,7 @@ public class ParamValidator {
   }
 
   public List<Long> getLongs(HttpServletRequest request, String field) {
-    String serialIds = request.getParameter("selection");
+    String serialIds = request.getParameter(field);
     if (this.isNullOrEmpty(field, serialIds)) {
       return null;
     }

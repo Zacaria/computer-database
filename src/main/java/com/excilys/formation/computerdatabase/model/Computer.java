@@ -12,7 +12,7 @@ public class Computer {
   private LocalDate discontinued;
   private Company company;
 
-  private Computer() {
+  public Computer() {
   }
 
   public static Builder builder(String name) {

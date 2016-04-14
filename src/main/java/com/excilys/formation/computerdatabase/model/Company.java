@@ -4,7 +4,7 @@ public class Company {
   private Long id;
   private String name;
 
-  private Company() {
+  public Company() {
   }
 
   public static Builder builder(Long id) {
