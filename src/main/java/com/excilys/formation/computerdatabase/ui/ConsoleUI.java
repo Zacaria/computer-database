@@ -43,7 +43,7 @@ public class ConsoleUI {
     CommandLineParser parser = new DefaultParser();
 
     computerPager = new Pager<>(COMPUTER_SERVICE.count(),
-        (sOptions) -> COMPUTER_SERVICE.get(sOptions), computer -> new ComputerDTO(computer));
+        (sOptions) -> COMPUTER_SERVICE.get(sOptions), computer -> ComputerDTO.builder(computer).build());
     companyPager = new Pager<>(COMPANY_SERVICE.count(), (sOptions) -> COMPANY_SERVICE.get(sOptions),
         company -> new CompanyDTO(company));
 
