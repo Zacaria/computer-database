@@ -34,13 +34,13 @@ public class AddComputer extends HttpServlet {
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
   private static final long serialVersionUID = 1L;
-  
+
   private static final String ATTR_RESULT = "data";
   private static final String ATTR_MESSAGES = "messages";
   private static final String ATTR_SUCCESS = "success";
   private static final String ATTR_ERROR = "errors";
   private static final String ATTR_COMPANIES = "companies";
-  
+
   private final ComputerService cs;
   private final CompanyService es;
 
@@ -57,7 +57,8 @@ public class AddComputer extends HttpServlet {
     this.pager = new Pager<Company>(this.es.count(), (options) -> this.es.get(options),
         company -> new CompanyDTO(company));
 
-    // FIXME : This is ugly and hard code
+    // FIXME : This is ugly and hard code,
+    // I am considering that there will never be more than 100 companies.
     this.pager.setRange(100);
 
   }
@@ -71,11 +72,11 @@ public class AddComputer extends HttpServlet {
 
     LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
         + request.getQueryString());
-    
+
     Map<String, Object> result = new HashMap<>();
 
     PageDTO<Company> companies = this.pager.getPage();
-    
+
     result.put(ATTR_COMPANIES, companies);
 
     request.setAttribute(ATTR_RESULT, result);
@@ -84,35 +85,35 @@ public class AddComputer extends HttpServlet {
 
     view.forward(request, response);
   }
-  
+
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
     LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
         + request.getQueryString());
-    
+
     Map<String, Object> messages = new HashMap<>();
     boolean success = false;
-    
-    AddComputerRequestMapper mapper = new AddComputerRequestMapper();
-    
-    //map request into a DTO
-    AddComputerDTO dto = (AddComputerDTO) mapper.toDTO(request);
-    
-    List<String> errors = new LinkedList<>();
-    //validate the dto
-    errors = new AddComputerRequestValidator().validate(dto, errors);
 
-    //check errors
+    AddComputerRequestMapper mapper = new AddComputerRequestMapper();
+
+    // map request into a DTO.
+    AddComputerDTO dto = (AddComputerDTO) mapper.postToDTO(request);
+
+    List<String> errors = new LinkedList<>();
+    // validate the dto.
+    errors = new AddComputerRequestValidator().validatePost(dto, errors);
+
+    // check errors.
     if (errors.isEmpty()) {
       cs.create(mapper.fromDTO(dto));
       success = true;
     }
-    
-    //send results    
+
+    // send results.
     messages.put(ATTR_ERROR, errors);
     messages.put(ATTR_SUCCESS, success);
-    
+
     request.setAttribute(ATTR_MESSAGES, messages);
 
     doGet(request, response);

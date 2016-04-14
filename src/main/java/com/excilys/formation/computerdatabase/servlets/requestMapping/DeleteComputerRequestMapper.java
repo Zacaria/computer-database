@@ -11,11 +11,11 @@ import com.excilys.formation.computerdatabase.servlets.requestDTO.DeleteComputer
 import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
-public class DeleteComputerRequestMapper implements RequestMapper {
+public class DeleteComputerRequestMapper implements RequestMapper<Object> {
   private static final String COMPUTER_IDS = "computersToDelete";
 
   @Override
-  public RequestDTO toDTO(HttpServletRequest request) {
+  public RequestDTO postToDTO(HttpServletRequest request) {
     String serialIds = request.getParameter(COMPUTER_IDS);
     
     if (StringChecker.isNullOrEmpty(serialIds)) {
@@ -31,11 +31,4 @@ public class DeleteComputerRequestMapper implements RequestMapper {
 
     return new DeleteComputerDTO(ids);
   }
-
-  @Override
-  public Object fromDTO(RequestDTO dto) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
 }

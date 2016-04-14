@@ -14,7 +14,7 @@ import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
 import com.excilys.formation.computerdatabase.ui.Pager;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
-public class DashboardRequestMapper implements RequestMapper<Object> {
+public class DashboardRequestMapper implements RequestMapper<RequestDTO> {
 
   private static final String PAGE_PARAM = "p";
   private static final String RANGE_PARAM = "r";
@@ -38,7 +38,7 @@ public class DashboardRequestMapper implements RequestMapper<Object> {
 
   @SuppressWarnings("unchecked")
   @Override
-  public RequestDTO toDTO(HttpServletRequest request) {
+  public RequestDTO getToDTO(HttpServletRequest request) {
     int page;
     int range;
     String orderByDir = request.getParameter(DIR_PARAM);
@@ -115,7 +115,7 @@ public class DashboardRequestMapper implements RequestMapper<Object> {
   }
 
   @Override
-  public Object fromDTO(RequestDTO dto) {
+  public RequestDTO fromDTO(RequestDTO dto) {
     throw new UnsupportedOperationException();
   }
 

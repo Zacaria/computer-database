@@ -13,7 +13,7 @@ public class DeleteComputerRequestValidator implements RequestValidator {
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
   @Override
-  public List<String> validate(RequestDTO requestDTO, List<String> errors) {
+  public List<String> validatePost(RequestDTO requestDTO, List<String> errors) {
     DeleteComputerDTO dto = (DeleteComputerDTO) requestDTO;
 
     if (dto.getIds() == null || dto.getIds().isEmpty()) {

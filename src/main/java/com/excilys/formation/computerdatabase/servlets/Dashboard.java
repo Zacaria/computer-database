@@ -30,7 +30,6 @@ public class Dashboard extends HttpServlet {
   private static final String ATTR_RESULT = "data";
   private static final String ATTR_DTO = "dto";
   private static final String ATTR_MESSAGES = "messages";
-//  private static final String ATTR_ERROR = "errors";
 
   /**
    * @see HttpServlet#HttpServlet()
@@ -51,21 +50,22 @@ public class Dashboard extends HttpServlet {
 
     Map<String, Object> result = new HashMap<>();
     Map<String, Object> messages = new HashMap<>();
-    
+
     DashboardRequestMapper mapper = new DashboardRequestMapper();
-    
-    DashboardDTO dto = (DashboardDTO) mapper.toDTO(request);
-       
+
+    DashboardDTO dto = (DashboardDTO) mapper.getToDTO(request);
+
     HttpSession session = request.getSession();
 
     if (session.getAttribute(ATTR_MESSAGES) != null) {
-      messages.putAll((Map<? extends String, ? extends Object>) session.getAttribute(ATTR_MESSAGES));
+      messages
+          .putAll((Map<? extends String, ? extends Object>) session.getAttribute(ATTR_MESSAGES));
       session.setAttribute(ATTR_MESSAGES, null);
     }
-    
+
     result.put(ATTR_DTO, dto);
     result.put(ATTR_MESSAGES, messages);
-    
+
     request.setAttribute(ATTR_RESULT, result);
 
     RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");

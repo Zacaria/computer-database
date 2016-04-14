@@ -5,5 +5,11 @@ import java.util.List;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
 
 public interface RequestValidator {
-  List<String> validate(RequestDTO requestDTO, List<String> errors);
+  default List<String> validateGet(RequestDTO requestDTO, List<String> errors) {
+    throw new UnsupportedOperationException();
+  }
+
+  default List<String> validatePost(RequestDTO requestDTO, List<String> errors) {
+    throw new UnsupportedOperationException();
+  }
 }

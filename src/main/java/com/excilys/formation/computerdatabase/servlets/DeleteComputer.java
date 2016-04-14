@@ -57,11 +57,11 @@ public class DeleteComputer extends HttpServlet {
 
     DeleteComputerRequestMapper mapper = new DeleteComputerRequestMapper();
 
-    DeleteComputerDTO dto = (DeleteComputerDTO) mapper.toDTO(request);
+    DeleteComputerDTO dto = (DeleteComputerDTO) mapper.postToDTO(request);
 
     List<String> errors = new LinkedList<>();
     // validate the dto
-    errors = new DeleteComputerRequestValidator().validate(dto, errors);
+    errors = new DeleteComputerRequestValidator().validatePost(dto, errors);
 
     if (errors.isEmpty()) {
       dto.getIds().stream().forEach(this.cs::delete);
@@ -69,10 +69,10 @@ public class DeleteComputer extends HttpServlet {
     }
 
     HttpSession session = request.getSession();
-    
+
     messages.put(ATTR_ERROR, errors);
     messages.put(ATTR_SUCCESS, success);
-    
+
     session.setAttribute(ATTR_MESSAGES, messages);
     response.sendRedirect("dashboard");
   }
