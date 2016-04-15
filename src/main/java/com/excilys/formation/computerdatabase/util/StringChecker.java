@@ -1,13 +1,6 @@
 package com.excilys.formation.computerdatabase.util;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class StringChecker {
   // Validates positive integers

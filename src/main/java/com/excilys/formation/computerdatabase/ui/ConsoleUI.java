@@ -11,9 +11,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
@@ -30,21 +32,26 @@ public class ConsoleUI {
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
   private static final Pattern ID_PATTERN = Pattern.compile("^\\d+$");
-  private static final ComputerService COMPUTER_SERVICE = ComputerService.getInstance();
-  private static final CompanyService COMPANY_SERVICE = CompanyService.getInstance();
 
+
+  private static ComputerService computerService;
+  private static CompanyService companyService;
   private static Pager<Computer> computerPager;
   private static Pager<Company> companyPager;
   private static int defaultMax = 10;
 
   public static void main(String[] args) {
+    ApplicationContext appContext = new ClassPathXmlApplicationContext("app-context.xml");
+    computerService = (ComputerService) appContext.getBean("ComputerService");
+    companyService = (CompanyService) appContext.getBean("CompanyService");
+    
     Options options = ConsoleConfig.getConfig();
 
     CommandLineParser parser = new DefaultParser();
 
-    computerPager = new Pager<>(COMPUTER_SERVICE.count(),
-        (sOptions) -> COMPUTER_SERVICE.get(sOptions), computer -> ComputerDTO.builder(computer).build());
-    companyPager = new Pager<>(COMPANY_SERVICE.count(), (sOptions) -> COMPANY_SERVICE.get(sOptions),
+    computerPager = new Pager<>(computerService.count(),
+        (sOptions) -> computerService.get(sOptions), computer -> ComputerDTO.builder(computer).build());
+    companyPager = new Pager<>(companyService.count(), (sOptions) -> companyService.get(sOptions),
         company -> new CompanyDTO(company));
 
     computerPager.setRange(defaultMax);
@@ -77,6 +84,8 @@ public class ConsoleUI {
     } catch (ParseException e) {
       LOGGER.error("The program encountered some problem :(");
     }
+    
+    ((AbstractApplicationContext)appContext).close();
   }
 
   public static void handleMenu(Options options) {
@@ -87,7 +96,7 @@ public class ConsoleUI {
   }
 
   public static void handleDeleteCompany(CommandLine cmd) {
-    boolean success = COMPANY_SERVICE.delete(Long.parseLong(cmd.getOptionValue("del")));
+    boolean success = companyService.delete(Long.parseLong(cmd.getOptionValue("del")));
     
     System.out.println("Delete " + success);
   }
@@ -156,7 +165,7 @@ public class ConsoleUI {
 
     Long id = Long.parseLong(cmd.getOptionValue("id"));
 
-    Computer computer = COMPUTER_SERVICE.get(id);
+    Computer computer = computerService.get(id);
     if (computer != null) {
       System.out.println(computer);
     } else {
@@ -175,12 +184,12 @@ public class ConsoleUI {
 
       Long companyId = Long.parseLong(cmd.getOptionValue("com"));
 
-      company = COMPANY_SERVICE.get(companyId);
+      company = companyService.get(companyId);
     }
     computer = Computer.builder(cmd.getOptionValue("name")).introduced(cmd.getOptionValue("intro"))
         .discontinued(cmd.getOptionValue("disco")).company(company).build();
 
-    Long newId = COMPUTER_SERVICE.create(computer);
+    Long newId = computerService.create(computer);
 
     System.out.println("New computer created with id " + newId);
   }
@@ -200,7 +209,7 @@ public class ConsoleUI {
     Long id = Long.parseLong(cmd.getOptionValue("id"));
 
     // Get the actual computer to update it.
-    Computer computer = COMPUTER_SERVICE.get(id);
+    Computer computer = computerService.get(id);
 
     if (computer == null) {
       System.out.println("No computer was found with this id : " + id);
@@ -220,11 +229,11 @@ public class ConsoleUI {
     if (cmd.hasOption("com")) {
       Long comId = Long.parseLong(cmd.getOptionValue("com").trim());
 
-      Company company = COMPANY_SERVICE.get(comId);
+      Company company = companyService.get(comId);
       computer.setCompany(company);
     }
 
-    computer = COMPUTER_SERVICE.update(computer);
+    computer = computerService.update(computer);
 
     System.out.println("computer updated : " + computer);
   }
@@ -250,7 +259,7 @@ public class ConsoleUI {
     String answer = scanner.next("^\\w$");
     System.out.println(answer);
     if (answer.charAt(0) == 'y') {
-      boolean success = COMPUTER_SERVICE.delete(computerId);
+      boolean success = computerService.delete(computerId);
 
       System.out.println(success ? "Computer deleted !" : "Nothing happened");
 

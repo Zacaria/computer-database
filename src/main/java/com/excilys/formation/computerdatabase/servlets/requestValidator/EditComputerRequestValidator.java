@@ -15,10 +15,14 @@ public class EditComputerRequestValidator implements RequestValidator {
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
-  private final ComputerService cs;
+  private ComputerService cs;
 
   public EditComputerRequestValidator() {
-    this.cs = ComputerService.getInstance();
+
+  }
+
+  public EditComputerRequestValidator(ComputerService cs) {
+    this.cs = cs;
   }
 
   @Override
@@ -41,13 +45,12 @@ public class EditComputerRequestValidator implements RequestValidator {
 
     return errors;
   }
-  
+
   @Override
   public List<String> validatePost(RequestDTO requestDTO, List<String> errors) {
     EditComputerDTO dto = (EditComputerDTO) requestDTO;
-    
-    if (!StringChecker.isNullOrEmpty(dto.getId())
-        && !StringChecker.isNumber(dto.getId())) {
+
+    if (!StringChecker.isNullOrEmpty(dto.getId()) && !StringChecker.isNumber(dto.getId())) {
       errors.add("The id was not a number");
     }
     if (StringChecker.isNullOrEmpty(dto.getName())) {
@@ -65,11 +68,11 @@ public class EditComputerRequestValidator implements RequestValidator {
         && !StringChecker.isNumber(dto.getCompanyId())) {
       errors.add("The company id was not a number");
     }
-    
-    if(!errors.isEmpty()){
+
+    if (!errors.isEmpty()) {
       LOGGER.error(errors.toString());
     }
-    
+
     return errors;
   }
 

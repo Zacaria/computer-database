@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +16,11 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.DeleteComputerDTO;
@@ -25,6 +31,7 @@ import com.excilys.formation.computerdatabase.servlets.requestValidator.DeleteCo
  * Servlet implementation class deleteComputer
  */
 @WebServlet("/deleteComputer")
+@Controller
 public class DeleteComputer extends HttpServlet {
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
@@ -34,14 +41,23 @@ public class DeleteComputer extends HttpServlet {
   private static final String ATTR_SUCCESS = "success";
   private static final String ATTR_ERROR = "errors";
 
-  private final ComputerService cs;
+  @Autowired
+  private ComputerService cs;
 
   /**
    * @see HttpServlet#HttpServlet()
    */
   public DeleteComputer() {
     super();
-    this.cs = ComputerService.getInstance();
+  }
+
+  @Override
+  public void init(ServletConfig config) throws ServletException {
+    super.init(config);
+    WebApplicationContext springContext =
+        WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
+    AutowireCapableBeanFactory beanFactory = springContext.getAutowireCapableBeanFactory();
+    beanFactory.autowireBean(this);
   }
 
   /**
@@ -75,5 +91,9 @@ public class DeleteComputer extends HttpServlet {
 
     session.setAttribute(ATTR_MESSAGES, messages);
     response.sendRedirect("dashboard");
+  }
+
+  public void setCs(ComputerService cs) {
+    this.cs = cs;
   }
 }

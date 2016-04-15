@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +17,11 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
@@ -31,6 +37,7 @@ import com.excilys.formation.computerdatabase.ui.Pager;
  * Servlet implementation class EditComputer
  */
 @WebServlet("/editComputer")
+@Controller
 public class EditComputer extends HttpServlet {
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
@@ -42,8 +49,11 @@ public class EditComputer extends HttpServlet {
   private static final String ATTR_ERROR = "errors";
   private static final String ATTR_DTO = "dto";
 
-  private final ComputerService cs;
-  private final CompanyService es;
+  @Autowired
+  private ComputerService cs;
+  
+  @Autowired
+  private CompanyService es;
 
   private Pager<Company> pager;
 
@@ -52,9 +62,16 @@ public class EditComputer extends HttpServlet {
    */
   public EditComputer() {
     super();
-    this.cs = ComputerService.getInstance();
-    this.es = CompanyService.getInstance();
-
+  }
+  
+  @Override
+  public void init(ServletConfig config) throws ServletException {
+    super.init(config);
+    WebApplicationContext springContext =
+        WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
+    AutowireCapableBeanFactory beanFactory = springContext.getAutowireCapableBeanFactory();
+    beanFactory.autowireBean(this);
+    
     this.pager = new Pager<Company>(this.es.count(), (options) -> this.es.get(options),
         company -> new CompanyDTO(company));
 
@@ -75,7 +92,7 @@ public class EditComputer extends HttpServlet {
     EditComputerDTO dto = (EditComputerDTO) new EditComputerRequestMapper().getToDTO(request);
 
     List<String> errors = new LinkedList<>();
-    errors = new EditComputerRequestValidator().validateGet(dto, errors);
+    errors = new EditComputerRequestValidator(this.cs).validateGet(dto, errors);
 
     if (!errors.isEmpty()) {
       LOGGER.error(errors.toString());
@@ -129,4 +146,11 @@ public class EditComputer extends HttpServlet {
     doGet(request, response);
   }
 
+  public void setCs(ComputerService cs) {
+    this.cs = cs;
+  }
+
+  public void setEs(CompanyService es) {
+    this.es = es;
+  }
 }

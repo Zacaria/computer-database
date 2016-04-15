@@ -1,7 +1,5 @@
 package com.excilys.formation.computerdatabase.model;
 
-import ch.qos.logback.classic.Logger;
-
 /**
  * This class is designed to transfer options to a select query.
  * It is placed in the model package only because it's only role is to hold data.

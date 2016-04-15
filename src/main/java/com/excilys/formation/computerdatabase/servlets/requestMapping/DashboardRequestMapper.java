@@ -3,6 +3,8 @@ package com.excilys.formation.computerdatabase.servlets.requestMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Controller;
+
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
@@ -14,6 +16,7 @@ import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
 import com.excilys.formation.computerdatabase.ui.Pager;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
+@Controller
 public class DashboardRequestMapper implements RequestMapper<RequestDTO> {
 
   private static final String PAGE_PARAM = "p";
@@ -29,11 +32,15 @@ public class DashboardRequestMapper implements RequestMapper<RequestDTO> {
    * computer_id | computer_name | introduced | discontinued | company_id | company_name
    */
   private static final String DEFAULT_ORDER_BY = ComputerFields.ID_ALIAS.getValue();
-  
-  private final ComputerService cs;
-  
+
+  private ComputerService cs;
+
   public DashboardRequestMapper() {
-    this.cs = ComputerService.getInstance();
+
+  }
+
+  public DashboardRequestMapper(ComputerService cs) {
+    this.cs = cs;
   }
 
   @SuppressWarnings("unchecked")
@@ -68,8 +75,8 @@ public class DashboardRequestMapper implements RequestMapper<RequestDTO> {
       orderByColumn = request.getParameter(COLUMN_PARAM);
     } else {
       orderByColumn = DEFAULT_ORDER_BY;
-    }    
-    
+    }
+
     /**
      * Init the pager in the client's session if it doesn't exist.
      */
@@ -108,7 +115,7 @@ public class DashboardRequestMapper implements RequestMapper<RequestDTO> {
      */
 
     options.setPage(page);
-    
+
     PageDTO<Computer> computers = pager.getPage(options);
 
     return new DashboardDTO(page, pager, computers, options);
@@ -118,5 +125,4 @@ public class DashboardRequestMapper implements RequestMapper<RequestDTO> {
   public RequestDTO fromDTO(RequestDTO dto) {
     throw new UnsupportedOperationException();
   }
-
 }
