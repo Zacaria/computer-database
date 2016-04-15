@@ -26,7 +26,7 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
  *
  */
 @Repository("ComputerDAO")
-public class ComputerDAO implements ComputerDAOable {
+public class ComputerDAO implements IComputerDAO {
 
   private final static Logger LOGGER =
       LoggerFactory.getLogger(ComputerDAO.class);

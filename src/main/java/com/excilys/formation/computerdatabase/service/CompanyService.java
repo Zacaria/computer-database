@@ -11,20 +11,20 @@ import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
-import com.excilys.formation.computerdatabase.persistence.CompanyDAOable;
-import com.excilys.formation.computerdatabase.persistence.ComputerDAOable;
+import com.excilys.formation.computerdatabase.persistence.ICompanyDAO;
+import com.excilys.formation.computerdatabase.persistence.IComputerDAO;
 
 @Service("CompanyService")
-public class CompanyService implements Servable<Company> {
+public class CompanyService implements IService<Company> {
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(CompanyService.class);
 
   @Resource(name = "CompanyDAO")
-  private CompanyDAOable cdao;
+  private ICompanyDAO cdao;
 
   @Resource(name = "ComputerDAO")
-  private ComputerDAOable computerDAO;
+  private IComputerDAO computerDAO;
 
   public CompanyService() {
   }
@@ -91,11 +91,11 @@ public class CompanyService implements Servable<Company> {
     return success;
   }
 
-  public void setCdao(CompanyDAOable cdao) {
+  public void setCdao(ICompanyDAO cdao) {
     this.cdao = cdao;
   }
 
-  public void setComputerDAO(ComputerDAOable computerDAO) {
+  public void setComputerDAO(IComputerDAO computerDAO) {
     this.computerDAO = computerDAO;
   }
 

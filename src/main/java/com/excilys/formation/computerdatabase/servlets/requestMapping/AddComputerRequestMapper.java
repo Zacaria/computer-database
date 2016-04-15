@@ -5,9 +5,9 @@ import javax.servlet.http.HttpServletRequest;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.AddComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
 
-public class AddComputerRequestMapper implements RequestMapper<Computer> {
+public class AddComputerRequestMapper implements IRequestMapper<Computer> {
 
   private static final String COMPANY_ID_PARAM = "companyId";
   private static final String COMPUTER_NAME_PARAM = "name";
@@ -15,7 +15,7 @@ public class AddComputerRequestMapper implements RequestMapper<Computer> {
   private static final String COMPUTER_DISCONTINUED_PARAM = "discontinued";
 
   @Override
-  public RequestDTO postToDTO(HttpServletRequest request) {
+  public IRequestDTO postToDTO(HttpServletRequest request) {
 
     String companyId = request.getParameter(COMPANY_ID_PARAM);
     String name = request.getParameter(COMPUTER_NAME_PARAM);
@@ -26,7 +26,7 @@ public class AddComputerRequestMapper implements RequestMapper<Computer> {
   }
 
   @Override
-  public Computer fromDTO(RequestDTO requestDTO) {
+  public Computer fromDTO(IRequestDTO requestDTO) {
     AddComputerDTO dto = (AddComputerDTO) requestDTO;
 
     return Computer.builder(dto.getName())

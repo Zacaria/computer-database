@@ -15,7 +15,7 @@ import com.excilys.formation.computerdatabase.model.Page;
  */
 public class PageDTO<E> {
   private final int total;
-  private final List<DTO> elements;
+  private final List<IDTO> elements;
   private final int currentOffset;
   private final int size;
 
@@ -24,7 +24,7 @@ public class PageDTO<E> {
     this.currentOffset = page.getCurrentOffset();
     this.size = page.getSize();
 
-    List<DTO> elements = new ArrayList<>();
+    List<IDTO> elements = new ArrayList<>();
     Iterator<E> iterator = page.getElements().iterator();
     while (iterator.hasNext()) {
       elements.add(dtoizer.getDTO(iterator.next()));
@@ -33,7 +33,7 @@ public class PageDTO<E> {
     this.elements = elements;
   }
 
-  public List<DTO> getElements() {
+  public List<IDTO> getElements() {
     return elements;
   }
 

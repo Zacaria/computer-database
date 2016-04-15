@@ -12,12 +12,12 @@ import com.excilys.formation.computerdatabase.model.ComputerFields;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.DashboardDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
 import com.excilys.formation.computerdatabase.ui.Pager;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
 @Controller
-public class DashboardRequestMapper implements RequestMapper<RequestDTO> {
+public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
 
   private static final String PAGE_PARAM = "p";
   private static final String RANGE_PARAM = "r";
@@ -45,7 +45,7 @@ public class DashboardRequestMapper implements RequestMapper<RequestDTO> {
 
   @SuppressWarnings("unchecked")
   @Override
-  public RequestDTO getToDTO(HttpServletRequest request) {
+  public IRequestDTO getToDTO(HttpServletRequest request) {
     int page;
     int range;
     String orderByDir = request.getParameter(DIR_PARAM);
@@ -122,7 +122,7 @@ public class DashboardRequestMapper implements RequestMapper<RequestDTO> {
   }
 
   @Override
-  public RequestDTO fromDTO(RequestDTO dto) {
+  public IRequestDTO fromDTO(IRequestDTO dto) {
     throw new UnsupportedOperationException();
   }
 }

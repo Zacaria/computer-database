@@ -2,7 +2,7 @@ package com.excilys.formation.computerdatabase.dataBinders.dto;
 
 import com.excilys.formation.computerdatabase.model.Computer;
 
-public class ComputerDTO implements DTO {
+public class ComputerDTO implements IDTO {
   private long id;
   private String name;
   private String introduced;

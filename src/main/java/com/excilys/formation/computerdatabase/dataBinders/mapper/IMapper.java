@@ -3,7 +3,7 @@ package com.excilys.formation.computerdatabase.dataBinders.mapper;
 import java.sql.ResultSet;
 import java.util.List;
 
-public interface Mapable<T> {
+public interface IMapper<T> {
   /**
    * Map a resultSet object into a target Object
    * @param rs input

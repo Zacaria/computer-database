@@ -6,15 +6,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.servlets.requestDTO.AddComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
-public class AddComputerRequestValidator implements RequestValidator {
+public class AddComputerRequestValidator implements IRequestValidator {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(AddComputerRequestValidator.class);
   
   @Override
-  public List<String> validatePost(RequestDTO requestDTO, List<String> errors) {
+  public List<String> validatePost(IRequestDTO requestDTO, List<String> errors) {
     // TODO : catch cast error ?
     AddComputerDTO dto = (AddComputerDTO) requestDTO;
 

@@ -19,7 +19,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
-import com.excilys.formation.computerdatabase.dataBinders.dto.DTO;
+import com.excilys.formation.computerdatabase.dataBinders.dto.IDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
@@ -106,7 +106,7 @@ public class ConsoleUI {
 
     PageDTO<Company> companies = companyPager.getPage(options);
 
-    Iterator<DTO> iterator = companies.getElements().iterator();
+    Iterator<IDTO> iterator = companies.getElements().iterator();
     while (iterator.hasNext()) {
       CompanyDTO company = (CompanyDTO) iterator.next();
 
@@ -125,7 +125,7 @@ public class ConsoleUI {
       System.out.println(
           "Page " + computerPager.getCurrentPageNumber() + " of " + computerPager.getTotalPage());
 
-      Iterator<DTO> iterator = computerPager.getPage().getElements().iterator();
+      Iterator<IDTO> iterator = computerPager.getPage().getElements().iterator();
 
       if (command == 4) {
 

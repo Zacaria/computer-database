@@ -14,7 +14,7 @@ public class Pager<T> {
   /**
    * The class in charge of fetching data.
    */
-  private Pageable<T> dataRetreiver;
+  private IPager<T> dataRetreiver;
   /**
    * The class in charge of getting a plain model into a DTO.
    */
@@ -24,7 +24,7 @@ public class Pager<T> {
 
   }
 
-  public Pager(int count, Pageable<T> p, DTOable<T> dtoizer) {
+  public Pager(int count, IPager<T> p, DTOable<T> dtoizer) {
     this.total = count;
     this.dataRetreiver = p;
     this.setTotalPage();

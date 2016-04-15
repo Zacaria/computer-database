@@ -10,16 +10,16 @@ import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
-import com.excilys.formation.computerdatabase.persistence.ComputerDAOable;
+import com.excilys.formation.computerdatabase.persistence.IComputerDAO;
 
 @Service("ComputerService")
-public class ComputerService implements Servable<Computer> {
+public class ComputerService implements IService<Computer> {
   
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
   @Autowired
-  private ComputerDAOable cdao;
+  private IComputerDAO cdao;
 
   public ComputerService() {
     
@@ -149,7 +149,7 @@ public class ComputerService implements Servable<Computer> {
     return result;
   }
 
-  public void setCdao(ComputerDAOable cdao) {
+  public void setCdao(IComputerDAO cdao) {
     this.cdao = cdao;
   }
 }

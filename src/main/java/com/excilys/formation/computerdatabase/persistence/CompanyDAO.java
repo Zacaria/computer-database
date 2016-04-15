@@ -19,7 +19,7 @@ import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 
 @Repository("CompanyDAO")
-public class CompanyDAO implements CompanyDAOable {
+public class CompanyDAO implements ICompanyDAO {
 
   private final static Logger LOGGER =
       LoggerFactory.getLogger(CompanyDAO.class);

@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import com.excilys.formation.computerdatabase.servlets.requestDTO.DeleteComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
-public class DeleteComputerRequestMapper implements RequestMapper<Object> {
+public class DeleteComputerRequestMapper implements IRequestMapper<Object> {
   private static final String COMPUTER_IDS = "computersToDelete";
 
   @Override
-  public RequestDTO postToDTO(HttpServletRequest request) {
+  public IRequestDTO postToDTO(HttpServletRequest request) {
     String serialIds = request.getParameter(COMPUTER_IDS);
     
     if (StringChecker.isNullOrEmpty(serialIds)) {

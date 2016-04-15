@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.EditComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
-public class EditComputerRequestValidator implements RequestValidator {
+public class EditComputerRequestValidator implements IRequestValidator {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(EditComputerRequestValidator.class);
 
@@ -26,7 +26,7 @@ public class EditComputerRequestValidator implements RequestValidator {
   }
 
   @Override
-  public List<String> validateGet(RequestDTO requestDTO, List<String> errors) {
+  public List<String> validateGet(IRequestDTO requestDTO, List<String> errors) {
 
     EditComputerDTO dto = (EditComputerDTO) requestDTO;
 
@@ -47,7 +47,7 @@ public class EditComputerRequestValidator implements RequestValidator {
   }
 
   @Override
-  public List<String> validatePost(RequestDTO requestDTO, List<String> errors) {
+  public List<String> validatePost(IRequestDTO requestDTO, List<String> errors) {
     EditComputerDTO dto = (EditComputerDTO) requestDTO;
 
     if (!StringChecker.isNullOrEmpty(dto.getId()) && !StringChecker.isNumber(dto.getId())) {
