@@ -2,7 +2,7 @@ package com.excilys.formation.computerdatabase.servlets.requestDTO;
 
 import java.util.List;
 
-public class DeleteComputerDTO extends RequestDTO{
+public class DeleteComputerDTO implements IRequestDTO{
   private List<Long> ids;
   
   public DeleteComputerDTO(){

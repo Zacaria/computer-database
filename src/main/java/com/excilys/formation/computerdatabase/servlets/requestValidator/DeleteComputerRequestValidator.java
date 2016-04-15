@@ -6,14 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.formation.computerdatabase.servlets.requestDTO.DeleteComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
 
-public class DeleteComputerRequestValidator implements RequestValidator {
+public class DeleteComputerRequestValidator implements IRequestValidator {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(DeleteComputerRequestValidator.class);
 
   @Override
-  public List<String> validatePost(RequestDTO requestDTO, List<String> errors) {
+  public List<String> validatePost(IRequestDTO requestDTO, List<String> errors) {
     DeleteComputerDTO dto = (DeleteComputerDTO) requestDTO;
 
     if (dto.getIds() == null || dto.getIds().isEmpty()) {

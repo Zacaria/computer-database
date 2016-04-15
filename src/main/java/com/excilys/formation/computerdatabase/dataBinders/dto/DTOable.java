@@ -8,5 +8,5 @@ package com.excilys.formation.computerdatabase.dataBinders.dto;
  * @param <T> The model to transform.
  */
 public interface DTOable<T> {
-  DTO getDTO(T plain);
+  IDTO getDTO(T plain);
 }

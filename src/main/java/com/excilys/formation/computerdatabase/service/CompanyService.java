@@ -1,63 +1,45 @@
 package com.excilys.formation.computerdatabase.service;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
-import com.excilys.formation.computerdatabase.persistence.CompanyDAO;
-import com.excilys.formation.computerdatabase.persistence.CompanyDAOable;
-import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
-import com.excilys.formation.computerdatabase.persistence.ComputerDAOable;
-import com.excilys.formation.computerdatabase.persistence.ConnectionFactory;
+import com.excilys.formation.computerdatabase.persistence.ICompanyDAO;
+import com.excilys.formation.computerdatabase.persistence.IComputerDAO;
 
-public class CompanyService implements Servable<Company> {
-
-//  public static final ThreadLocal<Connection> localConnection = new ThreadLocal<>();
+@Service("CompanyService")
+public class CompanyService implements IService<Company> {
 
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(CompanyService.class);
 
-  private final ConnectionFactory connectionFactory;
+  @Resource(name = "CompanyDAO")
+  private ICompanyDAO cdao;
 
-  private final CompanyDAOable cdao;
-  private final ComputerDAOable computerDAO;
+  @Resource(name = "ComputerDAO")
+  private IComputerDAO computerDAO;
 
-  private CompanyService() {
-    this.cdao = CompanyDAO.INSTANCE;
-    this.computerDAO = ComputerDAO.INSTANCE;
-    this.connectionFactory = ConnectionFactory.getInstance();
-  }
-
-  private static class CompanyServiceHolder {
-    private final static CompanyService instance = new CompanyService();
-  }
-
-  public static CompanyService getInstance() {
-    return CompanyServiceHolder.instance;
+  public CompanyService() {
   }
 
   @Override
   public Page<Company> get(SelectOptions options) {
     LOGGER.info("get with options" + this.getClass());
-    
-    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
     Page<Company> companyPage = null;
-    
-    try{
-      companyPage =
-          new Page<>(options.getOffset(), this.cdao.find(options), this.cdao.count());
-      
-    } catch (DAOException e){
+
+    try {
+      companyPage = new Page<>(options.getOffset(), this.cdao.find(options), this.cdao.count());
+
+    } catch (DAOException e) {
       LOGGER.error("failed");
-    } finally {
-      this.connectionFactory.closeLocalConnection();
     }
 
     return companyPage;
@@ -67,17 +49,13 @@ public class CompanyService implements Servable<Company> {
   public Company get(Long id) {
     LOGGER.info("get id" + this.getClass());
 
-    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
-
     Company result = null;
     try {
       result = this.cdao.find(id);
     } catch (DAOException e) {
       LOGGER.error("failed get id");
-    } finally {
-      this.connectionFactory.closeLocalConnection();
     }
-    
+
     return result;
   }
 
@@ -85,52 +63,40 @@ public class CompanyService implements Servable<Company> {
   public int count() {
     LOGGER.info("count " + this.getClass());
 
-    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
-
     int result = 0;
     try {
       result = this.cdao.count();
     } catch (DAOException e) {
       LOGGER.error("count failed");
-    } finally {
-      this.connectionFactory.closeLocalConnection();
     }
-    
+
     return result;
   }
 
   @Override
+  @Transactional
   public boolean delete(Long id) {
     LOGGER.info("delete " + this.getClass());
 
-    Connection connection = this.connectionFactory.getConnection();
-    
-    ConnectionFactory.initLocalConnection(connection);
-    
-    // no try with resource because we need to rollback in the catch.
-    
     boolean success = false;
     try {
-
-      connection.setAutoCommit(false);
-
       success = this.computerDAO.deleteWithCompanyId(id);
 
       success = this.cdao.delete(id);
 
-      connection.commit();
-
-    } catch (DAOException | SQLException e) {
+    } catch (DAOException e) {
       LOGGER.error("Delete : failed, no rows affected", e);
-      try {
-        connection.rollback();
-      } catch (SQLException e1) {
-        LOGGER.error("Rollback failed :(", e1);
-      }
-    } finally {
-      this.connectionFactory.closeLocalConnection();
     }
 
     return success;
   }
+
+  public void setCdao(ICompanyDAO cdao) {
+    this.cdao = cdao;
+  }
+
+  public void setComputerDAO(IComputerDAO computerDAO) {
+    this.computerDAO = computerDAO;
+  }
+
 }

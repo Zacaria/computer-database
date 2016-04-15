@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 
-public class ComputerMapper implements Mapable<Computer> {
+public class ComputerMapper implements IMapper<Computer> {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(ComputerMapper.class);
 
   private final static String COMPUTER_ID = "computer_id";
   private final static String COMPUTER_NAME = "computer_name";

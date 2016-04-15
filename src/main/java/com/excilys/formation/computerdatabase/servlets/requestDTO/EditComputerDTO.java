@@ -4,7 +4,7 @@ import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
 
-public class EditComputerDTO extends RequestDTO {
+public class EditComputerDTO implements IRequestDTO {
 
   private String id;
   private String companyId;

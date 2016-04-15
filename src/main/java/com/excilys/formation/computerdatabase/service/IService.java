@@ -9,7 +9,7 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
  * @author Zacaria
  *
  */
-public interface Servable<T> {
+public interface IService<T> {
   int count();
   
   default int count(SelectOptions options){

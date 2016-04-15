@@ -1,6 +1,5 @@
 package com.excilys.formation.computerdatabase.persistence;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,8 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.formation.computerdatabase.dataBinders.mapper.ComputerMapper;
 import com.excilys.formation.computerdatabase.exceptions.DAOException;
@@ -22,16 +25,19 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
  * @author Zacaria
  *
  */
-public enum ComputerDAO implements ComputerDAOable {
+@Repository("ComputerDAO")
+public class ComputerDAO implements IComputerDAO {
 
-  INSTANCE;
   private final static Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(ComputerDAO.class);
 
   private final static String FIELDS =
       "computer.id as computer_id, computer.name as computer_name, introduced, discontinued, company_id";
 
-  ComputerDAO() {
+  @Autowired
+  private DataSource dataSource;
+
+  public ComputerDAO() {
   }
 
   private final String countQuery =
@@ -39,11 +45,10 @@ public enum ComputerDAO implements ComputerDAOable {
 
   @Override
   public int count() throws DAOException {
-    Connection connection = ConnectionFactory.getLocalConnection();
 
     int count = 0;
 
-    try (Statement statement = connection.createStatement()) {
+    try (Statement statement = this.dataSource.getConnection().createStatement()) {
 
       ResultSet resultSet = statement.executeQuery(countQuery);
 
@@ -63,11 +68,10 @@ public enum ComputerDAO implements ComputerDAOable {
 
   @Override
   public int count(SelectOptions options) throws DAOException {
-    Connection connection = ConnectionFactory.getLocalConnection();
 
     int count = 0;
 
-    try (PreparedStatement statement = connection.prepareStatement(countQueryWithOptions)) {
+    try (PreparedStatement statement = this.dataSource.getConnection().prepareStatement(countQueryWithOptions)) {
 
       statement.setString(1, options.getSearch());
 
@@ -91,11 +95,10 @@ public enum ComputerDAO implements ComputerDAOable {
 
   @Override
   public List<Computer> find() throws DAOException {
-    Connection connection = ConnectionFactory.getLocalConnection();
 
     List<Computer> computers = null;
 
-    try (Statement statement = connection.createStatement()) {
+    try (Statement statement = this.dataSource.getConnection().createStatement()) {
 
       ResultSet resultSet = statement.executeQuery(findAllQuery);
       ComputerMapper mapper = new ComputerMapper();
@@ -109,10 +112,6 @@ public enum ComputerDAO implements ComputerDAOable {
     return computers;
   }
 
-  // private final String findWithRangeQuery = "SELECT " + FIELDS
-  // + ", company.id as company_id, company.name as company_name FROM
-  // `computer-database-db`.computer left join `computer-database-db`.company on
-  // computer.company_id = company.id order by ? ? limit ?, ?;";
   private final String findWithRangeQuery =
       "SELECT computer.id as computer_id, computer.name as computer_name, introduced, discontinued, company.id as company_id, company.name as company_name "
           + " FROM `computer-database-db`.computer "
@@ -123,8 +122,6 @@ public enum ComputerDAO implements ComputerDAOable {
   public List<Computer> find(SelectOptions options) throws DAOException {
     LOGGER.debug(options.toString());
 
-    Connection connection = ConnectionFactory.getLocalConnection();
-
     List<Computer> computers = null;
 
     /**
@@ -132,7 +129,7 @@ public enum ComputerDAO implements ComputerDAOable {
      * The following line remains safe against sql inject.
      */
     String sql = String.format(findWithRangeQuery, options.getOrderBy(), options.getAsc());
-    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+    try (PreparedStatement statement = this.dataSource.getConnection().prepareStatement(sql)) {
 
       statement.setString(1, options.getSearch());
       statement.setInt(2, options.getOffset());
@@ -157,11 +154,9 @@ public enum ComputerDAO implements ComputerDAOable {
 
   @Override
   public Computer find(Long id) throws DAOException {
-    Connection connection = ConnectionFactory.getLocalConnection();
-
     Computer computer = null;
 
-    try (PreparedStatement statement = connection.prepareStatement(findByIdQuery)) {
+    try (PreparedStatement statement = this.dataSource.getConnection().prepareStatement(findByIdQuery)) {
       statement.setLong(1, id);
       ResultSet resultSet = statement.executeQuery();
       ComputerMapper mapper = new ComputerMapper();
@@ -186,12 +181,10 @@ public enum ComputerDAO implements ComputerDAOable {
   public Long create(Computer computer) throws DAOException {
     LOGGER.debug("Creating this computer : " + computer);
 
-    Connection connection = ConnectionFactory.getLocalConnection();
-
     Long newId = null;
 
     try (PreparedStatement statement =
-        connection.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+        this.dataSource.getConnection().prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
 
       // FIXME : this needs a statement mapper.
       statement.setString(1, computer.getName());
@@ -227,10 +220,8 @@ public enum ComputerDAO implements ComputerDAOable {
   @Override
   public boolean delete(Long id) throws DAOException {
 
-    Connection connection = ConnectionFactory.getLocalConnection();
-
     int affectedRows = 0;
-    try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
+    try (PreparedStatement statement = this.dataSource.getConnection().prepareStatement(deleteQuery)) {
       statement.setLong(1, id);
       affectedRows = statement.executeUpdate();
     } catch (SQLException e) {
@@ -246,11 +237,9 @@ public enum ComputerDAO implements ComputerDAOable {
   @Override
   public boolean deleteWithCompanyId(Long id) throws DAOException {
 
-    Connection connection = ConnectionFactory.getLocalConnection();
-
     int affectedRows = 0;
 
-    try (PreparedStatement statement = connection.prepareStatement(deleteWithCompanyIdQuery)) {
+    try (PreparedStatement statement = this.dataSource.getConnection().prepareStatement(deleteWithCompanyIdQuery)) {
       statement.setLong(1, id);
 
       affectedRows = statement.executeUpdate();
@@ -266,18 +255,15 @@ public enum ComputerDAO implements ComputerDAOable {
 
   @Override
   public Computer update(Computer computer) throws DAOException {
-    Connection connection = ConnectionFactory.getLocalConnection();
 
     int affectedRows = 0;
 
-    try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+    try (PreparedStatement statement = this.dataSource.getConnection().prepareStatement(updateQuery)) {
 
       LOGGER.debug("Trying to update computer with this : " + computer);
 
       statement.setString(1, computer.getName());
 
-      // Those null values are completely legal.
-      // Just check them in order to avoid nullpointer.
       statement.setDate(2,
           computer.getIntroduced() != null ? Date.valueOf(computer.getIntroduced()) : null);
       statement.setDate(3,
@@ -298,6 +284,10 @@ public enum ComputerDAO implements ComputerDAOable {
     }
 
     return computer;
+  }
+  
+  public void setDataSource(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
 }

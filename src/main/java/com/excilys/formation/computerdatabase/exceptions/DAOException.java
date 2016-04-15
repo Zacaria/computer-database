@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 public class DAOException extends Exception{
   
   private final static Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(DAOException.class);
   
   /**
    * Auto generated serial

@@ -5,6 +5,6 @@ package com.excilys.formation.computerdatabase.dataBinders.dto;
  * @author Zacaria
  *
  */
-public interface DTO {
+public interface IDTO {
 
 }

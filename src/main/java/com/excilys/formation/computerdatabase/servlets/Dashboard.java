@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,7 +15,13 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.DashboardDTO;
 import com.excilys.formation.computerdatabase.servlets.requestMapping.DashboardRequestMapper;
 
@@ -22,20 +29,33 @@ import com.excilys.formation.computerdatabase.servlets.requestMapping.DashboardR
  * Servlet implementation class Dashboard.
  */
 @WebServlet("/dashboard")
+@Controller
 public class Dashboard extends HttpServlet {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(Dashboard.class);
   private static final long serialVersionUID = 1L;
 
   private static final String ATTR_RESULT = "data";
   private static final String ATTR_DTO = "dto";
   private static final String ATTR_MESSAGES = "messages";
 
+  @Autowired
+  private ComputerService cs;
+
   /**
    * @see HttpServlet#HttpServlet()
    */
   public Dashboard() {
     super();
+  }
+
+  @Override
+  public void init(ServletConfig config) throws ServletException {
+    super.init(config);
+    WebApplicationContext springContext =
+        WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
+    AutowireCapableBeanFactory beanFactory = springContext.getAutowireCapableBeanFactory();
+    beanFactory.autowireBean(this);
   }
 
   /**
@@ -51,7 +71,7 @@ public class Dashboard extends HttpServlet {
     Map<String, Object> result = new HashMap<>();
     Map<String, Object> messages = new HashMap<>();
 
-    DashboardRequestMapper mapper = new DashboardRequestMapper();
+    DashboardRequestMapper mapper = new DashboardRequestMapper(this.cs);
 
     DashboardDTO dto = (DashboardDTO) mapper.getToDTO(request);
 
@@ -70,5 +90,9 @@ public class Dashboard extends HttpServlet {
 
     RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/dashboard.jsp");
     view.forward(request, response);
+  }
+
+  public void setCs(ComputerService cs) {
+    this.cs = cs;
   }
 }

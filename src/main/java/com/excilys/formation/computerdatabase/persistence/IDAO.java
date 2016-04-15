@@ -6,7 +6,7 @@ import java.util.List;
 import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 
-public interface Crudable<T> {
+public interface IDAO<T> {
   int count() throws DAOException;
 
   default int count(SelectOptions options) throws DAOException{

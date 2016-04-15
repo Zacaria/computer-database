@@ -8,21 +8,25 @@ import org.slf4j.LoggerFactory;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.EditComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
-public class EditComputerRequestValidator implements RequestValidator {
+public class EditComputerRequestValidator implements IRequestValidator {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(EditComputerRequestValidator.class);
 
-  private final ComputerService cs;
+  private ComputerService cs;
 
   public EditComputerRequestValidator() {
-    this.cs = ComputerService.getInstance();
+
+  }
+
+  public EditComputerRequestValidator(ComputerService cs) {
+    this.cs = cs;
   }
 
   @Override
-  public List<String> validateGet(RequestDTO requestDTO, List<String> errors) {
+  public List<String> validateGet(IRequestDTO requestDTO, List<String> errors) {
 
     EditComputerDTO dto = (EditComputerDTO) requestDTO;
 
@@ -41,13 +45,12 @@ public class EditComputerRequestValidator implements RequestValidator {
 
     return errors;
   }
-  
+
   @Override
-  public List<String> validatePost(RequestDTO requestDTO, List<String> errors) {
+  public List<String> validatePost(IRequestDTO requestDTO, List<String> errors) {
     EditComputerDTO dto = (EditComputerDTO) requestDTO;
-    
-    if (!StringChecker.isNullOrEmpty(dto.getId())
-        && !StringChecker.isNumber(dto.getId())) {
+
+    if (!StringChecker.isNullOrEmpty(dto.getId()) && !StringChecker.isNumber(dto.getId())) {
       errors.add("The id was not a number");
     }
     if (StringChecker.isNullOrEmpty(dto.getName())) {
@@ -65,11 +68,11 @@ public class EditComputerRequestValidator implements RequestValidator {
         && !StringChecker.isNumber(dto.getCompanyId())) {
       errors.add("The company id was not a number");
     }
-    
-    if(!errors.isEmpty()){
+
+    if (!errors.isEmpty()) {
       LOGGER.error(errors.toString());
     }
-    
+
     return errors;
   }
 

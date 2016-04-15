@@ -5,7 +5,7 @@ import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.ui.Pager;
 
-public class DashboardDTO extends RequestDTO {
+public class DashboardDTO implements IRequestDTO {
   private int page;
   private Pager<Computer> pager;
   private PageDTO<Computer> computers;

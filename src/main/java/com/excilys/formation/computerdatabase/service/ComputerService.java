@@ -2,68 +2,38 @@ package com.excilys.formation.computerdatabase.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
-import com.excilys.formation.computerdatabase.persistence.ComputerDAO;
-import com.excilys.formation.computerdatabase.persistence.ComputerDAOable;
-import com.excilys.formation.computerdatabase.persistence.ConnectionFactory;
+import com.excilys.formation.computerdatabase.persistence.IComputerDAO;
 
-/**
- * This is a Singleton.
- * Implemented with an inner class Holder.
- * The holder is initialized only on the first call.
- * This is Initialization-on-demand holder idiom.
- * As the holder is a class, it's access is serial, i.e non-concurrent, i.e thread-safe.
- * See JLS class initialization specification.
- * @author Zacaria
- *
- */
-public class ComputerService implements Servable<Computer> {
-  
-//  public static final ThreadLocal<Connection> localConnection = new ThreadLocal<>();
+@Service("ComputerService")
+public class ComputerService implements IService<Computer> {
   
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
-  private final ConnectionFactory connectionFactory;
+  @Autowired
+  private IComputerDAO cdao;
 
-  private final ComputerDAOable cdao;
-
-  private ComputerService() {
-    this.cdao = ComputerDAO.INSTANCE;
-    this.connectionFactory = ConnectionFactory.getInstance();
-  }
-
-  /**
-   * This is initialized only when getInstance is called.
-   * Which makes the Singleton lazy.
-   * @author Zacaria
-   *
-   */
-  private static class ComputerServiceHolder {
-    private final static ComputerService instance = new ComputerService();
-  }
-
-  public static ComputerService getInstance() {
-    return ComputerServiceHolder.instance;
+  public ComputerService() {
+    
   }
 
   @Override
   public int count() {
     LOGGER.info("count " + this.getClass());
-    
-    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
     int count = 0;
     try {
       count = this.cdao.count();
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
-    } finally {
-      this.connectionFactory.closeLocalConnection();
     }
 
     return count;
@@ -72,17 +42,13 @@ public class ComputerService implements Servable<Computer> {
   @Override
   public int count(SelectOptions options) {
     LOGGER.info("count with options" + this.getClass());
-    
-    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
 
     int count = 0;
     try {
       count = this.cdao.count(options);
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
-    } finally {
-      this.connectionFactory.closeLocalConnection();
-    }
+    } 
 
     return count;
   }
@@ -90,16 +56,12 @@ public class ComputerService implements Servable<Computer> {
   @Override
   public Page<Computer> get(SelectOptions options) {
     LOGGER.info("get options " + this.getClass());
-
-    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
-    
+  
     Page<Computer> computerPage = null;
     try {
       computerPage = new Page<>(options.getOffset(), this.cdao.find(options), this.cdao.count());
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
-    } finally {
-      this.connectionFactory.closeLocalConnection();
     }
 
     return computerPage;
@@ -109,27 +71,22 @@ public class ComputerService implements Servable<Computer> {
   public Computer get(Long id) {
     LOGGER.info("get id " + this.getClass());
     
-    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
-    
     Computer result = null;
     try {
       result = this.cdao.find(id);
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
-    } finally {
-      this.connectionFactory.closeLocalConnection();
     }
     
     return result;
   }
 
   @Override
+  @Transactional
   public Long create(Computer computer) {
     LOGGER.info("create " + this.getClass());
     LOGGER.debug(computer.toString());
-    
-    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
-    
+  
     if (computer.getName() == null || computer.getName().isEmpty()) {
       LOGGER.error("ERROR Insert : Could not create an unnamed computer !");
       return null;
@@ -140,14 +97,13 @@ public class ComputerService implements Servable<Computer> {
       result = this.cdao.create(computer);
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
-    } finally {
-      this.connectionFactory.closeLocalConnection();
     }
     
     return result;
   }
 
   @Override
+  @Transactional
   public boolean delete(Long id) {
     LOGGER.info("delete " + this.getClass());
     if(id == null){
@@ -155,22 +111,19 @@ public class ComputerService implements Servable<Computer> {
     }
     
     LOGGER.debug("Delete Computer with id " + id);
-
-    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
-    
+   
     boolean result = false;
     try {
       result = this.cdao.delete(id);
     } catch (DAOException e) {
       LOGGER.error("Delete : failed, no rows affected");
-    } finally {
-      this.connectionFactory.closeLocalConnection();
     }
 
     return result;
   }
 
   @Override
+  @Transactional
   public Computer update(Computer computer) {
     LOGGER.info("update " + this.getClass());
     LOGGER.debug(computer.toString());
@@ -184,19 +137,19 @@ public class ComputerService implements Servable<Computer> {
       LOGGER.error("ERROR Update : Could not update to a computer without it's company !!");
       return null;
     }
-    
-    ConnectionFactory.initLocalConnection(this.connectionFactory.getConnection());
-    
+  
     Computer result = null;
 
     try {
       result = this.cdao.update(computer);
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
-    } finally {
-      this.connectionFactory.closeLocalConnection();
     }
     
     return result;
+  }
+
+  public void setCdao(IComputerDAO cdao) {
+    this.cdao = cdao;
   }
 }

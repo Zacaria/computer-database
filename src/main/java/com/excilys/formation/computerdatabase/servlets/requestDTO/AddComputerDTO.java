@@ -1,6 +1,6 @@
 package com.excilys.formation.computerdatabase.servlets.requestDTO;
 
-public class AddComputerDTO extends RequestDTO {
+public class AddComputerDTO implements IRequestDTO {
   private String companyId;
   private String name;
   private String introduced;

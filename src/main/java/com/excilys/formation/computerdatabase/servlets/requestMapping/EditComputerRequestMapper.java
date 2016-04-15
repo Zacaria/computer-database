@@ -5,9 +5,9 @@ import javax.servlet.http.HttpServletRequest;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.servlets.requestDTO.EditComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
+import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
 
-public class EditComputerRequestMapper implements RequestMapper<Computer>{
+public class EditComputerRequestMapper implements IRequestMapper<Computer>{
   private static final String COMPANY_ID_PARAM = "companyId";
   private static final String COMPUTER_ID_PARAM = "id";
   private static final String COMPUTER_NAME_PARAM = "name";
@@ -15,14 +15,14 @@ public class EditComputerRequestMapper implements RequestMapper<Computer>{
   private static final String COMPUTER_DISCONTINUED_PARAM = "discontinued";
   
   @Override
-  public RequestDTO getToDTO(HttpServletRequest request) {
+  public IRequestDTO getToDTO(HttpServletRequest request) {
     String id = request.getParameter(COMPUTER_ID_PARAM);
     
     return new EditComputerDTO(id);
   }
   
   @Override
-  public RequestDTO postToDTO(HttpServletRequest request) {
+  public IRequestDTO postToDTO(HttpServletRequest request) {
     String id = request.getParameter(COMPUTER_ID_PARAM);
     String companyId = request.getParameter(COMPANY_ID_PARAM);
     String name = request.getParameter(COMPUTER_NAME_PARAM);
@@ -33,7 +33,7 @@ public class EditComputerRequestMapper implements RequestMapper<Computer>{
   }
   
   @Override
-  public Computer fromDTO(RequestDTO requestDTO) {
+  public Computer fromDTO(IRequestDTO requestDTO) {
     EditComputerDTO dto = (EditComputerDTO) requestDTO;
     
     // Safe strings with prepared queries.
