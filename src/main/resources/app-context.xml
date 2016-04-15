@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans 
@@ -16,7 +15,7 @@
 		transaction-manager="transactionManager" />
 
 	<context:annotation-config />
-	
+
 	<context:component-scan base-package="com.excilys.formation.computerdatabase" />
 
 	<!-- Creating TransactionManager Bean, since JDBC we are creating of type 
@@ -25,17 +24,20 @@
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	
+
 	<context:property-placeholder location="classpath:application.properties" />
 
 	<!-- MySQL DB DataSource -->
 	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+		<!-- class="org.springframework.jdbc.datasource.DataSource"> -->
 
-		<property name="driverClassName" value="${spring.datasource.driver-class-name}" />
-		<property name="url"
-			value="${spring.datasource.url}" />
-		<property name="username" value="${spring.datasource.username}" />
-		<property name="password" value="${spring.datasource.password}" />
+		<property name="driverClass" value="${bonecp.driver}" />
+		<property name="jdbcUrl" value="${bonecp.url}" />
+		<property name="username" value="${bonecp.username}" />
+		<property name="password" value="${bonecp.password}" />
+		<property name="maxConnectionsPerPartition" value="${bonecp.max-active}" />
+		<property name="minConnectionsPerPartition" value="${bonecp.min-active}" />
+		<property name="partitionCount" value="${bonecp.partitions}"/>
 	</bean>
 </beans>
