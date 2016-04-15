@@ -14,7 +14,7 @@ import com.excilys.formation.computerdatabase.model.Computer;
 
 public class ComputerMapper implements Mapable<Computer> {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(ComputerMapper.class);
 
   private final static String COMPUTER_ID = "computer_id";
   private final static String COMPUTER_NAME = "computer_name";

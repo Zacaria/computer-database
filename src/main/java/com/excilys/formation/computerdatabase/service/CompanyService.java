@@ -18,7 +18,7 @@ import com.excilys.formation.computerdatabase.persistence.ComputerDAOable;
 public class CompanyService implements Servable<Company> {
 
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(CompanyService.class);
 
   @Resource(name = "CompanyDAO")
   private CompanyDAOable cdao;

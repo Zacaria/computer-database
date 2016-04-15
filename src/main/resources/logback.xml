@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
+	<!-- actually it's writing in the home/$USER directory -->
 	<property name="LOG_HOME" value="cdb-logs" />
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -23,8 +24,7 @@
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${LOG_HOME}/archived/logs.%d{yyyy-MM-dd}.%i.log
 			</fileNamePattern>
-			<MinIndex>1</MinIndex>
-			<MaxIndex>10</MaxIndex>
+			<MaxHistory>10</MaxHistory>
 			<!-- rollover daily -->
 			<timeBasedFileNamingAndTriggeringPolicy
 				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">

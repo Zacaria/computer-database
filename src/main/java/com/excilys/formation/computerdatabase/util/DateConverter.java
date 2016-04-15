@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class DateConverter {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(DateConverter.class);
 
   /*
    * Matches bisextiles dates Format : yyyy-MM-dd Still needs to be verfied to

@@ -40,7 +40,7 @@ import com.excilys.formation.computerdatabase.ui.Pager;
 @Controller
 public class EditComputer extends HttpServlet {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(EditComputer.class);
   private static final long serialVersionUID = 1L;
 
   private static final String ATTR_RESULT = "data";

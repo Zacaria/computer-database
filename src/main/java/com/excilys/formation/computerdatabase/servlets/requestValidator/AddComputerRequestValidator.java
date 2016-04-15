@@ -11,7 +11,7 @@ import com.excilys.formation.computerdatabase.util.StringChecker;
 
 public class AddComputerRequestValidator implements RequestValidator {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(AddComputerRequestValidator.class);
   
   @Override
   public List<String> validatePost(RequestDTO requestDTO, List<String> errors) {

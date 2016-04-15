@@ -30,7 +30,7 @@ import com.excilys.formation.computerdatabase.service.ComputerService;
 public class ConsoleUI {
 
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(ConsoleUI.class);
   private static final Pattern ID_PATTERN = Pattern.compile("^\\d+$");
 
 

@@ -20,10 +20,9 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
 
 @Repository("CompanyDAO")
 public class CompanyDAO implements CompanyDAOable {
-//  INSTANCE;
 
   private final static Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(CompanyDAO.class);
 
   private final static String FIELDS = "company.id as company_id, company.name as company_name";
 

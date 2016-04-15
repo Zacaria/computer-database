@@ -10,7 +10,7 @@ import com.excilys.formation.computerdatabase.servlets.requestDTO.RequestDTO;
 
 public class DeleteComputerRequestValidator implements RequestValidator {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(DeleteComputerRequestValidator.class);
 
   @Override
   public List<String> validatePost(RequestDTO requestDTO, List<String> errors) {

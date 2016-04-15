@@ -32,7 +32,7 @@ import com.excilys.formation.computerdatabase.servlets.requestMapping.DashboardR
 @Controller
 public class Dashboard extends HttpServlet {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(Dashboard.class);
   private static final long serialVersionUID = 1L;
 
   private static final String ATTR_RESULT = "data";

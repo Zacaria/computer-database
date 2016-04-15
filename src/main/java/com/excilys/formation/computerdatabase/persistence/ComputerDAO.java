@@ -28,9 +28,8 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
 @Repository("ComputerDAO")
 public class ComputerDAO implements ComputerDAOable {
 
-  // INSTANCE;
   private final static Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(ComputerDAO.class);
 
   private final static String FIELDS =
       "computer.id as computer_id, computer.name as computer_name, introduced, discontinued, company_id";

@@ -13,7 +13,7 @@ import com.excilys.formation.computerdatabase.model.Company;
 public class CompanyMapper implements Mapable<Company> {
 
   private final static Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(CompanyMapper.class);
 
   private final static String COMPANY_ID = "company_id";
   private final static String COMPANY_NAME = "company_name";

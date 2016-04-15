@@ -13,7 +13,7 @@ import com.excilys.formation.computerdatabase.util.StringChecker;
 
 public class EditComputerRequestValidator implements RequestValidator {
   private static final Logger LOGGER =
-      LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
+      LoggerFactory.getLogger(EditComputerRequestValidator.class);
 
   private ComputerService cs;
 
