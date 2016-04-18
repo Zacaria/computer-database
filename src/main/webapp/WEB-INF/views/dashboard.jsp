@@ -93,14 +93,14 @@
 							</a>
 						</span></th>
 						<th>Computer name<span data-column="computer_name"
-							class="glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
+							class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
 						<th>Introduced date<span data-column="introduced"
-							class="glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
+							class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
 						<!-- Table header for Discontinued Date -->
 						<th>Discontinued date<span data-column="discontinued"
-							class="glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
+							class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
 						<!-- Table header for Company -->
-						<th>Company <span data-column="company_name" class="glyphicon glyphicon-sort pull-right"
+						<th>Company <span data-column="company_name" class="button-sort glyphicon glyphicon-sort pull-right"
 							aria-hidden="true"></span></th>
 					</tr>
 				</thead>
