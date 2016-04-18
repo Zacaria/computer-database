@@ -2,8 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
-<c:set var="computer" value="${data.get('dto').getComputer()}"/>
-<c:set var="companies" value="${data.get('dto').getCompanies()}"/>
+<c:set var="computer" value="${data.get('dto').getComputer()}" />
+<c:set var="companies" value="${data.get('dto').getCompanies()}" />
 <html>
 <head>
 <title>Computer Database</title>
@@ -34,6 +34,12 @@
 						</div>
 					</c:if>
 					<c:if test="${messages.get('success') == false}">
+						<div class="alert alert-danger alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<strong>Oops!</strong> Update failed
+						</div>
 						<c:forEach items="${messages.get('errors')}" var="error">
 							<div class="alert alert-danger alert-dismissible" role="alert">
 								<button type="button" class="close" data-dismiss="alert" aria-label="Close">

@@ -7,10 +7,11 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.RowMapper;
 
 import com.excilys.formation.computerdatabase.model.Company;
 
-public class CompanyMapper implements IMapper<Company> {
+public class CompanyMapper implements RowMapper<Company> {
 
   private final static Logger LOGGER =
       LoggerFactory.getLogger(CompanyMapper.class);
@@ -19,7 +20,7 @@ public class CompanyMapper implements IMapper<Company> {
   private final static String COMPANY_NAME = "company_name";
 
   @Override
-  public Company map(ResultSet rs) {
+  public Company mapRow(ResultSet rs, int rowNum) {
     Long id = null;
     String name = null;
 
@@ -39,20 +40,26 @@ public class CompanyMapper implements IMapper<Company> {
     return company;
   }
 
-  @Override
-  public List<Company> mapList(ResultSet rs) {
-    List<Company> companies = new ArrayList<>();
-    Company company = null;
-    try {
-      while (rs.next()) {
-        company = this.map(rs);
+//  @Override
+//  public Company mapRow(ResultSet rs, int rowNum) throws SQLException {
+//    // TODO Auto-generated method stub
+//    return null;
+//  }
 
-        companies.add(company);
-      }
-    } catch (SQLException e) {
-      LOGGER.error("list mapping company error");
-    }
-
-    return companies;
-  }
+//  @Override
+//  public List<Company> mapList(ResultSet rs) {
+//    List<Company> companies = new ArrayList<>();
+//    Company company = null;
+//    try {
+//      while (rs.next()) {
+//        company = this.map(rs);
+//
+//        companies.add(company);
+//      }
+//    } catch (SQLException e) {
+//      LOGGER.error("list mapping company error");
+//    }
+//
+//    return companies;
+//  }
 }

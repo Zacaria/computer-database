@@ -8,11 +8,12 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.RowMapper;
 
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 
-public class ComputerMapper implements IMapper<Computer> {
+public class ComputerMapper implements RowMapper<Computer> {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(ComputerMapper.class);
 
@@ -25,7 +26,7 @@ public class ComputerMapper implements IMapper<Computer> {
    * Maps a ResultSet into an Object
    */
   @Override
-  public Computer map(ResultSet rs) {
+  public Computer mapRow(ResultSet rs, int rowNum) {
     Long id = null;
     String name = null;
     LocalDate introduced = null;
@@ -47,7 +48,7 @@ public class ComputerMapper implements IMapper<Computer> {
       }
 
       CompanyMapper companyMapper = new CompanyMapper();
-      company = companyMapper.map(rs);
+      company = companyMapper.mapRow(rs, rowNum);
 
       computer = Computer.builder(name).id(id).introduced(introduced).discontinued(discontinued)
           .company(company).build();
@@ -59,20 +60,20 @@ public class ComputerMapper implements IMapper<Computer> {
     return computer;
   }
 
-  @Override
-  public List<Computer> mapList(ResultSet rs) {
-    List<Computer> computers = new ArrayList<>();
-
-    Computer computer = null;
-    try {
-      while (rs.next()) {
-        computer = this.map(rs);
-
-        computers.add(computer);
-      }
-    } catch (SQLException e) {
-      LOGGER.error("list mapping computer error");
-    }
-    return computers;
-  }
+//  @Override
+//  public List<Computer> mapList(ResultSet rs) {
+//    List<Computer> computers = new ArrayList<>();
+//
+//    Computer computer = null;
+//    try {
+//      while (rs.next()) {
+//        computer = this.map(rs);
+//
+//        computers.add(computer);
+//      }
+//    } catch (SQLException e) {
+//      LOGGER.error("list mapping computer error");
+//    }
+//    return computers;
+//  }
 }

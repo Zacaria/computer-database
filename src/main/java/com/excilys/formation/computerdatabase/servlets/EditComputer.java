@@ -133,8 +133,7 @@ public class EditComputer extends HttpServlet {
     List<String> errors = new LinkedList<>();
     errors = new EditComputerRequestValidator().validatePost(dto, errors);
 
-    if (errors.isEmpty()) {
-      cs.update(mapper.fromDTO(dto));
+    if (errors.isEmpty() && cs.update(mapper.fromDTO(dto)) != null) {
       success = true;
     }
 

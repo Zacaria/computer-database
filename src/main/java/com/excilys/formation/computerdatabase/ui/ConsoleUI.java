@@ -85,7 +85,7 @@ public class ConsoleUI {
       LOGGER.error("The program encountered some problem :(");
     }
     
-    ((AbstractApplicationContext)appContext).close();
+    ((AbstractApplicationContext) appContext).close();
   }
 
   public static void handleMenu(Options options) {
