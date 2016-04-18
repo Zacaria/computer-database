@@ -7,20 +7,18 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
@@ -35,12 +33,11 @@ import com.excilys.formation.computerdatabase.ui.Pager;
 /**
  * Servlet implementation class AddComputer
  */
-@WebServlet("/addComputer")
 @Controller
-public class AddComputer extends HttpServlet {
+@RequestMapping("/addComputer")
+public class AddComputer implements InitializingBean {
   private static final Logger LOGGER =
       LoggerFactory.getLogger(AddComputer.class);
-  private static final long serialVersionUID = 1L;
 
   private static final String ATTR_RESULT = "data";
   private static final String ATTR_MESSAGES = "messages";
@@ -63,26 +60,11 @@ public class AddComputer extends HttpServlet {
     super();
   }
 
-  @Override
-  public void init(ServletConfig config) throws ServletException {
-    super.init(config);
-    WebApplicationContext springContext =
-        WebApplicationContextUtils.getWebApplicationContext(config.getServletContext());
-    AutowireCapableBeanFactory beanFactory = springContext.getAutowireCapableBeanFactory();
-    beanFactory.autowireBean(this);
-    
-    this.pager = new Pager<Company>(this.es.count(), (options) -> this.es.get(options),
-        company -> new CompanyDTO(company));
-
-    // FIXME : This is ugly and hard code,
-    // I am considering that there will never be more than 100 companies.
-    this.pager.setRange(100);
-  }
-
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
    *      response)
    */
+  @RequestMapping(method = RequestMethod.GET)
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
@@ -102,6 +84,7 @@ public class AddComputer extends HttpServlet {
     view.forward(request, response);
   }
 
+  @RequestMapping(method = RequestMethod.POST)
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
@@ -141,5 +124,15 @@ public class AddComputer extends HttpServlet {
   
   public void setEs(CompanyService es) {
     this.es = es;
+  }
+
+  @Override
+  public void afterPropertiesSet() throws Exception {
+    this.pager = new Pager<Company>(this.es.count(), (options) -> this.es.get(options),
+        company -> new CompanyDTO(company));
+
+    // FIXME : This is ugly and hard code,
+    // I am considering that there will never be more than 100 companies.
+    this.pager.setRange(100);   
   }
 }
