@@ -27,8 +27,8 @@ import com.excilys.formation.computerdatabase.controllers.requestMapping.AddComp
 import com.excilys.formation.computerdatabase.controllers.requestValidator.AddComputerRequestValidator;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.model.Company;
-import com.excilys.formation.computerdatabase.service.CompanyService;
-import com.excilys.formation.computerdatabase.service.ComputerService;
+import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.service.IService;
 import com.excilys.formation.computerdatabase.ui.Pager;
 
 /**
@@ -45,10 +45,10 @@ public class AddComputer implements InitializingBean {
   private static final String MODEL_ATTRIBUTE = "addComputerForm";
 
   @Autowired
-  private ComputerService cs;
+  private IService<Computer> cs;
 
   @Autowired
-  private CompanyService es;
+  private IService<Company> es;
 
   @Autowired
   private AddComputerRequestValidator validator;

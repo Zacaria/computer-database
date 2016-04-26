@@ -1,15 +1,11 @@
 package com.excilys.formation.computerdatabase.controllers;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -23,7 +19,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.excilys.formation.computerdatabase.controllers.requestDTO.DeleteComputerDTO;
 import com.excilys.formation.computerdatabase.controllers.requestMapping.DeleteComputerRequestMapper;
 import com.excilys.formation.computerdatabase.controllers.requestValidator.DeleteComputerRequestValidator;
+import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.ComputerService;
+import com.excilys.formation.computerdatabase.service.IService;
 
 /**
  * Servlet implementation class deleteComputer
@@ -38,13 +36,13 @@ public class DeleteComputer {
   private static final String ATTR_ERROR = "errors";
 
   @Autowired
-  private ComputerService cs;
+  private IService<Computer> cs;
 
-
-  public DeleteComputer() { }
+  public DeleteComputer() {
+  }
 
   @RequestMapping(method = RequestMethod.POST)
-  protected String doPost(RedirectAttributes attr,HttpServletRequest request) {
+  protected String doPost(RedirectAttributes attr, HttpServletRequest request) {
     LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
         + request.getQueryString());
 
