@@ -1,6 +1,6 @@
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 
@@ -16,10 +16,10 @@
 </c:catch>
 <c:choose>
 	<c:when test="${pageContext.response.locale == 'fr'}">
-		<c:set var="datePattern" value="dd-MM-yyyy"/>
+		<c:set var="datePattern" value="dd-MM-yyyy" />
 	</c:when>
 	<c:otherwise>
-		<c:set var="datePattern" value="yyyy-MM-dd"/>
+		<c:set var="datePattern" value="yyyy-MM-dd" />
 	</c:otherwise>
 </c:choose>
 
@@ -36,29 +36,27 @@
 	<jsp:attribute name="body_area">
 	<section id="main">
 		<div class="container">
-			<c:if test="${data.get('messages').get('success') == true}">
+			<c:if test="${not empty messages.get('success')}">
 				<div class="alert alert-success alert-dismissible" role="alert">
 					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<strong>Successful</strong> deletion
+					<spring:message code="${messages.get('success') }" />
 				</div>
-				<c:remove var="success" scope="session" />
 			</c:if>
-			<c:if test="${not empty data.get('messages').get('errors')}">
-				<c:forEach items="${data.get('messages').get('errors')}" var="error">
+			<c:if test="${not empty messages.get('errors')}">
+				<c:forEach items="${messages.get('errors')}" var="error">
 					<div class="alert alert-danger alert-dismissible" role="alert">
 						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						<strong>Oops!</strong> Something happened :
-						<c:out value="${error}" />
+						<spring:message code="${error.getCode()}" />
 					</div>
 				</c:forEach>
 				<c:remove var="errors" scope="session" />
 			</c:if>
 			${pout }
-			<form:errors path="pout"></form:errors>
 			<h1 id="homeTitle">${dto.getPager().getTotal()} <spring:message code="Dashboard.Title" />
 				<c:if test="${not empty param.s}"> <spring:message code="Dashboard.Search.Label" /> <c:out
 							value="${param.s}" />
@@ -69,7 +67,7 @@
 					<form id="searchForm" action="dashboard" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="s" class="form-control" placeholder="Search name" />
-						<input type="button" id="searchsubmit" value="${DashboardSearchButton}"
+						<input type="submit" id="searchsubmit" value="${DashboardSearchButton}"
 								class="btn btn-primary"></input>
 					</form>
 				</div>
@@ -81,9 +79,10 @@
 			</div>
 		</div>
 
-		<form id="deleteForm" action="deleteComputer" method="POST">
+		<form:form id="deleteForm" modelAttribute="deleteComputerForm" action="deleteComputer"
+				method="POST">
 			<input type="hidden" name="computersToDelete" value="">
-		</form>
+		</form:form>
 
 		<div class="container" style="margin-top: 10px;">
 			<table class="table table-striped table-bordered">

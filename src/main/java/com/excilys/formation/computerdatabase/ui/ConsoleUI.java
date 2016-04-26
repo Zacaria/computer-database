@@ -29,10 +29,8 @@ import com.excilys.formation.computerdatabase.service.ComputerService;
 
 public class ConsoleUI {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(ConsoleUI.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleUI.class);
   private static final Pattern ID_PATTERN = Pattern.compile("^\\d+$");
-
 
   private static ComputerService computerService;
   private static CompanyService companyService;
@@ -44,13 +42,14 @@ public class ConsoleUI {
     ApplicationContext appContext = new ClassPathXmlApplicationContext("app-context.xml");
     computerService = (ComputerService) appContext.getBean("ComputerService");
     companyService = (CompanyService) appContext.getBean("CompanyService");
-    
+
     Options options = ConsoleConfig.getConfig();
 
     CommandLineParser parser = new DefaultParser();
 
-    computerPager = new Pager<>(computerService.count(),
-        (sOptions) -> computerService.get(sOptions), computer -> ComputerDTO.builder(computer).build());
+    computerPager =
+        new Pager<>(computerService.count(), (sOptions) -> computerService.get(sOptions),
+            computer -> ComputerDTO.builder(computer).build());
     companyPager = new Pager<>(companyService.count(), (sOptions) -> companyService.get(sOptions),
         company -> new CompanyDTO(company));
 
@@ -84,7 +83,7 @@ public class ConsoleUI {
     } catch (ParseException e) {
       LOGGER.error("The program encountered some problem :(");
     }
-    
+
     ((AbstractApplicationContext) appContext).close();
   }
 
@@ -97,7 +96,7 @@ public class ConsoleUI {
 
   public static void handleDeleteCompany(CommandLine cmd) {
     boolean success = companyService.delete(Long.parseLong(cmd.getOptionValue("del")));
-    
+
     System.out.println("Delete " + success);
   }
 

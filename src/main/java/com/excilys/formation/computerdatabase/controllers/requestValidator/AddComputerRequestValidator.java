@@ -11,26 +11,26 @@ import com.excilys.formation.computerdatabase.util.StringChecker;
 
 @Component
 public class AddComputerRequestValidator implements Validator {
-  
+
   @Override
   public void validate(Object target, Errors errors) {
     AddComputerDTO dto = (AddComputerDTO) target;
 
     if (!StringChecker.isNullOrEmpty(dto.getIntroduced())) {
-      if ("fr".equals(LocaleContextHolder.getLocale().toString())){
+      if ("fr".equals(LocaleContextHolder.getLocale().toString())) {
         dto.setIntroduced(DateConverter.frToEnDate(dto.getIntroduced()));
       }
-      
+
       if (!StringChecker.isDate(dto.getIntroduced())) {
         errors.rejectValue("introduced", "Invalid.Date");
       }
     }
-    
-    if (!StringChecker.isNullOrEmpty(dto.getDiscontinued())){
-      if ("fr".equals(LocaleContextHolder.getLocale().toString())){
+
+    if (!StringChecker.isNullOrEmpty(dto.getDiscontinued())) {
+      if ("fr".equals(LocaleContextHolder.getLocale().toString())) {
         dto.setDiscontinued(DateConverter.frToEnDate(dto.getDiscontinued()));
       }
-      if( !StringChecker.isDate(dto.getDiscontinued())) {
+      if (!StringChecker.isDate(dto.getDiscontinued())) {
         errors.rejectValue("discontinued", "Invalid.Date");
       }
     }

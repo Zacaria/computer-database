@@ -3,16 +3,15 @@ package com.excilys.formation.computerdatabase.exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DAOException extends Exception{
-  
-  private final static Logger LOGGER =
-      LoggerFactory.getLogger(DAOException.class);
-  
+public class DAOException extends Exception {
+
+  private final static Logger LOGGER = LoggerFactory.getLogger(DAOException.class);
+
   /**
    * Auto generated serial
    */
   private static final long serialVersionUID = 2080993202423139483L;
-  
+
   public DAOException(String message) {
     super(message);
     LOGGER.error(message);

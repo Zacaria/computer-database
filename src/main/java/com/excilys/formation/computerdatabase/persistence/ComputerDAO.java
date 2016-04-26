@@ -74,7 +74,7 @@ public class ComputerDAO implements IComputerDAO {
   @Override
   public List<Computer> find() {
 
-    List<Computer> computers = this.jdbcTemplate.query(findAllQuery, 
+    List<Computer> computers = this.jdbcTemplate.query(findAllQuery,
         (ResultSet rs, int rowNum) -> new ComputerMapper().mapRow(rs, rowNum));
 
     return computers;
@@ -109,17 +109,17 @@ public class ComputerDAO implements IComputerDAO {
   @Override
   public Computer find(Long id) {
     Computer computer = null;
-    
+
     /*
      * This block catches when there is no result
      */
     try {
       computer = this.jdbcTemplate.queryForObject(findByIdQuery, new Object[] { id },
-          (ResultSet rs, int rowNum) ->  new ComputerMapper().mapRow(rs, rowNum));
-    } catch (EmptyResultDataAccessException e){
+          (ResultSet rs, int rowNum) -> new ComputerMapper().mapRow(rs, rowNum));
+    } catch (EmptyResultDataAccessException e) {
       return null;
     }
-    
+
     return computer;
   }
 

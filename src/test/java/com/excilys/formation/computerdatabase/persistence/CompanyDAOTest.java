@@ -51,7 +51,7 @@ public class CompanyDAOTest {
     this.service = (CompanyService) appContext.getBean("CompanyService");
     this.cdao = (CompanyDAO) appContext.getBean("CompanyDAO");
     this.datasource = (DataSource) appContext.getBean("dataSource");
-    
+
     System.out.println(this.cdao);
 
     /**
@@ -67,7 +67,7 @@ public class CompanyDAOTest {
     // cdao = null;
     // this.connectionFactory.closeLocalConnection();
   }
-  
+
   @Test
   public void countTest() throws DAOException {
     int count = cdao.count();

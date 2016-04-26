@@ -21,7 +21,7 @@ public class AddComputerRequestMapper implements IRequestMapper<Computer> {
     String name = request.getParameter(COMPUTER_NAME_PARAM);
     String introduced = request.getParameter(COMPUTER_INTRODUCED_PARAM);
     String discontinued = request.getParameter(COMPUTER_DISCONTINUED_PARAM);
-    
+
     return new AddComputerDTO(companyId, name, introduced, discontinued);
   }
 
@@ -29,10 +29,8 @@ public class AddComputerRequestMapper implements IRequestMapper<Computer> {
   public Computer fromDTO(IRequestDTO requestDTO) {
     AddComputerDTO dto = (AddComputerDTO) requestDTO;
 
-    return Computer.builder(dto.getName())
-        .introduced(dto.getIntroduced())
+    return Computer.builder(dto.getName()).introduced(dto.getIntroduced())
         .discontinued(dto.getDiscontinued())
-        .company(Company.builder(Long.parseLong(dto.getCompanyId())).build())
-        .build();
+        .company(Company.builder(Long.parseLong(dto.getCompanyId())).build()).build();
   }
 }

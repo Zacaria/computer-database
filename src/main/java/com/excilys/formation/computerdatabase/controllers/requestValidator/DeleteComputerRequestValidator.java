@@ -1,30 +1,26 @@
 package com.excilys.formation.computerdatabase.controllers.requestValidator;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 import com.excilys.formation.computerdatabase.controllers.requestDTO.DeleteComputerDTO;
-import com.excilys.formation.computerdatabase.controllers.requestDTO.IRequestDTO;
 
-public class DeleteComputerRequestValidator implements IRequestValidator {
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(DeleteComputerRequestValidator.class);
+@Component
+public class DeleteComputerRequestValidator implements Validator {
 
   @Override
-  public List<String> validatePost(IRequestDTO requestDTO, List<String> errors) {
-    DeleteComputerDTO dto = (DeleteComputerDTO) requestDTO;
+  public void validate(Object target, Errors errors) {
+    DeleteComputerDTO dto = (DeleteComputerDTO) target;
 
     if (dto.getIds() == null || dto.getIds().isEmpty()) {
-      errors.add("There was no id to delete");
+      errors.reject("DeleteComputer.Id.Empty", "There was no id to delete");
     }
+  }
 
-    if (!errors.isEmpty()) {
-      LOGGER.error(errors.toString());
-    }
-
-    return errors;
+  @Override
+  public boolean supports(Class<?> clazz) {
+    return DeleteComputerDTO.class.equals(clazz);
   }
 
 }

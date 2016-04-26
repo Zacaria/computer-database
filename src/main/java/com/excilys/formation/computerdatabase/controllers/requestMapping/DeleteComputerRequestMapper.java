@@ -17,16 +17,14 @@ public class DeleteComputerRequestMapper implements IRequestMapper<Object> {
   @Override
   public IRequestDTO postToDTO(HttpServletRequest request) {
     String serialIds = request.getParameter(COMPUTER_IDS);
-    
+
     if (StringChecker.isNullOrEmpty(serialIds)) {
       return new DeleteComputerDTO();
     }
 
     List<String> stringIds = Arrays.asList(serialIds.split(","));
 
-    List<Long> ids = stringIds.stream()
-        .filter(s -> StringChecker.isNumber(s))
-        .map(Long::parseLong)
+    List<Long> ids = stringIds.stream().filter(s -> StringChecker.isNumber(s)).map(Long::parseLong)
         .collect(Collectors.toCollection(ArrayList::new));
 
     return new DeleteComputerDTO(ids);

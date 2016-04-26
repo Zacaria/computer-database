@@ -11,59 +11,51 @@ import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 
 public class ComputerMapperTest {
-//	private Computer empty;
-	private Computer full;
-	private Computer partial;
-	
-	private ComputerMapper mapper;
+  // private Computer empty;
+  private Computer full;
+  private Computer partial;
 
-	@Before
-	public void setUp() throws Exception {
-//		this.empty = new Computer();
-		this.full = Computer.builder("full")
-				.id(5l)
-				.introduced("1999-04-04")
-				.discontinued("1999-06-06")
-				.company(Company.builder(7l).name("MOS Technology").build())
-				.build();
-		
-		this.partial = Computer.builder("partial")
-				.id(8l)
-				.introduced("")
-				.discontinued("")
-				.company(Company.builder(10l).name("Digital Equipment Corporation").build())
-				.build();
-		
-		this.mapper = new ComputerMapper();
-	}
+  private ComputerMapper mapper;
 
-	@After
-	public void tearDown() throws Exception {
-//		this.empty = null;
-		this.full = null;
-		this.partial = null;
-		this.mapper = null;
-	}
+  @Before
+  public void setUp() throws Exception {
+    // this.empty = new Computer();
+    this.full = Computer.builder("full").id(5l).introduced("1999-04-04").discontinued("1999-06-06")
+        .company(Company.builder(7l).name("MOS Technology").build()).build();
 
-	@Test
-	public void testMerge() {
-		
-//		assertNotEquals(this.empty, this.full);
-//		assertNotEquals(this.empty, this.partial);
-//		assertNotEquals(this.partial, this.full);
-//		
-//		mapper.merge(this.empty, this.partial);
-//		
-//		assertEquals(this.empty, this.partial);
-//		
-//		mapper.merge(this.partial, this.full);
-//		
-//		assertNotEquals(this.partial, this.full);
-//		assertNotEquals(this.empty, this.partial);
-//		
-//		mapper.merge(this.empty, this.partial);
-//		
-//		assertEquals(this.empty, this.partial);
-	}
+    this.partial = Computer.builder("partial").id(8l).introduced("").discontinued("")
+        .company(Company.builder(10l).name("Digital Equipment Corporation").build()).build();
+
+    this.mapper = new ComputerMapper();
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    // this.empty = null;
+    this.full = null;
+    this.partial = null;
+    this.mapper = null;
+  }
+
+  @Test
+  public void testMerge() {
+
+    // assertNotEquals(this.empty, this.full);
+    // assertNotEquals(this.empty, this.partial);
+    // assertNotEquals(this.partial, this.full);
+    //
+    // mapper.merge(this.empty, this.partial);
+    //
+    // assertEquals(this.empty, this.partial);
+    //
+    // mapper.merge(this.partial, this.full);
+    //
+    // assertNotEquals(this.partial, this.full);
+    // assertNotEquals(this.empty, this.partial);
+    //
+    // mapper.merge(this.empty, this.partial);
+    //
+    // assertEquals(this.empty, this.partial);
+  }
 
 }

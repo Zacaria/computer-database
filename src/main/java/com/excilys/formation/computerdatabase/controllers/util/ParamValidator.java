@@ -21,8 +21,7 @@ import com.excilys.formation.computerdatabase.util.DateConverter;
  *
  */
 public class ParamValidator {
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(ParamValidator.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ParamValidator.class);
   private static final Pattern NUMBER_PATTERN = Pattern.compile("^\\d+$");
 
   private List<String> errors;

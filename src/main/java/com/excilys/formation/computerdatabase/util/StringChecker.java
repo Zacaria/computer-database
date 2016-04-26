@@ -2,8 +2,6 @@ package com.excilys.formation.computerdatabase.util;
 
 import java.util.regex.Pattern;
 
-import org.springframework.context.i18n.LocaleContextHolder;
-
 public class StringChecker {
   // Validates positive integers
 

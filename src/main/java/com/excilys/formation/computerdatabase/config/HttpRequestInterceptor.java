@@ -10,9 +10,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.excilys.formation.computerdatabase.controllers.EditComputer;
 
 public class HttpRequestInterceptor extends HandlerInterceptorAdapter {
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(EditComputer.class);
-  
+
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
       throws Exception {

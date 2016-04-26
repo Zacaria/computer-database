@@ -5,6 +5,15 @@ import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 
+/**
+ * Holds the pagination logic.
+ * And also holds the state of the pagination.
+ * This is designed to be session-scoped
+ * 
+ * @author Zacaria
+ *
+ * @param <T>
+ */
 public class Pager<T> {
   private PageDTO<T> data;
   private int range = 10;
@@ -70,8 +79,8 @@ public class Pager<T> {
     this.total = total;
     this.setTotalPage();
   }
-  
-  public int getTotal(){
+
+  public int getTotal() {
     return this.total;
   }
 

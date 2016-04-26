@@ -9,7 +9,7 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
 public interface IDAO<T> {
   int count() throws DAOException;
 
-  default int count(SelectOptions options) throws DAOException{
+  default int count(SelectOptions options) throws DAOException {
     throw new UnsupportedOperationException();
   }
 

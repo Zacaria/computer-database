@@ -7,7 +7,7 @@
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>
-				%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level - %msg%n
+				%d{yyyy-MM-dd HH:mm:ss} [%F:%L] %-5level - %msg%n
 			</Pattern>
 		</encoder>
 	</appender>
@@ -17,7 +17,7 @@
 		<file>${LOG_HOME}/logs.log</file>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>
-				%d{yyyy-MM-dd HH:mm:ss} - %msg%n
+				%d{yyyy-MM-dd HH:mm:ss} [%thread] [%F:%L] %-5level - %msg%n
 			</Pattern>
 		</encoder>
 

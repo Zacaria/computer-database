@@ -1,10 +1,7 @@
 package com.excilys.formation.computerdatabase.dataBinders.mapper;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +11,7 @@ import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 
 public class ComputerMapper implements RowMapper<Computer> {
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(ComputerMapper.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ComputerMapper.class);
 
   private final static String COMPUTER_ID = "computer_id";
   private final static String COMPUTER_NAME = "computer_name";

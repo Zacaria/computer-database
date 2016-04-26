@@ -11,8 +11,8 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
  */
 public interface IService<T> {
   int count();
-  
-  default int count(SelectOptions options){
+
+  default int count(SelectOptions options) {
     throw new UnsupportedOperationException();
   }
 

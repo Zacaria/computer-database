@@ -36,7 +36,7 @@ public class ComputerDAOTest {
   private Computer computerMock63DateZero;
   private Computer computerMockNullToCUD;
   private Computer computerMockFull;
-  
+
   public ComputerDAOTest() {
     this.connectionFactory = ConnectionFactory.getInstance();
   }
@@ -74,7 +74,7 @@ public class ComputerDAOTest {
     this.computerMock13DateNull = null;
     this.computerMock63DateZero = null;
     this.computerMockNullToCUD = null;
-    
+
     this.connectionFactory.closeLocalConnection();
   }
 
@@ -123,7 +123,7 @@ public class ComputerDAOTest {
     assertNull(deleted);
     assertTrue(success);
   }
-  
+
   @Test
   public void updateTest() throws DAOException {
 
@@ -137,12 +137,15 @@ public class ComputerDAOTest {
 
     assertEquals(computer, this.computerMockNullToCUD);
 
-    /*this.computerMockNullToCUD.setCompany(Company.builder(100l).name("Lincoln Laboratory").build());
-
-    exception.expect(DAOException.class);
-    computer = this.cdao.update(this.computerMockNullToCUD);
-
-    assertNotEquals(computer, this.computerMockNullToCUD);*/
+    /*
+     * this.computerMockNullToCUD.setCompany(Company.builder(100l).name(
+     * "Lincoln Laboratory").build());
+     * 
+     * exception.expect(DAOException.class); computer =
+     * this.cdao.update(this.computerMockNullToCUD);
+     * 
+     * assertNotEquals(computer, this.computerMockNullToCUD);
+     */
 
     // assume that this id deosn't exist
     this.computerMockNullToCUD.setId(100000l);

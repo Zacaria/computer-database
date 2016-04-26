@@ -1,48 +1,32 @@
 package com.excilys.formation.computerdatabase.controllers;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import com.excilys.formation.computerdatabase.controllers.requestDTO.EditComputerDTO;
 import com.excilys.formation.computerdatabase.controllers.requestMapping.EditComputerRequestMapper;
 import com.excilys.formation.computerdatabase.controllers.requestValidator.EditComputerRequestValidator;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
+import com.excilys.formation.computerdatabase.exceptions.NotFoundException;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
-import com.excilys.formation.computerdatabase.service.CompanyService;
-import com.excilys.formation.computerdatabase.service.ComputerService;
 import com.excilys.formation.computerdatabase.service.IService;
 import com.excilys.formation.computerdatabase.ui.Pager;
-import com.excilys.formation.computerdatabase.util.DateConverter;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
 /**
@@ -59,6 +43,8 @@ public class EditComputer implements InitializingBean {
   private static final String ATTR_ERROR = "errors";
   private static final String ATTR_DTO = "dto";
   private static final String MODEL_ATTRIBUTE = "editComputerForm";
+  
+  private static final String ID_NOT_FOUND_MESSAGE = "NotFound.EditComputer.Id";
 
   @Autowired
   private IService<Computer> cs;
@@ -71,17 +57,24 @@ public class EditComputer implements InitializingBean {
 
   private Pager<Company> pager;
 
-  public EditComputer() { }
+  public EditComputer() {
+  }
 
   @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
   protected String doGet(RedirectAttributes attr, final Model model,
-      @PathVariable("id") final String id) {
-  
+      @PathVariable("id") final String id) throws NotFoundException {
+    
+    Map<String, Object> messages = new HashMap<>();
+
     EditComputerDTO dto = new EditComputerDTO(id);
 
     if (id == null || !StringChecker.isNumber(id) || this.cs.get(Long.parseLong(id)) == null) {
-      attr.addFlashAttribute("pout", "lawl");
-      return "redirect:/dashboard";
+      messages.put(ATTR_ERROR, ID_NOT_FOUND_MESSAGE);
+      
+      attr.addFlashAttribute(ATTR_MESSAGES, messages);
+//      return "redirect:/dashboard";
+      
+      throw new NotFoundException(ID_NOT_FOUND_MESSAGE);
     }
 
     dto.setCompanies(this.pager.getPage());

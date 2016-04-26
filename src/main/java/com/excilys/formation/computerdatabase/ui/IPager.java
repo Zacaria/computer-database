@@ -10,5 +10,5 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
  * @param <T> The type of the elements in the Page
  */
 public interface IPager<T> {
-	Page<T> get(SelectOptions options);
+  Page<T> get(SelectOptions options);
 }
