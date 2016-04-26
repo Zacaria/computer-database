@@ -2,10 +2,7 @@ package com.excilys.formation.computerdatabase.dataBinders.dto;
 
 import java.time.LocalDate;
 
-import org.springframework.context.i18n.LocaleContextHolder;
-
 import com.excilys.formation.computerdatabase.model.Computer;
-import com.excilys.formation.computerdatabase.util.DateConverter;
 
 public class ComputerDTO implements IDTO {
   private long id;
@@ -65,7 +62,7 @@ public class ComputerDTO implements IDTO {
 
     public Builder introduced(LocalDate introduced) {
       if (introduced != null) {
-          instance.introduced = introduced.toString();
+        instance.introduced = introduced.toString();
       }
       return this;
     }
@@ -77,7 +74,7 @@ public class ComputerDTO implements IDTO {
 
     public Builder discontinued(LocalDate discontinued) {
       if (discontinued != null) {
-          instance.discontinued = discontinued.toString();
+        instance.discontinued = discontinued.toString();
       }
       return this;
     }

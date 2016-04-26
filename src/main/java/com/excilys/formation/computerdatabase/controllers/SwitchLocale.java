@@ -13,10 +13,11 @@ import com.excilys.formation.computerdatabase.controllers.requestDTO.SwitchLocal
 public class SwitchLocale {
 
   @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-  protected SwitchLocaleDTO doPost(@RequestParam(value="lang", defaultValue="en") String lang) {
-    if(!SupportedLocale.contains(lang)){
+  protected SwitchLocaleDTO doPost(@RequestParam(value = "lang", defaultValue = "en") String lang) {
+    if (!SupportedLocale.contains(lang)) {
       lang = "en";
-    };
+    }
+    ;
     return new SwitchLocaleDTO(lang, "200");
   }
 }

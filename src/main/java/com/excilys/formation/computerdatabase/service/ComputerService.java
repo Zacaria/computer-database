@@ -14,7 +14,7 @@ import com.excilys.formation.computerdatabase.persistence.IComputerDAO;
 
 @Service("ComputerService")
 public class ComputerService implements IService<Computer> {
-  
+
   private static final Logger LOGGER =
       LoggerFactory.getLogger("com.excilys.formation.computerdatabase");
 
@@ -22,7 +22,7 @@ public class ComputerService implements IService<Computer> {
   private IComputerDAO cdao;
 
   public ComputerService() {
-    
+
   }
 
   @Override
@@ -48,7 +48,7 @@ public class ComputerService implements IService<Computer> {
       count = this.cdao.count(options);
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
-    } 
+    }
 
     return count;
   }
@@ -56,7 +56,7 @@ public class ComputerService implements IService<Computer> {
   @Override
   public Page<Computer> get(SelectOptions options) {
     LOGGER.info("get options " + this.getClass());
-  
+
     Page<Computer> computerPage = null;
     try {
       computerPage = new Page<>(options.getOffset(), this.cdao.find(options), this.cdao.count());
@@ -70,14 +70,14 @@ public class ComputerService implements IService<Computer> {
   @Override
   public Computer get(Long id) {
     LOGGER.info("get id " + this.getClass());
-    
+
     Computer result = null;
     try {
       result = this.cdao.find(id);
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
     }
-    
+
     return result;
   }
 
@@ -86,19 +86,19 @@ public class ComputerService implements IService<Computer> {
   public Long create(Computer computer) {
     LOGGER.info("create " + this.getClass());
     LOGGER.debug(computer.toString());
-  
+
     if (computer.getName() == null || computer.getName().isEmpty()) {
       LOGGER.error("ERROR Insert : Could not create an unnamed computer !");
       return null;
     }
-    
+
     Long result = null;
     try {
       result = this.cdao.create(computer);
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
     }
-    
+
     return result;
   }
 
@@ -106,12 +106,12 @@ public class ComputerService implements IService<Computer> {
   @Transactional
   public boolean delete(Long id) {
     LOGGER.info("delete " + this.getClass());
-    if(id == null){
+    if (id == null) {
       return false;
     }
-    
+
     LOGGER.debug("Delete Computer with id " + id);
-   
+
     boolean result = false;
     try {
       result = this.cdao.delete(id);
@@ -137,7 +137,7 @@ public class ComputerService implements IService<Computer> {
       LOGGER.error("ERROR Update : Could not update to a computer without it's company !!");
       return null;
     }
-  
+
     Computer result = null;
 
     try {
@@ -145,7 +145,7 @@ public class ComputerService implements IService<Computer> {
     } catch (DAOException e) {
       LOGGER.error(e.getMessage());
     }
-    
+
     return result;
   }
 

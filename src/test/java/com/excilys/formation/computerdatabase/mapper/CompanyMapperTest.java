@@ -9,18 +9,18 @@ import org.mockito.Mockito;
 
 public class CompanyMapperTest {
 
-	@Before
-	public void setUp() throws Exception {
-		ResultSet resultSetMock = Mockito.mock(ResultSet.class);
-	}
+  @Before
+  public void setUp() throws Exception {
+    ResultSet resultSetMock = Mockito.mock(ResultSet.class);
+  }
 
-	@After
-	public void tearDown() throws Exception {
-	}
+  @After
+  public void tearDown() throws Exception {
+  }
 
-	@Test
-	public void mapTest() {
-		
-	}
+  @Test
+  public void mapTest() {
+
+  }
 
 }

@@ -11,7 +11,7 @@ import org.junit.Test;
 import com.excilys.formation.computerdatabase.model.Computer;
 
 public class ComputerServiceTest {
-  
+
   private ComputerService cs;
   private Computer mock;
 
@@ -29,12 +29,12 @@ public class ComputerServiceTest {
   @Test
   public void deleteTest() {
     Long newId = this.cs.create(this.mock);
-    
-    //valid.
+
+    // valid.
     assertTrue(this.cs.delete(newId));
-    //invalid.
+    // invalid.
     assertFalse(this.cs.delete(0l));
-    //invalid.
+    // invalid.
     assertFalse(this.cs.delete(null));
   }
 }

@@ -5,10 +5,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 
-import com.excilys.formation.computerdatabase.util.DateConverter;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
 public class AddComputerDTO implements IRequestDTO {

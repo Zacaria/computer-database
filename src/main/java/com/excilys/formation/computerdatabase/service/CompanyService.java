@@ -17,8 +17,7 @@ import com.excilys.formation.computerdatabase.persistence.IComputerDAO;
 @Service("CompanyService")
 public class CompanyService implements IService<Company> {
 
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(CompanyService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CompanyService.class);
 
   @Resource(name = "CompanyDAO")
   private ICompanyDAO cdao;

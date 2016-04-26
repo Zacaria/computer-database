@@ -54,12 +54,13 @@ public class EditComputer implements InitializingBean {
 
   private Pager<Company> pager;
 
-  public EditComputer() { }
+  public EditComputer() {
+  }
 
   @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
   protected String doGet(RedirectAttributes attr, final Model model,
       @PathVariable("id") final String id) {
-  
+
     EditComputerDTO dto = new EditComputerDTO(id);
 
     if (id == null || !StringChecker.isNumber(id) || this.cs.get(Long.parseLong(id)) == null) {

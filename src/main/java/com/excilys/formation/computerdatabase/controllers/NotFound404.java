@@ -27,7 +27,7 @@ public class NotFound404 {
   /**
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
    */
-  @RequestMapping(method=RequestMethod.GET)
+  @RequestMapping(method = RequestMethod.GET)
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/404.jsp");

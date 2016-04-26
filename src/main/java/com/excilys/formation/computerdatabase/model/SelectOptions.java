@@ -44,7 +44,7 @@ public final class SelectOptions {
     }
 
     public Builder asc(String asc) {
-      if(asc != null && asc.equals("0")){
+      if (asc != null && asc.equals("0")) {
         instance.asc = "desc";
       }
       return this;
@@ -71,7 +71,7 @@ public final class SelectOptions {
    */
   private void computeOffset() {
     this.offset = (this.page * this.range) - this.range;
-    this.offset = this.offset < 0 ? 0 : this.offset; 
+    this.offset = this.offset < 0 ? 0 : this.offset;
   }
 
   public int getRange() {

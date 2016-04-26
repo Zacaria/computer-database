@@ -35,15 +35,14 @@ public class Dashboard {
   @Autowired
   private DashboardRequestMapper mapper;
 
-  public Dashboard() { }
+  public Dashboard() {
+  }
 
   @SuppressWarnings("unchecked")
   @RequestMapping(method = RequestMethod.GET)
-  protected String doGet(
-      final Model model,
-      HttpServletRequest request,
+  protected String doGet(final Model model, HttpServletRequest request,
       HttpServletResponse response) {
-    
+
     Map<String, Object> result = new HashMap<>();
     Map<String, Object> messages = new HashMap<>();
 
@@ -61,9 +60,9 @@ public class Dashboard {
     result.put(ATTR_MESSAGES, messages);
 
     request.setAttribute(ATTR_RESULT, result);
-    
+
     model.addAttribute(ATTR_RESULT, result);
-  
+
     return "dashboard";
   }
 }

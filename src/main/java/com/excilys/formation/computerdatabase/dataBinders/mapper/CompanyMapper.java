@@ -2,8 +2,6 @@ package com.excilys.formation.computerdatabase.dataBinders.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +11,7 @@ import com.excilys.formation.computerdatabase.model.Company;
 
 public class CompanyMapper implements RowMapper<Company> {
 
-  private final static Logger LOGGER =
-      LoggerFactory.getLogger(CompanyMapper.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(CompanyMapper.class);
 
   private final static String COMPANY_ID = "company_id";
   private final static String COMPANY_NAME = "company_name";
