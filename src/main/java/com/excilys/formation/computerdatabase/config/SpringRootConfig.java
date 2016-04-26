@@ -69,6 +69,7 @@ public class SpringRootConfig {
     dataSource.setUsername(username);
     dataSource.setPassword(password);
     dataSource.setJdbcUrl(jdbcUrl);
+    dataSource.addDataSourceProperty("zeroDateTimeBehavior", "convertToNull");
 
     return dataSource;
   }

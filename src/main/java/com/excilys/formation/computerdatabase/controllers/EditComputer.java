@@ -22,6 +22,7 @@ import com.excilys.formation.computerdatabase.controllers.requestMapping.EditCom
 import com.excilys.formation.computerdatabase.controllers.requestValidator.EditComputerRequestValidator;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
+import com.excilys.formation.computerdatabase.exceptions.NotFoundException;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.IService;
@@ -42,6 +43,8 @@ public class EditComputer implements InitializingBean {
   private static final String ATTR_ERROR = "errors";
   private static final String ATTR_DTO = "dto";
   private static final String MODEL_ATTRIBUTE = "editComputerForm";
+  
+  private static final String ID_NOT_FOUND_MESSAGE = "NotFound.EditComputer.Id";
 
   @Autowired
   private IService<Computer> cs;
@@ -59,13 +62,19 @@ public class EditComputer implements InitializingBean {
 
   @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
   protected String doGet(RedirectAttributes attr, final Model model,
-      @PathVariable("id") final String id) {
+      @PathVariable("id") final String id) throws NotFoundException {
+    
+    Map<String, Object> messages = new HashMap<>();
 
     EditComputerDTO dto = new EditComputerDTO(id);
 
     if (id == null || !StringChecker.isNumber(id) || this.cs.get(Long.parseLong(id)) == null) {
-      attr.addFlashAttribute("pout", "lawl");
-      return "redirect:/dashboard";
+      messages.put(ATTR_ERROR, ID_NOT_FOUND_MESSAGE);
+      
+      attr.addFlashAttribute(ATTR_MESSAGES, messages);
+//      return "redirect:/dashboard";
+      
+      throw new NotFoundException(ID_NOT_FOUND_MESSAGE);
     }
 
     dto.setCompanies(this.pager.getPage());

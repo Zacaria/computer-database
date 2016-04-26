@@ -67,7 +67,7 @@
 					<form id="searchForm" action="dashboard" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="s" class="form-control" placeholder="Search name" />
-						<input type="button" id="searchsubmit" value="${DashboardSearchButton}"
+						<input type="submit" id="searchsubmit" value="${DashboardSearchButton}"
 								class="btn btn-primary"></input>
 					</form>
 				</div>
@@ -83,9 +83,6 @@
 				method="POST">
 			<input type="hidden" name="computersToDelete" value="">
 		</form:form>
-<%-- 		<form id="deleteForm" action="deleteComputer" method="POST"> --%>
-<!-- 			<input type="hidden" name="computersToDelete" value=""> -->
-<%-- 		</form> --%>
 
 		<div class="container" style="margin-top: 10px;">
 			<table class="table table-striped table-bordered">
