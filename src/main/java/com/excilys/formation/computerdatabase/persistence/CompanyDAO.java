@@ -44,9 +44,8 @@ public class CompanyDAO implements ICompanyDAO {
   public List<Company> find() {
     LOGGER.info("finding in " + this.getClass().getSimpleName());
 
-    List<Company> companies = this.jdbcTemplate.query(findAllQuery, (ResultSet rs, int rowNum) -> {
-      return new CompanyMapper().mapRow(rs, rowNum);
-    });
+    List<Company> companies = this.jdbcTemplate.query(findAllQuery,
+        (ResultSet rs, int rowNum) -> new CompanyMapper().mapRow(rs, rowNum));
 
     return companies;
   }
@@ -60,9 +59,8 @@ public class CompanyDAO implements ICompanyDAO {
     LOGGER.debug("With params " + options);
 
     List<Company> companies = this.jdbcTemplate.query(findWithRangeQuery,
-        new Object[] { options.getOffset(), options.getRange() }, (ResultSet rs, int rowNum) -> {
-          return new CompanyMapper().mapRow(rs, rowNum);
-        });
+        new Object[] { options.getOffset(), options.getRange() },
+        (ResultSet rs, int rowNum) -> new CompanyMapper().mapRow(rs, rowNum));
 
     return companies;
   }
@@ -76,10 +74,8 @@ public class CompanyDAO implements ICompanyDAO {
     LOGGER.debug("With params " + id);
 
     Company company = this.jdbcTemplate.queryForObject(findByIdQuery, new Object[] { id },
-        (ResultSet rs, int rowNum) -> {
-          return new CompanyMapper().mapRow(rs, rowNum);
-        });
-    
+        (ResultSet rs, int rowNum) -> new CompanyMapper().mapRow(rs, rowNum));
+
     return company;
   }
 
@@ -94,7 +90,7 @@ public class CompanyDAO implements ICompanyDAO {
 
     return affectedRows != 0 ? true : false;
   }
-  
+
   @Autowired
   public void setDataSource(DataSource dataSource) {
     this.jdbcTemplate = new JdbcTemplate(dataSource);

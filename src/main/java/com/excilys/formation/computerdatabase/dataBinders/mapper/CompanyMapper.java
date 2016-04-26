@@ -39,27 +39,4 @@ public class CompanyMapper implements RowMapper<Company> {
     }
     return company;
   }
-
-//  @Override
-//  public Company mapRow(ResultSet rs, int rowNum) throws SQLException {
-//    // TODO Auto-generated method stub
-//    return null;
-//  }
-
-//  @Override
-//  public List<Company> mapList(ResultSet rs) {
-//    List<Company> companies = new ArrayList<>();
-//    Company company = null;
-//    try {
-//      while (rs.next()) {
-//        company = this.map(rs);
-//
-//        companies.add(company);
-//      }
-//    } catch (SQLException e) {
-//      LOGGER.error("list mapping company error");
-//    }
-//
-//    return companies;
-//  }
 }

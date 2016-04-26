@@ -37,19 +37,6 @@ $(function() {
 
 		window.location.href = link;
 	});
-
-	$('.form_datetime').datetimepicker({
-		format : 'yyyy-mm-dd',
-		minView : 'month',
-		autoclose : true
-	});
-
-	$('.selectpicker').selectpicker({
-		size : 7,
-		witdth : 'auto',
-		liveSearch : true
-	});
-
 });
 
 // Function setCheckboxValues
@@ -95,25 +82,6 @@ $(function() {
 		}
 	};
 }(jQuery));
-
-function getURLParameter(sParam) {
-	// Remove the question mark from the search string.
-	var sPageURL = window.location.search.substring(1);
-
-	// Separate the parameters
-	var sURLVariables = sPageURL.split('&');
-
-	// Loop over the parameters
-	for (var i = 0; i < sURLVariables.length; i++) {
-		// Put the parameter in a key-value array.
-		var sParameterName = sURLVariables[i].split('=');
-
-		if (sParameterName[0] == sParam) {
-			// Return the requested value.
-			return sParameterName[1];
-		}
-	}
-}
 
 // Event handling
 // Onkeydown

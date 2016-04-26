@@ -1,11 +1,11 @@
-package com.excilys.formation.computerdatabase.servlets.requestMapping;
+package com.excilys.formation.computerdatabase.controllers.requestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.excilys.formation.computerdatabase.controllers.requestDTO.AddComputerDTO;
+import com.excilys.formation.computerdatabase.controllers.requestDTO.IRequestDTO;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.AddComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
 
 public class AddComputerRequestMapper implements IRequestMapper<Computer> {
 

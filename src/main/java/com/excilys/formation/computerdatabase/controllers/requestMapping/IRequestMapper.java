@@ -1,8 +1,8 @@
-package com.excilys.formation.computerdatabase.servlets.requestMapping;
+package com.excilys.formation.computerdatabase.controllers.requestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
+import com.excilys.formation.computerdatabase.controllers.requestDTO.IRequestDTO;
 
 public interface IRequestMapper<T> {
   default IRequestDTO getToDTO(HttpServletRequest request) {

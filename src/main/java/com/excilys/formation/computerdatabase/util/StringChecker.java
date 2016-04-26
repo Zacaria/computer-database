@@ -2,9 +2,13 @@ package com.excilys.formation.computerdatabase.util;
 
 import java.util.regex.Pattern;
 
+import org.springframework.context.i18n.LocaleContextHolder;
+
 public class StringChecker {
   // Validates positive integers
-  private static final Pattern NUMBER_PATTERN = Pattern.compile("^\\d+$");
+
+  public static final String NUMBER_REGEXP = "^\\d+$";
+  private static final Pattern NUMBER_PATTERN = Pattern.compile(NUMBER_REGEXP);
 
   private StringChecker() {
   }
@@ -27,7 +31,7 @@ public class StringChecker {
     }
     return true;
   }
-  
+
   public static boolean isDate(String s) {
     if (DateConverter.stringToDate(s.trim()) == null) {
       return false;

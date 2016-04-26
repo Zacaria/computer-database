@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.servlets;
+package com.excilys.formation.computerdatabase.controllers;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -6,136 +6,119 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
+import com.excilys.formation.computerdatabase.controllers.requestDTO.EditComputerDTO;
+import com.excilys.formation.computerdatabase.controllers.requestMapping.EditComputerRequestMapper;
+import com.excilys.formation.computerdatabase.controllers.requestValidator.EditComputerRequestValidator;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.model.Company;
+import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.EditComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestMapping.EditComputerRequestMapper;
-import com.excilys.formation.computerdatabase.servlets.requestValidator.EditComputerRequestValidator;
+import com.excilys.formation.computerdatabase.service.IService;
 import com.excilys.formation.computerdatabase.ui.Pager;
+import com.excilys.formation.computerdatabase.util.DateConverter;
+import com.excilys.formation.computerdatabase.util.StringChecker;
 
 /**
  * Servlet implementation class EditComputer
  */
 @Controller
-@RequestMapping("/editComputer")
+@RequestMapping("/computer")
 public class EditComputer implements InitializingBean {
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(EditComputer.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(EditComputer.class);
 
   private static final String ATTR_RESULT = "data";
   private static final String ATTR_MESSAGES = "messages";
   private static final String ATTR_SUCCESS = "success";
   private static final String ATTR_ERROR = "errors";
   private static final String ATTR_DTO = "dto";
+  private static final String MODEL_ATTRIBUTE = "editComputerForm";
 
   @Autowired
-  private ComputerService cs;
-  
+  private IService<Computer> cs;
+
   @Autowired
-  private CompanyService es;
+  private IService<Company> es;
+
+  @Autowired
+  private EditComputerRequestValidator validator;
 
   private Pager<Company> pager;
 
-  /**
-   * @see HttpServlet#HttpServlet()
-   */
-  public EditComputer() {
-    super();
-  }
+  public EditComputer() { }
 
-  /**
-   * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-   */
-  @RequestMapping(method = RequestMethod.GET)
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
-        + request.getQueryString());
+  @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
+  protected String doGet(RedirectAttributes attr, final Model model,
+      @PathVariable("id") final String id) {
+  
+    EditComputerDTO dto = new EditComputerDTO(id);
 
-    Map<String, Object> result = new HashMap<>();
-    Map<String, Object> messages = new HashMap<>();
-    EditComputerDTO dto = (EditComputerDTO) new EditComputerRequestMapper().getToDTO(request);
-
-    List<String> errors = new LinkedList<>();
-    errors = new EditComputerRequestValidator(this.cs).validateGet(dto, errors);
-
-    if (!errors.isEmpty()) {
-      LOGGER.error(errors.toString());
-      HttpSession session = request.getSession();
-      messages.put(ATTR_ERROR, errors);
-      session.setAttribute(ATTR_MESSAGES, messages);
-      response.sendRedirect("dashboard");
-      return;
+    if (id == null || !StringChecker.isNumber(id) || this.cs.get(Long.parseLong(id)) == null) {
+      attr.addFlashAttribute("pout", "lawl");
+      return "redirect:/dashboard";
     }
 
     dto.setCompanies(this.pager.getPage());
-    dto.setComputer(ComputerDTO.builder(this.cs.get(Long.parseLong(dto.getId()))).build());
+    dto.setComputer(ComputerDTO.builder(this.cs.get(Long.parseLong(id))).build());
 
-    result.put(ATTR_MESSAGES, messages);
+    Map<String, Object> result = new HashMap<>();
     result.put(ATTR_DTO, dto);
-    request.setAttribute(ATTR_RESULT, result);
 
-    RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/editComputer.jsp");
+    model.addAttribute(ATTR_RESULT, result);
+    model.addAttribute(MODEL_ATTRIBUTE, new EditComputerDTO());
 
-    view.forward(request, response);
+    return "editComputer";
   }
 
-  /**
-   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   */
-  @RequestMapping(method = RequestMethod.POST)
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
-        + request.getQueryString());
+  @RequestMapping(value = "/edit/{id}", method = RequestMethod.POST)
+  protected String doPost(@ModelAttribute("editComputerForm") @Validated EditComputerDTO dto,
+      BindingResult bindingResult, final Model model) {
 
-    Map<String, Object> messages = new HashMap<>();
-    boolean success = false;
+    validator.validate(dto, bindingResult);
 
+    Map<String, Object> result = new HashMap<>();
     EditComputerRequestMapper mapper = new EditComputerRequestMapper();
 
-    EditComputerDTO dto = (EditComputerDTO) mapper.postToDTO(request);
-
-    List<String> errors = new LinkedList<>();
-    errors = new EditComputerRequestValidator().validatePost(dto, errors);
-
-    if (errors.isEmpty() && cs.update(mapper.fromDTO(dto)) != null) {
-      success = true;
+    if (bindingResult.hasErrors()) {
+      LOGGER.error(bindingResult.getAllErrors().toString());
+      dto.setComputer(ComputerDTO.builder(this.cs.get(Long.parseLong(dto.getId()))).build());
+    } else {
+      dto.setComputer(ComputerDTO.builder(cs.update(mapper.fromDTO(dto))).build());
+      model.addAttribute(ATTR_SUCCESS, true);
     }
 
-    messages.put(ATTR_ERROR, errors);
-    messages.put(ATTR_SUCCESS, success);
+    dto.setCompanies(this.pager.getPage());
 
-    request.setAttribute(ATTR_MESSAGES, messages);
+    result.put(ATTR_DTO, dto);
+    model.addAttribute(ATTR_RESULT, result);
 
-    doGet(request, response);
-  }
-
-//  @Autowired
-  public void setCs(ComputerService cs) {
-    this.cs = cs;
-  }
-  
-  public void setEs(CompanyService es) {
-    this.es = es;
+    return "editComputer";
   }
 
   @Override
@@ -145,6 +128,6 @@ public class EditComputer implements InitializingBean {
 
     // FIXME : This is ugly and hard code.
     this.pager.setRange(100);
-    
+
   }
 }

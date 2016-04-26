@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.servlets.requestMapping;
+package com.excilys.formation.computerdatabase.controllers.requestMapping;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.excilys.formation.computerdatabase.servlets.requestDTO.DeleteComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
+import com.excilys.formation.computerdatabase.controllers.requestDTO.DeleteComputerDTO;
+import com.excilys.formation.computerdatabase.controllers.requestDTO.IRequestDTO;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
 public class DeleteComputerRequestMapper implements IRequestMapper<Object> {

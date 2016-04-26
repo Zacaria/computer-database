@@ -1,7 +1,10 @@
 package com.excilys.formation.computerdatabase.persistence;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -9,7 +12,9 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -56,7 +61,7 @@ public class ComputerDAO implements IComputerDAO {
   public int count(SelectOptions options) {
 
     LOGGER.debug(options.toString());
-    
+
     Integer count = this.jdbcTemplate.queryForObject(countQueryWithOptions,
         new Object[] { options.getSearch() }, Integer.class);
 
@@ -69,9 +74,8 @@ public class ComputerDAO implements IComputerDAO {
   @Override
   public List<Computer> find() {
 
-    List<Computer> computers = this.jdbcTemplate.query(findAllQuery, (ResultSet rs, int rowNum) -> {
-      return new ComputerMapper().mapRow(rs, rowNum);
-    });
+    List<Computer> computers = this.jdbcTemplate.query(findAllQuery, 
+        (ResultSet rs, int rowNum) -> new ComputerMapper().mapRow(rs, rowNum));
 
     return computers;
   }
@@ -94,9 +98,7 @@ public class ComputerDAO implements IComputerDAO {
 
     List<Computer> computers = this.jdbcTemplate.query(sql,
         new Object[] { options.getSearch(), options.getOffset(), options.getRange() },
-        (ResultSet rs, int rowNum) -> {
-          return new ComputerMapper().mapRow(rs, rowNum);
-        });
+        (ResultSet rs, int rowNum) -> new ComputerMapper().mapRow(rs, rowNum));
 
     return computers;
   }
@@ -106,31 +108,52 @@ public class ComputerDAO implements IComputerDAO {
 
   @Override
   public Computer find(Long id) {
+    Computer computer = null;
     
-    Computer computer = this.jdbcTemplate.queryForObject(findByIdQuery, new Object[] { id },
-        (ResultSet rs, int rowNum) -> {
-          return new ComputerMapper().mapRow(rs, rowNum);
-        });
-
+    /*
+     * This block catches when there is no result
+     */
+    try {
+      computer = this.jdbcTemplate.queryForObject(findByIdQuery, new Object[] { id },
+          (ResultSet rs, int rowNum) ->  new ComputerMapper().mapRow(rs, rowNum));
+    } catch (EmptyResultDataAccessException e){
+      return null;
+    }
+    
     return computer;
   }
 
   private final String insertQuery =
       "INSERT INTO `computer-database-db`.computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?);";
 
+  /**
+   * All this stuff to insert and get the last inserted id in only one query.
+   */
   @Override
   public Long create(Computer computer) {
     LOGGER.debug("Creating this computer : " + computer);
 
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
-    this.jdbcTemplate
-        .update(insertQuery,
-            new Object[] {
-                computer.getName(), computer.getIntroduced() != null
-                    ? Date.valueOf(computer.getIntroduced()) : null,
-        computer.getDiscontinued() != null ? Date.valueOf(computer.getDiscontinued()) : null },
-        keyHolder);
+    this.jdbcTemplate.update(new PreparedStatementCreator() {
+
+      @Override
+      public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+        PreparedStatement ps = con.prepareStatement(insertQuery, new String[] { "id" });
+        ps.setString(1, computer.getName());
+        ps.setDate(2,
+            computer.getIntroduced() != null ? Date.valueOf(computer.getIntroduced()) : null);
+        ps.setDate(3,
+            computer.getDiscontinued() != null ? Date.valueOf(computer.getDiscontinued()) : null);
+
+        if (computer.getCompany() != null) {
+          ps.setLong(4, computer.getCompany().getId());
+        } else {
+          ps.setNull(4, java.sql.Types.INTEGER);
+        }
+        return ps;
+      }
+    }, keyHolder);
 
     return keyHolder.getKey().longValue();
   }

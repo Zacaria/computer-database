@@ -1,6 +1,11 @@
 package com.excilys.formation.computerdatabase.dataBinders.dto;
 
+import java.time.LocalDate;
+
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import com.excilys.formation.computerdatabase.model.Computer;
+import com.excilys.formation.computerdatabase.util.DateConverter;
 
 public class ComputerDTO implements IDTO {
   private long id;
@@ -31,10 +36,10 @@ public class ComputerDTO implements IDTO {
     public Builder(Computer computer) {
       instance.id = computer.getId();
       instance.name = computer.getName() != null ? computer.getName() : null;
-      instance.introduced =
-          computer.getIntroduced() != null ? computer.getIntroduced().toString() : null;
-      instance.discontinued =
-          computer.getDiscontinued() != null ? computer.getDiscontinued().toString() : null;
+
+      this.introduced(computer.getIntroduced());
+
+      this.discontinued(computer.getDiscontinued());
 
       if (computer.getCompany() != null) {
         instance.companyId = computer.getCompany().getId();
@@ -58,8 +63,22 @@ public class ComputerDTO implements IDTO {
       return this;
     }
 
+    public Builder introduced(LocalDate introduced) {
+      if (introduced != null) {
+          instance.introduced = introduced.toString();
+      }
+      return this;
+    }
+
     public Builder discontinued(String discontinued) {
       instance.discontinued = discontinued;
+      return this;
+    }
+
+    public Builder discontinued(LocalDate discontinued) {
+      if (discontinued != null) {
+          instance.discontinued = discontinued.toString();
+      }
       return this;
     }
 

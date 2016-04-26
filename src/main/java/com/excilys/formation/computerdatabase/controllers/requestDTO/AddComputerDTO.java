@@ -1,13 +1,32 @@
-package com.excilys.formation.computerdatabase.servlets.requestDTO;
+package com.excilys.formation.computerdatabase.controllers.requestDTO;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+
+import com.excilys.formation.computerdatabase.util.DateConverter;
+import com.excilys.formation.computerdatabase.util.StringChecker;
 
 public class AddComputerDTO implements IRequestDTO {
+
+  @NotNull(message = "{NotNull.AddCommputerDTO.companyId}")
+  @Pattern(message = "{Pattern.AddCommputerDTO.companyId}", regexp = StringChecker.NUMBER_REGEXP)
   private String companyId;
+
+  @NotEmpty(message = "{NotEmpty.AddComputerDTO.name}")
+  @Size(min = 1, max = 60, message = "{Size.AddComputerDTO.name}")
   private String name;
+
   private String introduced;
+
   private String discontinued;
-  
-  public AddComputerDTO(){
-    
+
+  public AddComputerDTO() {
+
   }
 
   public AddComputerDTO(String companyId, String name, String introduced, String discontinued) {
@@ -31,5 +50,21 @@ public class AddComputerDTO implements IRequestDTO {
 
   public String getDiscontinued() {
     return discontinued;
+  }
+
+  public void setCompanyId(String companyId) {
+    this.companyId = companyId;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setIntroduced(String introduced) {
+    this.introduced = introduced;
+  }
+
+  public void setDiscontinued(String discontinued) {
+    this.discontinued = discontinued;
   }
 }

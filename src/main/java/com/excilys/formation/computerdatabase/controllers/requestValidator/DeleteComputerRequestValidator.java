@@ -1,12 +1,12 @@
-package com.excilys.formation.computerdatabase.servlets.requestValidator;
+package com.excilys.formation.computerdatabase.controllers.requestValidator;
 
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.formation.computerdatabase.servlets.requestDTO.DeleteComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
+import com.excilys.formation.computerdatabase.controllers.requestDTO.DeleteComputerDTO;
+import com.excilys.formation.computerdatabase.controllers.requestDTO.IRequestDTO;
 
 public class DeleteComputerRequestValidator implements IRequestValidator {
   private static final Logger LOGGER =

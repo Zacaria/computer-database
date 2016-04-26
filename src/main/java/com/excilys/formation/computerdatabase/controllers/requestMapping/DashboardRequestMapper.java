@@ -1,22 +1,23 @@
-package com.excilys.formation.computerdatabase.servlets.requestMapping;
+package com.excilys.formation.computerdatabase.controllers.requestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import com.excilys.formation.computerdatabase.controllers.requestDTO.DashboardDTO;
+import com.excilys.formation.computerdatabase.controllers.requestDTO.IRequestDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.ComputerFields;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.service.ComputerService;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.DashboardDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
 import com.excilys.formation.computerdatabase.ui.Pager;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
-@Controller
+@Component
 public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
 
   private static final String PAGE_PARAM = "p";
@@ -33,14 +34,11 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
    */
   private static final String DEFAULT_ORDER_BY = ComputerFields.ID_ALIAS.getValue();
 
+  @Autowired
   private ComputerService cs;
 
   public DashboardRequestMapper() {
 
-  }
-
-  public DashboardRequestMapper(ComputerService cs) {
-    this.cs = cs;
   }
 
   @SuppressWarnings("unchecked")

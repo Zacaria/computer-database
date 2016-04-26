@@ -31,3 +31,7 @@ input[type='checkbox'] {
 .button-sort {
 	cursor: pointer;
 }
+
+.navbar-inverse .navbar-nav > li > a.navbar-link.lang-selected {
+	color: #fff;
+}

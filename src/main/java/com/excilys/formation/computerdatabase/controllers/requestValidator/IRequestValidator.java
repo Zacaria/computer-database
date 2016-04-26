@@ -1,8 +1,8 @@
-package com.excilys.formation.computerdatabase.servlets.requestValidator;
+package com.excilys.formation.computerdatabase.controllers.requestValidator;
 
 import java.util.List;
 
-import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
+import com.excilys.formation.computerdatabase.controllers.requestDTO.IRequestDTO;
 
 public interface IRequestValidator {
   default List<String> validateGet(IRequestDTO requestDTO, List<String> errors) {

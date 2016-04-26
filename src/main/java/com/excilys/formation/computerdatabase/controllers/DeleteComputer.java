@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.servlets;
+package com.excilys.formation.computerdatabase.controllers;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,11 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.excilys.formation.computerdatabase.controllers.requestDTO.DeleteComputerDTO;
+import com.excilys.formation.computerdatabase.controllers.requestMapping.DeleteComputerRequestMapper;
+import com.excilys.formation.computerdatabase.controllers.requestValidator.DeleteComputerRequestValidator;
 import com.excilys.formation.computerdatabase.service.ComputerService;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.DeleteComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestMapping.DeleteComputerRequestMapper;
-import com.excilys.formation.computerdatabase.servlets.requestValidator.DeleteComputerRequestValidator;
 
 /**
  * Servlet implementation class deleteComputer
@@ -39,19 +40,11 @@ public class DeleteComputer {
   @Autowired
   private ComputerService cs;
 
-  /**
-   * @see HttpServlet#HttpServlet()
-   */
-  public DeleteComputer() {
-    super();
-  }
 
-  /**
-   * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-   */
+  public DeleteComputer() { }
+
   @RequestMapping(method = RequestMethod.POST)
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  protected String doPost(RedirectAttributes attr,HttpServletRequest request) {
     LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
         + request.getQueryString());
 
@@ -76,8 +69,8 @@ public class DeleteComputer {
     messages.put(ATTR_ERROR, errors);
     messages.put(ATTR_SUCCESS, success);
 
-    session.setAttribute(ATTR_MESSAGES, messages);
-    response.sendRedirect("dashboard");
+    attr.addFlashAttribute(ATTR_MESSAGES, messages);
+    return "dashboard";
   }
 
   public void setCs(ComputerService cs) {

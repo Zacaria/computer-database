@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.servlets;
+package com.excilys.formation.computerdatabase.controllers;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 

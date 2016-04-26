@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.servlets.requestDTO;
+package com.excilys.formation.computerdatabase.controllers.requestDTO;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;

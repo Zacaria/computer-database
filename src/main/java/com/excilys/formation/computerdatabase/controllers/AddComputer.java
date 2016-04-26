@@ -1,12 +1,9 @@
-package com.excilys.formation.computerdatabase.servlets;
+package com.excilys.formation.computerdatabase.controllers;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,39 +14,44 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.excilys.formation.computerdatabase.controllers.requestDTO.AddComputerDTO;
+import com.excilys.formation.computerdatabase.controllers.requestMapping.AddComputerRequestMapper;
+import com.excilys.formation.computerdatabase.controllers.requestValidator.AddComputerRequestValidator;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
-import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.AddComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestMapping.AddComputerRequestMapper;
-import com.excilys.formation.computerdatabase.servlets.requestValidator.AddComputerRequestValidator;
 import com.excilys.formation.computerdatabase.ui.Pager;
 
 /**
  * Servlet implementation class AddComputer
  */
 @Controller
-@RequestMapping("/addComputer")
+@RequestMapping("/computer")
 public class AddComputer implements InitializingBean {
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(AddComputer.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(AddComputer.class);
 
   private static final String ATTR_RESULT = "data";
-  private static final String ATTR_MESSAGES = "messages";
-  private static final String ATTR_SUCCESS = "success";
-  private static final String ATTR_ERROR = "errors";
   private static final String ATTR_COMPANIES = "companies";
+  private static final String ATTR_SUCCESS = "success";
+  private static final String MODEL_ATTRIBUTE = "addComputerForm";
 
   @Autowired
   private ComputerService cs;
 
   @Autowired
-  private CompanyService es;  
+  private CompanyService es;
+
+  @Autowired
+  private AddComputerRequestValidator validator;
 
   private Pager<Company> pager;
 
@@ -64,66 +66,44 @@ public class AddComputer implements InitializingBean {
    * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
    *      response)
    */
-  @RequestMapping(method = RequestMethod.GET)
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-
-    LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
-        + request.getQueryString());
+  @RequestMapping(value = "/add", method = RequestMethod.GET)
+  protected String doGet(final Model model, HttpServletRequest request,
+      HttpServletResponse response) throws ServletException, IOException {
 
     Map<String, Object> result = new HashMap<>();
 
-    PageDTO<Company> companies = this.pager.getPage();
+    result.put(ATTR_COMPANIES, this.pager.getPage());
 
-    result.put(ATTR_COMPANIES, companies);
+    model.addAttribute(ATTR_RESULT, result);
+    model.addAttribute(MODEL_ATTRIBUTE, new AddComputerDTO());
 
-    request.setAttribute(ATTR_RESULT, result);
-
-    RequestDispatcher view = request.getRequestDispatcher("WEB-INF/views/addComputer.jsp");
-
-    view.forward(request, response);
+    return "addComputer";
   }
 
-  @RequestMapping(method = RequestMethod.POST)
-  protected void doPost(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  @RequestMapping(value = "/add", method = RequestMethod.POST)
+  protected String doPost(@ModelAttribute(MODEL_ATTRIBUTE) @Validated AddComputerDTO dto,
+      BindingResult bindingResult, final Model model) {
 
-    LOGGER.info(request.getMethod() + " access to : " + request.getRequestURL() + " "
-        + request.getQueryString());
-
-    Map<String, Object> messages = new HashMap<>();
-    boolean success = false;
+    validator.validate(dto, bindingResult);
 
     AddComputerRequestMapper mapper = new AddComputerRequestMapper();
-
-    // map request into a DTO.
-    AddComputerDTO dto = (AddComputerDTO) mapper.postToDTO(request);
-
-    List<String> errors = new LinkedList<>();
-    // validate the dto.
-    errors = new AddComputerRequestValidator().validatePost(dto, errors);
-
     // check errors.
-    if (errors.isEmpty()) {
+    if (bindingResult.hasErrors()) {
+      LOGGER.error(bindingResult.getAllErrors().toString());
+    } else {
+      LOGGER.debug(mapper.fromDTO(dto).toString());
       cs.create(mapper.fromDTO(dto));
-      success = true;
+      model.addAttribute(MODEL_ATTRIBUTE, new AddComputerDTO());
+      model.addAttribute(ATTR_SUCCESS, true);
     }
 
-    // send results.
-    messages.put(ATTR_ERROR, errors);
-    messages.put(ATTR_SUCCESS, success);
+    Map<String, Object> result = new HashMap<>();
 
-    request.setAttribute(ATTR_MESSAGES, messages);
+    result.put(ATTR_COMPANIES, this.pager.getPage());
 
-    doGet(request, response);
-  }
-  
-  public void setCs(ComputerService cs) {
-    this.cs = cs;
-  }
-  
-  public void setEs(CompanyService es) {
-    this.es = es;
+    model.addAttribute(ATTR_RESULT, result);
+
+    return "addComputer";
   }
 
   @Override
@@ -133,6 +113,6 @@ public class AddComputer implements InitializingBean {
 
     // FIXME : This is ugly and hard code,
     // I am considering that there will never be more than 100 companies.
-    this.pager.setRange(100);   
+    this.pager.setRange(100);
   }
 }

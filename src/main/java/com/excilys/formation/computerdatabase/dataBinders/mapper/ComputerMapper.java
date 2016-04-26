@@ -59,21 +59,4 @@ public class ComputerMapper implements RowMapper<Computer> {
 
     return computer;
   }
-
-//  @Override
-//  public List<Computer> mapList(ResultSet rs) {
-//    List<Computer> computers = new ArrayList<>();
-//
-//    Computer computer = null;
-//    try {
-//      while (rs.next()) {
-//        computer = this.map(rs);
-//
-//        computers.add(computer);
-//      }
-//    } catch (SQLException e) {
-//      LOGGER.error("list mapping computer error");
-//    }
-//    return computers;
-//  }
 }

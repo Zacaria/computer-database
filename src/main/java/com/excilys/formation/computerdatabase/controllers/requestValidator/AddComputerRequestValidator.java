@@ -1,43 +1,43 @@
-package com.excilys.formation.computerdatabase.servlets.requestValidator;
+package com.excilys.formation.computerdatabase.controllers.requestValidator;
 
-import java.util.List;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.excilys.formation.computerdatabase.servlets.requestDTO.AddComputerDTO;
-import com.excilys.formation.computerdatabase.servlets.requestDTO.IRequestDTO;
+import com.excilys.formation.computerdatabase.controllers.requestDTO.AddComputerDTO;
+import com.excilys.formation.computerdatabase.util.DateConverter;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
-public class AddComputerRequestValidator implements IRequestValidator {
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(AddComputerRequestValidator.class);
+@Component
+public class AddComputerRequestValidator implements Validator {
   
   @Override
-  public List<String> validatePost(IRequestDTO requestDTO, List<String> errors) {
-    // TODO : catch cast error ?
-    AddComputerDTO dto = (AddComputerDTO) requestDTO;
+  public void validate(Object target, Errors errors) {
+    AddComputerDTO dto = (AddComputerDTO) target;
 
-    if (StringChecker.isNullOrEmpty(dto.getName())) {
-      errors.add("computer DTO name was empty");
-    }
-    if (!StringChecker.isNullOrEmpty(dto.getIntroduced())
-        && !StringChecker.isDate(dto.getIntroduced())) {
-      errors.add("Dto introdate could not be converted into a date");
-    }
-    if (!StringChecker.isNullOrEmpty(dto.getDiscontinued())
-        && !StringChecker.isDate(dto.getDiscontinued())) {
-      errors.add("Dto discodate could not be converted into a date");
-    }
-    if (!StringChecker.isNullOrEmpty(dto.getCompanyId())
-        && !StringChecker.isNumber(dto.getCompanyId())) {
-      errors.add("The company id was not a number");
+    if (!StringChecker.isNullOrEmpty(dto.getIntroduced())) {
+      if ("fr".equals(LocaleContextHolder.getLocale().toString())){
+        dto.setIntroduced(DateConverter.frToEnDate(dto.getIntroduced()));
+      }
+      
+      if (!StringChecker.isDate(dto.getIntroduced())) {
+        errors.rejectValue("introduced", "Invalid.Date");
+      }
     }
     
-    if(!errors.isEmpty()){
-      LOGGER.error(errors.toString());
+    if (!StringChecker.isNullOrEmpty(dto.getDiscontinued())){
+      if ("fr".equals(LocaleContextHolder.getLocale().toString())){
+        dto.setDiscontinued(DateConverter.frToEnDate(dto.getDiscontinued()));
+      }
+      if( !StringChecker.isDate(dto.getDiscontinued())) {
+        errors.rejectValue("discontinued", "Invalid.Date");
+      }
     }
-    
-    return errors;
+  }
+
+  @Override
+  public boolean supports(Class<?> clazz) {
+    return AddComputerDTO.class.equals(clazz);
   }
 }

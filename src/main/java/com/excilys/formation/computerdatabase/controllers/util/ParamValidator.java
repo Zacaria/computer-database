@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.servlets.util;
+package com.excilys.formation.computerdatabase.controllers.util;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
