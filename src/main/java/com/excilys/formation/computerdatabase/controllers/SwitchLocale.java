@@ -1,7 +1,5 @@
 package com.excilys.formation.computerdatabase.controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +11,6 @@ import com.excilys.formation.computerdatabase.controllers.requestDTO.SwitchLocal
 @RestController
 @RequestMapping("/lang")
 public class SwitchLocale {
-  private static final Logger LOGGER = LoggerFactory.getLogger(SwitchLocale.class);
 
   @RequestMapping(method = RequestMethod.POST, produces = "application/json")
   protected SwitchLocaleDTO doPost(@RequestParam(value="lang", defaultValue="en") String lang) {
