@@ -21,7 +21,7 @@
 		<div class="container">
 			<div class="alert alert-danger">
 				Error 403: Access denied!
-				<c:out value="Yo">Mama</c:out>
+				<c:out value="${message }"/>
 				<br/>
 				<!-- stacktrace -->
 			</div>
