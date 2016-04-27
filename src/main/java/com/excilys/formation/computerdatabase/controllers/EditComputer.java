@@ -43,7 +43,7 @@ public class EditComputer implements InitializingBean {
   private static final String ATTR_ERROR = "errors";
   private static final String ATTR_DTO = "dto";
   private static final String MODEL_ATTRIBUTE = "editComputerForm";
-  
+
   private static final String ID_NOT_FOUND_MESSAGE = "NotFound.EditComputer.Id";
 
   @Autowired
@@ -63,17 +63,17 @@ public class EditComputer implements InitializingBean {
   @RequestMapping(value = "/edit/{id}", method = RequestMethod.GET)
   protected String doGet(RedirectAttributes attr, final Model model,
       @PathVariable("id") final String id) throws NotFoundException {
-    
+
     Map<String, Object> messages = new HashMap<>();
 
     EditComputerDTO dto = new EditComputerDTO(id);
 
     if (id == null || !StringChecker.isNumber(id) || this.cs.get(Long.parseLong(id)) == null) {
       messages.put(ATTR_ERROR, ID_NOT_FOUND_MESSAGE);
-      
+
       attr.addFlashAttribute(ATTR_MESSAGES, messages);
-//      return "redirect:/dashboard";
-      
+      // return "redirect:/dashboard";
+
       throw new NotFoundException(ID_NOT_FOUND_MESSAGE);
     }
 
@@ -118,9 +118,5 @@ public class EditComputer implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     this.pager = new Pager<Company>(this.es.count(), (options) -> this.es.get(options),
         company -> new CompanyDTO(company));
-
-    // FIXME : This is ugly and hard code.
-    this.pager.setRange(100);
-
   }
 }

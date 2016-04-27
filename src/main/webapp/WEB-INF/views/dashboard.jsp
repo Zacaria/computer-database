@@ -96,7 +96,7 @@
 									id="deleteSelected" onclick="$.fn.deleteSelected();"> <i class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th>Computer name<span data-column="computer_name"
+						<th>Computer name<span data-column="name"
 								class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
 						<th>Introduced date<span data-column="introduced"
 								class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
@@ -104,7 +104,7 @@
 						<th>Discontinued date<span data-column="discontinued"
 								class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
 						<!-- Table header for Company -->
-						<th>Company <span data-column="company_name"
+						<th>Company <span data-column="company.name"
 								class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
 					</tr>
 				</thead>

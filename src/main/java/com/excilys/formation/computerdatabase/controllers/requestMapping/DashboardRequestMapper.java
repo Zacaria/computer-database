@@ -1,8 +1,9 @@
 package com.excilys.formation.computerdatabase.controllers.requestMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,8 @@ import com.excilys.formation.computerdatabase.util.StringChecker;
 @Component
 public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
 
+  private final static Logger LOGGER = LoggerFactory.getLogger(DashboardRequestMapper.class);
+  
   private static final String PAGE_PARAM = "p";
   private static final String RANGE_PARAM = "r";
   private static final String COLUMN_PARAM = "col";
@@ -32,7 +35,7 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
    * Possible values are found in the SQL query.
    * computer_id | computer_name | introduced | discontinued | company_id | company_name
    */
-  private static final String DEFAULT_ORDER_BY = ComputerFields.ID_ALIAS.getValue();
+  private static final String DEFAULT_ORDER_BY = ComputerFields.NAME.getValue();
 
   @Autowired
   private ComputerService cs;
@@ -41,7 +44,6 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
 
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public IRequestDTO getToDTO(HttpServletRequest request) {
     int page;
@@ -75,25 +77,6 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
       orderByColumn = DEFAULT_ORDER_BY;
     }
 
-    /**
-     * Init the pager in the client's session if it doesn't exist.
-     */
-    Pager<Computer> pager = null;
-
-    HttpSession session = request.getSession();
-
-    if (session.getAttribute("pager") == null
-        || !(session.getAttribute("pager") instanceof Pager)) {
-      pager = new Pager<>(this.cs.count(), (options) -> this.cs.get(options),
-          computer -> ComputerDTO.builder(computer).build());
-      session.setAttribute("pager", pager);
-    } else {
-
-      // Here's the unchecked, safe enough.
-      pager = (Pager<Computer>) session.getAttribute("pager");
-    }
-    pager.setRange(range);
-
     SelectOptions options = SelectOptions.builder().range(range).search(search)
         .orderBy(orderByColumn).asc(orderByDir).build();
 
@@ -101,18 +84,19 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
      * Determine the page we need.
      * I need to know how much computers there is before asking any page.
      */
-    int count = this.cs.count(options);
-    int totalPage;
-
-    totalPage = (count + range - 1) / range;
+    int count = this.cs.count(options);   
+    int totalPage = (count + range - 1) / range;
 
     page = page > totalPage ? totalPage : page;
 
     /**
      * Get that page and give it to the view.
      */
-
     options.setPage(page);
+    
+    Pager<Computer> pager = new Pager<>(this.cs.count(options), 
+        opts -> this.cs.get(opts),
+        computer -> ComputerDTO.builder(computer).build());
 
     PageDTO<Computer> computers = pager.getPage(options);
 

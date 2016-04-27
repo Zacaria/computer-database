@@ -12,7 +12,7 @@
 
 <ul class="pagination">
 	<!-- link to the first page -->
-	<c:if test="${current != 1 }">
+	<c:if test="${current != 1 and total > 0 }">
 		<li>
 			<cdb:link target="dashboard" page="1" limit="${range}" search="${search}" label="&laquo;"
 				classes="btn btn-default" orderBy="${orderBy}" asc="${asc}" />
@@ -27,7 +27,7 @@
 		</li>
 	</c:if>
 
-	<!-- link to the prevuous page -->
+	<!-- link to the previous page -->
 	<c:if test="${current > 1 }">
 		<li>
 			<cdb:link target="dashboard" page="${current - 1}" limit="${range}" search="${search}"

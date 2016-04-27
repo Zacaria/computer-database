@@ -16,7 +16,7 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
  */
 public class Pager<T> {
   private PageDTO<T> data;
-  private int range = 10;
+  private int range = 100;
   private int totalPage;
   private int currentPageNumber = 1;
   private int total;
@@ -48,7 +48,6 @@ public class Pager<T> {
     Page<T> page = this.dataRetreiver.get(options);
     this.data = new PageDTO<>(page, this.dtoizer);
 
-    this.setTotal(this.data.getTotal());
     this.currentPageNumber = options.getPage();
 
     return this.data;
@@ -66,22 +65,11 @@ public class Pager<T> {
     this.totalPage = (this.total + this.range - 1) / this.range;
   }
 
-  public void setRange(int range) {
-    this.range = range;
-    this.setTotalPage();
-  }
-
   public int getRange() {
     return this.range;
-  }
-
-  private void setTotal(int total) {
-    this.total = total;
-    this.setTotalPage();
   }
 
   public int getTotal() {
     return this.total;
   }
-
 }

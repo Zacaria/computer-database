@@ -15,7 +15,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -110,9 +109,5 @@ public class AddComputer implements InitializingBean {
   public void afterPropertiesSet() throws Exception {
     this.pager = new Pager<Company>(this.es.count(), (options) -> this.es.get(options),
         company -> new CompanyDTO(company));
-
-    // FIXME : This is ugly and hard code,
-    // I am considering that there will never be more than 100 companies.
-    this.pager.setRange(100);
   }
 }

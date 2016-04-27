@@ -2,14 +2,36 @@ package com.excilys.formation.computerdatabase.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import com.excilys.formation.computerdatabase.util.DateConverter;
 
+@Entity
+@Table(schema = "computer-database-db", name = "computer")
 public class Computer {
 
+  @Id
+  @GeneratedValue
   private Long id;
+
+  @Column
   private String name;
+
+  @Column
   private LocalDate introduced;
+
+  @Column
   private LocalDate discontinued;
+
+  @ManyToOne
+  @JoinColumn(name = "company_id", foreignKey = @ForeignKey(name = "fk_computer_company_1") )
   private Company company;
 
   public Computer() {

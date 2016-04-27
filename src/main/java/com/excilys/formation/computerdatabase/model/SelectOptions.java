@@ -11,7 +11,7 @@ public final class SelectOptions {
   private int range = 100;
   private int page = 1;
   // FIXME : OMG this is dirty !
-  private String orderBy = "computer_id";
+  private String orderBy = "id";
   private String asc = "asc";
   private String search = "%";
 
@@ -84,6 +84,10 @@ public final class SelectOptions {
 
   public String getAsc() {
     return asc;
+  }
+
+  public boolean isAsc() {
+    return asc == "desc" ? false : true;
   }
 
   public String getSearch() {

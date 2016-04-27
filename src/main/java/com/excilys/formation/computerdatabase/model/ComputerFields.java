@@ -6,9 +6,9 @@ package com.excilys.formation.computerdatabase.model;
  *
  */
 public enum ComputerFields implements Fields {
-  ID("id"), ID_ALIAS("computer_id"), NAME("name"), NAME_ALIAS("computer_name"), INTRODUCED(
+  ID("id"), ID_ALIAS("computer_id"), NAME("name"), NAME_ALIAS("computer.name"), INTRODUCED(
       "introduced"), DISCONTINUED("discontinued"), COMPANY_ID("company_id"), COMPANY_NAME(
-          "company_name");
+          "company.name");
 
   private String value;
 
