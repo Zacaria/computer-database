@@ -3,13 +3,12 @@ package com.excilys.formation.computerdatabase.persistence;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.excilys.formation.computerdatabase.exceptions.DAOException;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 
 public interface IDAO<T> {
-  int count() throws DAOException;
+  int count();
 
-  default int count(SelectOptions options) throws DAOException {
+  default int count(SelectOptions options) {
     throw new UnsupportedOperationException();
   }
 
@@ -17,7 +16,7 @@ public interface IDAO<T> {
    * Find all tuples for the given model.
    * @return
    */
-  List<T> find() throws DAOException;
+  List<T> find();
 
   /**
    * Returns a Page.
@@ -26,21 +25,21 @@ public interface IDAO<T> {
    * @param count is the maximum number of results.
    * @return 
    */
-  List<T> find(SelectOptions options) throws DAOException;
+  List<T> find(SelectOptions options);
 
   /**
    * 
    * @param id.
    * @return The object or null if no tuple with this id was found.
    */
-  T find(Long id) throws DAOException;
+  T find(Long id);
 
   /**
    * 
    * @param toUpdate the new object to persist.
    * @return the number of affected rows.
    */
-  default T update(T toUpdate) throws DAOException {
+  default T update(T toUpdate) {
     throw new UnsupportedOperationException();
   }
 
@@ -49,7 +48,7 @@ public interface IDAO<T> {
    * @param toCreate the new object to persist.
    * @return the generated if.
    */
-  default Long create(T toCreate) throws DAOException {
+  default Long create(T toCreate) {
     throw new UnsupportedOperationException();
   }
 
@@ -59,7 +58,7 @@ public interface IDAO<T> {
    * @return the number of affected rows.
    * @throws SQLException 
    */
-  default boolean delete(Long id) throws DAOException {
+  default boolean delete(Long id) {
     throw new UnsupportedOperationException();
   }
 }

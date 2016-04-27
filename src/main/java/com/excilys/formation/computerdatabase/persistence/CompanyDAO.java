@@ -1,98 +1,102 @@
 package com.excilys.formation.computerdatabase.persistence;
 
-import java.sql.ResultSet;
 import java.util.List;
+import java.util.function.Supplier;
 
-import javax.sql.DataSource;
-
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.formation.computerdatabase.dataBinders.mapper.CompanyMapper;
 import com.excilys.formation.computerdatabase.model.Company;
+import com.excilys.formation.computerdatabase.model.QCompany;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 
 @Repository("CompanyDAO")
+@Transactional
 public class CompanyDAO implements ICompanyDAO {
 
   private final static Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
 
-  private final static String FIELDS = "company.id as company_id, company.name as company_name";
+  private final static QCompany qCompany = QCompany.company;
 
-  private JdbcTemplate jdbcTemplate;
+  @Autowired
+  private SessionFactory sessionFactory;
+
+  // Generates a queryFactory with a fresh session at each call.
+  private Supplier<HibernateQueryFactory> queryFactory =
+      () -> new HibernateQueryFactory(sessionFactory.getCurrentSession());
 
   public CompanyDAO() {
   }
 
-  private final String countQuery = "SELECT COUNT(*) as count from `computer-database-db`.company;";
-
   @Override
   public int count() {
-    LOGGER.info("counting in " + this.getClass().getSimpleName());
+    LOGGER.info("counting in " + this.getClass()
+      .getSimpleName());
 
-    Integer count = this.jdbcTemplate.queryForObject(countQuery, Integer.class);
+    Integer count = (int) queryFactory.get()
+      .selectFrom(QCompany.company)
+      .fetchCount();
 
     return count != null ? count : 0;
   }
 
-  private final String findAllQuery = "SELECT " + FIELDS + " FROM `computer-database-db`.company;";
-
   @Override
   public List<Company> find() {
-    LOGGER.info("finding in " + this.getClass().getSimpleName());
+    LOGGER.info("finding in " + this.getClass()
+      .getSimpleName());
 
-    List<Company> companies = this.jdbcTemplate.query(findAllQuery,
-        (ResultSet rs, int rowNum) -> new CompanyMapper().mapRow(rs, rowNum));
+    List<Company> companies = queryFactory.get()
+      .selectFrom(qCompany)
+      .fetch();
 
     return companies;
   }
-
-  private final String findWithRangeQuery =
-      "SELECT " + FIELDS + " FROM `computer-database-db`.company limit ?, ?;";
 
   @Override
   public List<Company> find(SelectOptions options) {
-    LOGGER.info("finding in " + this.getClass().getSimpleName());
+    LOGGER.info("finding in " + this.getClass()
+      .getSimpleName());
     LOGGER.debug("With params " + options);
 
-    List<Company> companies = this.jdbcTemplate.query(findWithRangeQuery,
-        new Object[] { options.getOffset(), options.getRange() },
-        (ResultSet rs, int rowNum) -> new CompanyMapper().mapRow(rs, rowNum));
+    List<Company> companies = queryFactory.get()
+      .selectFrom(qCompany)
+      .offset(options.getOffset())
+      .limit(options.getRange())
+      .fetch();
 
     return companies;
   }
 
-  private final String findByIdQuery =
-      "SELECT " + FIELDS + " FROM `computer-database-db`.company WHERE id = ? ;";
-
   @Override
   public Company find(Long id) {
-    LOGGER.info("finding in " + this.getClass().getSimpleName());
+    LOGGER.info("finding in " + this.getClass()
+      .getSimpleName());
     LOGGER.debug("With params " + id);
 
-    Company company = this.jdbcTemplate.queryForObject(findByIdQuery, new Object[] { id },
-        (ResultSet rs, int rowNum) -> new CompanyMapper().mapRow(rs, rowNum));
+    Company company = queryFactory.get()
+      .selectFrom(qCompany)
+      .where(qCompany.id.eq(id))
+      .fetchOne();
 
     return company;
   }
 
-  private final String deleteQuery = "DELETE FROM `computer-database-db`.company WHERE id = ?;";
-
   @Override
   public boolean delete(Long id) {
-    LOGGER.info("deleting in " + this.getClass().getSimpleName());
+    LOGGER.info("deleting in " + this.getClass()
+      .getSimpleName());
     LOGGER.debug("With params " + id);
 
-    int affectedRows = this.jdbcTemplate.update(deleteQuery, id);
+    int affectedRows = (int) queryFactory.get()
+      .delete(qCompany)
+      .where(qCompany.id.eq(id))
+      .execute();
 
     return affectedRows != 0 ? true : false;
-  }
-
-  @Autowired
-  public void setDataSource(DataSource dataSource) {
-    this.jdbcTemplate = new JdbcTemplate(dataSource);
   }
 }

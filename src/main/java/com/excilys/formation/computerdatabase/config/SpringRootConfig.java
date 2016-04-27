@@ -1,5 +1,11 @@
 package com.excilys.formation.computerdatabase.config;
 
+import java.util.Properties;
+
+import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -7,7 +13,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -21,6 +29,14 @@ import com.zaxxer.hikari.HikariDataSource;
     + "com.excilys.formation.computerdatabase.persistence ")
 @PropertySource("classpath:application.properties")
 public class SpringRootConfig {
+
+  private final static Logger LOGGER = LoggerFactory.getLogger(SpringRootConfig.class);
+
+  @Value("${hbm.hbm2ddl.auto}")
+  private String hbm2ddl;
+
+  @Value("${hbm.dialect}")
+  private String dialect;
 
   @Value("${hikari.driver}")
   private String driverClass;
@@ -43,20 +59,35 @@ public class SpringRootConfig {
   @Value("${hikari.poolName}")
   private String poolName;
 
-  // Helps converting strings of property file into numbers for the properties
-  // file
+  // Helps converting strings of property file into numbers.
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
     return new PropertySourcesPlaceholderConfigurer();
   }
 
   @Bean
-  public DataSourceTransactionManager transactionManager() {
-    DataSourceTransactionManager manager = new DataSourceTransactionManager();
+  @Autowired
+  public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
+    HibernateTransactionManager txManager = new HibernateTransactionManager();
+    txManager.setSessionFactory(sessionFactory);
 
-    manager.setDataSource(dataSource());
+    return txManager;
+  }
 
-    return manager;
+  @Bean
+  public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+    return new PersistenceExceptionTranslationPostProcessor();
+  }
+
+  @Bean
+  public LocalSessionFactoryBean sessionFactory() {
+    LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+    sessionFactory.setDataSource(dataSource());
+    sessionFactory
+      .setPackagesToScan(new String[] { "com.excilys.formation.computerdatabase.model" });
+    sessionFactory.setHibernateProperties(hibernateProperties());
+
+    return sessionFactory;
   }
 
   @Bean
@@ -68,10 +99,19 @@ public class SpringRootConfig {
     dataSource.setIdleTimeout(idleTimeout);
     dataSource.setUsername(username);
     dataSource.setPassword(password);
-    dataSource.setJdbcUrl(jdbcUrl);
-    dataSource.addDataSourceProperty("zeroDateTimeBehavior", "convertToNull");
+    dataSource.addDataSourceProperty("url", jdbcUrl);
 
     return dataSource;
+  }
+
+  public Properties hibernateProperties() {
+    return new Properties() {
+      {
+        setProperty("hibernate.hbm2ddl.auto", hbm2ddl);
+        setProperty("hibernate.dialect", dialect);
+        setProperty("hibernate.globally_quoted_identifiers", "true");
+      }
+    };
   }
 
 }
