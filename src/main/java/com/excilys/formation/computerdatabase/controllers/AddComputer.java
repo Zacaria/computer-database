@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.excilys.formation.computerdatabase.controllers.requestDTO.AddComputerDTO;
 import com.excilys.formation.computerdatabase.controllers.requestMapping.AddComputerRequestMapper;
 import com.excilys.formation.computerdatabase.controllers.requestValidator.AddComputerRequestValidator;
+import com.excilys.formation.computerdatabase.controllers.util.Pager;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.IService;
-import com.excilys.formation.computerdatabase.ui.Pager;
 
 /**
  * Servlet implementation class AddComputer

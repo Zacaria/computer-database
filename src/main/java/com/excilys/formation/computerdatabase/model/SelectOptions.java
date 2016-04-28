@@ -10,7 +10,6 @@ public final class SelectOptions {
   private int offset = 0;
   private int range = 100;
   private int page = 1;
-  // FIXME : OMG this is dirty !
   private String orderBy = "id";
   private String asc = "asc";
   private String search = "%";

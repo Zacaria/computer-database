@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.ui;
+package com.excilys.formation.computerdatabase.controllers.util;
 
 import com.excilys.formation.computerdatabase.dataBinders.dto.DTOable;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
@@ -16,14 +16,14 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
  */
 public class Pager<T> {
   private PageDTO<T> data;
-  private int range = 100;
+  private int range = 10;
   private int totalPage;
   private int currentPageNumber = 1;
   private int total;
   /**
    * The class in charge of fetching data.
    */
-  private IPager<T> dataRetreiver;
+  private Pageable<T> dataRetreiver;
   /**
    * The class in charge of getting a plain model into a DTO.
    */
@@ -33,7 +33,7 @@ public class Pager<T> {
 
   }
 
-  public Pager(int count, IPager<T> p, DTOable<T> dtoizer) {
+  public Pager(int count, Pageable<T> p, DTOable<T> dtoizer) {
     this.total = count;
     this.dataRetreiver = p;
     this.setTotalPage();
@@ -47,7 +47,7 @@ public class Pager<T> {
   public PageDTO<T> getPage(SelectOptions options) {
     Page<T> page = this.dataRetreiver.get(options);
     this.data = new PageDTO<>(page, this.dtoizer);
-
+    this.range = options.getRange();
     this.currentPageNumber = options.getPage();
 
     return this.data;
@@ -71,5 +71,9 @@ public class Pager<T> {
 
   public int getTotal() {
     return this.total;
+  }
+  
+  public void setRange(int range) {
+    this.range = range;
   }
 }

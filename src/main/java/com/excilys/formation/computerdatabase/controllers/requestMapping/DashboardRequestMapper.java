@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 
 import com.excilys.formation.computerdatabase.controllers.requestDTO.DashboardDTO;
 import com.excilys.formation.computerdatabase.controllers.requestDTO.IRequestDTO;
+import com.excilys.formation.computerdatabase.controllers.util.Pager;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.ComputerFields;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.service.ComputerService;
-import com.excilys.formation.computerdatabase.ui.Pager;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
 @Component
@@ -99,6 +99,9 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
         computer -> ComputerDTO.builder(computer).build());
 
     PageDTO<Computer> computers = pager.getPage(options);
+    
+    LOGGER.debug(pager.getTotalPage()+"");
+    LOGGER.debug(pager.getTotal()+"");
 
     return new DashboardDTO(page, pager, computers, options);
   }

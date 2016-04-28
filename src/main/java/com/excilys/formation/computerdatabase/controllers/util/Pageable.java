@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.ui;
+package com.excilys.formation.computerdatabase.controllers.util;
 
 import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
@@ -9,6 +9,6 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
  *
  * @param <T> The type of the elements in the Page
  */
-public interface IPager<T> {
+public interface Pageable<T> {
   Page<T> get(SelectOptions options);
 }

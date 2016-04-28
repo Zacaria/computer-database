@@ -20,13 +20,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.excilys.formation.computerdatabase.controllers.requestDTO.EditComputerDTO;
 import com.excilys.formation.computerdatabase.controllers.requestMapping.EditComputerRequestMapper;
 import com.excilys.formation.computerdatabase.controllers.requestValidator.EditComputerRequestValidator;
+import com.excilys.formation.computerdatabase.controllers.util.Pager;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.exceptions.NotFoundException;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.IService;
-import com.excilys.formation.computerdatabase.ui.Pager;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
 /**
