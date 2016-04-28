@@ -26,7 +26,7 @@
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<strong>Success!</strong> Your computer has been successfully updated
+							<strong>Success!</strong> <spring:message code="Success.EditComputer"/>
 						</div>
 					</c:if>
 					<div class="label label-default pull-right">id: ${computer.getId()}</div>
@@ -36,7 +36,7 @@
 						<input name="id" type="hidden" value="${computer.getId()}" />
 						<fieldset>
 							<div class="form-group">
-								<label for="computerName">Computer name</label> 
+								<label for="computerName"><spring:message code="Computer.Name"/></label> 
 								<form:input type="text" class="form-control" id="computerName" value="${computer.getName()}"
 										placeholder="Computer name" path="name" required="true" />
 								<form:errors path="name" class="help-block form-message-error" />
@@ -44,7 +44,7 @@
 							<div class="form-group">
 								<fmt:parseDate value="${computer.getIntroduced()}" var="introduced" pattern="yyyy-MM-dd" />
 								<fmt:formatDate value="${introduced}" pattern="${datePattern}" var="formatIntroduced" />
-								<label for="introduced">Introduced date</label> 
+								<label for="introduced"><spring:message code="Computer.Introduced"/></label> 
 								<form:input type="date" class="form-control form_datetime" id="introduced"
 										value="${formatIntroduced}" placeholder="Introduced date" path="introduced"
 										readonly="true" />
@@ -53,14 +53,14 @@
 							<div class="form-group">
 								<fmt:parseDate value="${computer.getDiscontinued()}" var="discontinued" pattern="yyyy-MM-dd" />
 								<fmt:formatDate value="${discontinued}" pattern="${datePattern}" var="formatDiscontinued" />
-								<label for="discontinued">Discontinued date</label>
+								<label for="discontinued"><spring:message code="Computer.Discontinued"/></label>
 								<form:input type="date" class="form-control form_datetime" id="discontinued"
 										placeholder="Discontinued date" value="${formatDiscontinued}" path="discontinued"
 										readonly="true" />
 								<form:errors path="discontinued" class="help-block form-message-error" />
 							</div>
 							<div class="form-group">
-								<label for="companyId">Company</label>
+								<label for="companyId"><spring:message code="Computer.Company"/></label>
 								<form:select class="form-control selectpicker" id="companyId" path="companyId"
 										required="true">
 									<form:option value="">Nothing Selected</form:option>
