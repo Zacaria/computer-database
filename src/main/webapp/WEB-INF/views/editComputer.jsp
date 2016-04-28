@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
@@ -6,6 +7,14 @@
 <c:set var="computer" value="${data.get('dto').getComputer()}" />
 <c:set var="computerName" value="" />
 <c:set var="companies" value="${data.get('dto').getCompanies()}" />
+<c:choose>
+	<c:when test="${pageContext.response.locale == 'fr'}">
+		<c:set var="datePattern" value="dd-MM-yyyy" />
+	</c:when>
+	<c:otherwise>
+		<c:set var="datePattern" value="yyyy-MM-dd" />
+	</c:otherwise>
+</c:choose>
 <cdb:default_layout>
 	<jsp:attribute name="body_area">	
 	<section id="main">
@@ -33,16 +42,20 @@
 								<form:errors path="name" class="help-block form-message-error" />
 							</div>
 							<div class="form-group">
+								<fmt:parseDate value="${computer.getIntroduced()}" var="introduced" pattern="yyyy-MM-dd" />
+								<fmt:formatDate value="${introduced}" pattern="${datePattern}" var="formatIntroduced" />
 								<label for="introduced">Introduced date</label> 
 								<form:input type="date" class="form-control form_datetime" id="introduced"
-										value="${computer.getIntroduced()}" placeholder="Introduced date" path="introduced"
+										value="${formatIntroduced}" placeholder="Introduced date" path="introduced"
 										readonly="true" />
 								<form:errors path="introduced" class="help-block form-message-error" />
 							</div>
 							<div class="form-group">
+								<fmt:parseDate value="${computer.getDiscontinued()}" var="discontinued" pattern="yyyy-MM-dd" />
+								<fmt:formatDate value="${discontinued}" pattern="${datePattern}" var="formatDiscontinued" />
 								<label for="discontinued">Discontinued date</label>
 								<form:input type="date" class="form-control form_datetime" id="discontinued"
-										placeholder="Discontinued date" value="${computer.getDiscontinued()}" path="discontinued"
+										placeholder="Discontinued date" value="${formatDiscontinued}" path="discontinued"
 										readonly="true" />
 								<form:errors path="discontinued" class="help-block form-message-error" />
 							</div>
