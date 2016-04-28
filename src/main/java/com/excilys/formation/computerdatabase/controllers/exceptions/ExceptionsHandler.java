@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.controllers;
+package com.excilys.formation.computerdatabase.controllers.exceptions;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import com.excilys.formation.computerdatabase.exceptions.NotFoundException;
-
 @ControllerAdvice
-public class ExceptionsController {
+public class ExceptionsHandler {
   private static final String ATTR_ERROR = "errors";
 
-  @ExceptionHandler({NoHandlerFoundException.class, NotFoundException.class})
+  @ExceptionHandler({ NoHandlerFoundException.class, NotFoundException.class })
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public String notFound(NotFoundException e, final Model model, HttpServletRequest request) {
 

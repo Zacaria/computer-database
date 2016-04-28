@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.excilys.formation.computerdatabase.controllers.exceptions.NotFoundException;
 import com.excilys.formation.computerdatabase.controllers.requestDTO.EditComputerDTO;
 import com.excilys.formation.computerdatabase.controllers.requestMapping.EditComputerRequestMapper;
 import com.excilys.formation.computerdatabase.controllers.requestValidator.EditComputerRequestValidator;
 import com.excilys.formation.computerdatabase.controllers.util.Pager;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
-import com.excilys.formation.computerdatabase.exceptions.NotFoundException;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.IService;
@@ -78,7 +78,8 @@ public class EditComputer implements InitializingBean {
     }
 
     dto.setCompanies(this.pager.getPage());
-    dto.setComputer(ComputerDTO.builder(this.cs.get(Long.parseLong(id))).build());
+    dto.setComputer(ComputerDTO.builder(this.cs.get(Long.parseLong(id)))
+      .build());
 
     Map<String, Object> result = new HashMap<>();
     result.put(ATTR_DTO, dto);
@@ -99,10 +100,13 @@ public class EditComputer implements InitializingBean {
     EditComputerRequestMapper mapper = new EditComputerRequestMapper();
 
     if (bindingResult.hasErrors()) {
-      LOGGER.error(bindingResult.getAllErrors().toString());
-      dto.setComputer(ComputerDTO.builder(this.cs.get(Long.parseLong(dto.getId()))).build());
+      LOGGER.error(bindingResult.getAllErrors()
+        .toString());
+      dto.setComputer(ComputerDTO.builder(this.cs.get(Long.parseLong(dto.getId())))
+        .build());
     } else {
-      dto.setComputer(ComputerDTO.builder(cs.update(mapper.fromDTO(dto))).build());
+      dto.setComputer(ComputerDTO.builder(cs.update(mapper.fromDTO(dto)))
+        .build());
       model.addAttribute(ATTR_SUCCESS, true);
     }
 
