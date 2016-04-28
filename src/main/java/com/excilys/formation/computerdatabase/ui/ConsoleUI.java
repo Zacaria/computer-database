@@ -14,9 +14,11 @@ import org.apache.commons.cli.UnrecognizedOptionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.excilys.formation.computerdatabase.config.SpringRootConfig;
+import com.excilys.formation.computerdatabase.controllers.util.Pager;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.IDTO;
@@ -26,20 +28,22 @@ import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.service.CompanyService;
 import com.excilys.formation.computerdatabase.service.ComputerService;
+import com.excilys.formation.computerdatabase.service.IService;
 
 public class ConsoleUI {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleUI.class);
   private static final Pattern ID_PATTERN = Pattern.compile("^\\d+$");
 
-  private static ComputerService computerService;
-  private static CompanyService companyService;
+  private static IService<Computer> computerService;
+  private static IService<Company> companyService;
   private static Pager<Computer> computerPager;
   private static Pager<Company> companyPager;
   private static int defaultMax = 10;
+  private static int defaultCompanyMax = 50;
 
   public static void main(String[] args) {
-    ApplicationContext appContext = new ClassPathXmlApplicationContext("app-context.xml");
+    ApplicationContext appContext = new AnnotationConfigApplicationContext(SpringRootConfig.class);
     computerService = (ComputerService) appContext.getBean("ComputerService");
     companyService = (CompanyService) appContext.getBean("CompanyService");
 
@@ -55,8 +59,7 @@ public class ConsoleUI {
 
     computerPager.setRange(defaultMax);
 
-    // FIXME : We always display all companies
-    companyPager.setRange(50);
+    companyPager.setRange(defaultCompanyMax);
 
     try {
       CommandLine cmd = parser.parse(options, args);
