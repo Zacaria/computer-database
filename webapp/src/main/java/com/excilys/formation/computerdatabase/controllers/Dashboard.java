@@ -22,7 +22,7 @@ import com.excilys.formation.computerdatabase.controllers.requestMapping.Dashboa
  * Servlet implementation class Dashboard.
  */
 @Controller
-@RequestMapping("/dashboard")
+@RequestMapping({"/", "/dashboard"})
 public class Dashboard {
   
   private static final Logger LOGGER =

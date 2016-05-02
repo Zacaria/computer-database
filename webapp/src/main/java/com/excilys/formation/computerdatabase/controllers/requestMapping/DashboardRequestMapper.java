@@ -99,9 +99,6 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
         computer -> ComputerDTO.builder(computer).build());
 
     PageDTO<Computer> computers = pager.getPage(options);
-    
-    LOGGER.debug(pager.getTotalPage()+"");
-    LOGGER.debug(pager.getTotal()+"");
 
     return new DashboardDTO(page, pager, computers, options);
   }

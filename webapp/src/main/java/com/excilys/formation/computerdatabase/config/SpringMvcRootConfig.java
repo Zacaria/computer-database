@@ -2,6 +2,8 @@ package com.excilys.formation.computerdatabase.config;
 
 import java.util.Locale;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -21,6 +23,12 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 public class SpringMvcRootConfig extends WebMvcConfigurerAdapter {
 
+  private final static Logger LOGGER = LoggerFactory.getLogger(SpringMvcRootConfig.class);
+  
+  {
+    LOGGER.debug("init-mvc");
+  }
+  
   @Bean
   public LocalValidatorFactoryBean validator() {
     LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
