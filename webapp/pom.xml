@@ -58,7 +58,11 @@
 			<artifactId>jackson-databind</artifactId>
 			<version>${jackson.version}</version>
 		</dependency>
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> 9036529046eac3aeb73d2469e72c3c180084b2f9
 		<!-- Servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -77,8 +81,13 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
+<<<<<<< HEAD
 		</dependency>
 
+=======
+		</dependency>		
+		
+>>>>>>> 9036529046eac3aeb73d2469e72c3c180084b2f9
 		<!-- RequestDTO Validator -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
