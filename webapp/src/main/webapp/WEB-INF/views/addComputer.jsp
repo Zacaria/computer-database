@@ -16,7 +16,7 @@
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
-							<strong>Success!</strong> <spring:message code="Success.AddComputer"/>
+							<strong>Success!</strong> <spring:message code="Success.AddComputer" />
 						</div>
 					</c:if>
 					<c:if test="${not empty messages.get('errors')}">
@@ -29,29 +29,33 @@
 							</div>
 						</c:forEach>
 					</c:if>
-					<h1><spring:message code="AddComputer.Title"/></h1>
+					<h1>
+							<spring:message code="AddComputer.Title" />
+						</h1>
 					<form:form modelAttribute="addComputerForm" action="" method="POST">
 						<fieldset>
 							<div class="form-group">
-								<label class="control-label" for="computerName"><spring:message code="Computer.Name"/></label>
+								<label class="control-label" for="computerName"><spring:message code="Computer.Name" /></label>
 								<form:input cssClass="form-control" id="computerName" placeholder="Computer name"
 										path="name" required="true" />
 								<form:errors path="name" class="help-block form-message-error" />
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="introduced"><spring:message code="Computer.Introduced"/></label>
+								<label class="control-label" for="introduced"><spring:message
+											code="Computer.Introduced" /></label>
 								<form:input type="date" cssClass="form-control form_datetime" id="introduced"
 										placeholder="Click to pick a date" path="introduced" readonly="true" />
 								<form:errors path="introduced" class="help-block form-message-error" />
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="discontinued"><spring:message code="Computer.Discontinued"/></label>
+								<label class="control-label" for="discontinued"><spring:message
+											code="Computer.Discontinued" /></label>
 								<form:input type="date" cssClass="form-control form_datetime" id="discontinued"
 										placeholder="Click to pick a date" path="discontinued" readonly="true" />
 								<form:errors path="discontinued" class="help-block form-message-error" />
 							</div>
 							<div class="form-group">
-								<label class="control-label" for="companyId"><spring:message code="Computer.Company"/></label>
+								<label class="control-label" for="companyId"><spring:message code="Computer.Company" /></label>
 								<form:select cssClass="form-control selectpicker" id="companyId" title="Pick a company"
 										path="companyId" required="true">
 
@@ -71,7 +75,7 @@
 		</div>
 	</section>	
 	</jsp:attribute>
-	
+
 	<jsp:attribute name="script_area">
 		<script src="${root}/js/bootstrap-datetimepicker.min.js"></script>
 		<script src="${root}/js/bootstrap-select.min.js"></script>

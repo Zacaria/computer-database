@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<c:set var="root" value="${pageContext.request.contextPath}/resources"/>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="root" value="${pageContext.request.contextPath}/resources" />
 <html xmlns:h="http://java.sun.com/jsf/html">
 <head>
-	<title>Computer Database</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- Bootstrap -->
-	<link href="${root}/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="${root}/css/font-awesome.css" rel="stylesheet" media="screen">
-	<link href="${root}/css/main.css" rel="stylesheet" media="screen">
+<title>Computer Database</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bootstrap -->
+<link href="${root}/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="${root}/css/font-awesome.css" rel="stylesheet" media="screen">
+<link href="${root}/css/main.css" rel="stylesheet" media="screen">
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
@@ -21,8 +21,8 @@
 		<div class="container">
 			<div class="alert alert-danger">
 				Error 403: Access denied!
-				<c:out value="${message }"/>
-				<br/>
+				<c:out value="${message }" />
+				<br />
 				<!-- stacktrace -->
 			</div>
 		</div>

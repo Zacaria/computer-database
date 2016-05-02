@@ -96,15 +96,15 @@
 									id="deleteSelected" onclick="$.fn.deleteSelected();"> <i class="fa fa-trash-o fa-lg"></i>
 							</a>
 						</span></th>
-						<th><spring:message code="Computer.Name"/><span data-column="name"
+						<th><spring:message code="Computer.Name" /><span data-column="name"
 								class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
-						<th><spring:message code="Computer.Introduced"/><span data-column="introduced"
+						<th><spring:message code="Computer.Introduced" /><span data-column="introduced"
 								class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
 						<!-- Table header for Discontinued Date -->
-						<th><spring:message code="Computer.Discontinued"/><span data-column="discontinued"
+						<th><spring:message code="Computer.Discontinued" /><span data-column="discontinued"
 								class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
 						<!-- Table header for Company -->
-						<th><spring:message code="Computer.Company"/><span data-column="company.name"
+						<th><spring:message code="Computer.Company" /><span data-column="company.name"
 								class="button-sort glyphicon glyphicon-sort pull-right" aria-hidden="true"></span></th>
 					</tr>
 				</thead>

@@ -35,7 +35,7 @@
 			</ul>
 		</div>
 	</header>
-	
+
 	<jsp:invoke fragment="body_area" />
 
 	<script src="${root}/js/jquery.min.js"></script>
