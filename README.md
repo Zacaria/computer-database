@@ -8,12 +8,13 @@ Here is the macro-planning and timeline of all milestones:
  * t0+2  - Base Architecture, CLI (Add / Edit features), Logging
  * t0+8  - Web UI, Maven, Unit Tests, jQuery Validation, Backend Validation
  * t0+11 - Search, OrderBy, Transactions, Connection-Pool 
- * t0+18 - Threadlocal, Continuous delivery (Jenkins, Docker, Dockerhub, Glazer)
- * t0+19 - Spring integration
- * t0+22 - Spring MVC integration, JDBC Template, i18n
- * t0+28 - Maven Multi-modules, Spring Security, Hibernate ORM (JPA, Criteria, QueryDSL, Spring Data JPA)
- * t0+30 - Web Services, end of project
- * t0+33 - Project presentation to sales & tech audience
+ * t0+12 - Threadlocal, Java Performance contest
+ * t0+18 - Continuous delivery (Jenkins, Docker, Dockerhub, Glazer)
+ * t0+20 - Spring integration
+ * t0+23 - Spring MVC integration, JDBC Template, i18n
+ * t0+29 - Maven Multi-modules, Spring Security, Hibernate ORM (JPA, Criteria, QueryDSL, Spring Data JPA)
+ * t0+31 - Web Services, end of project
+ * t0+34 - Project presentation to sales & tech audience
 
 #Installation
 
@@ -103,7 +104,7 @@ Important Points: Maven structure? Library scopes? Architecture (daos, mappers, 
 Prepare a point about Threading (Connections, concurrency), and Transactions.
 
 ####4.3.5. Connection pool, Transactions
-Add a connection pool (BoneCP), put your credentials in an external properties file.  
+Add a connection pool (HikariCP), put your credentials in an external properties file.  
 Implement a solid transaction handling model.  
 
 ####4.3.6. Implement all other features in the web-ui
@@ -123,30 +124,39 @@ Point about Threading (Connections, concurrency), and Transactions.
 ####4.3.10. Threadlocal
 Replace existing connection logic with a ThreadLocal object. 
 
+#### 4.3.11 Performance Challenge with Gatling
+Now is the time to start evaluating your global application performance with a stress-test campain.
+Using Gatling, you have one day to stress-test your web application (gatling test and directions present in the folder gatling-test). See the relevant README file for more explanations. For now, choose the simulation without Spring Security.
+
+
+####4.3.9. Code review (t0 + 12 days)
+Important Points: What were the bottlenecks, what optimizations were done, for how much performance gain, which scores were reached.
+
 ###4.4 Continuous Integration / Continuous Delivery
-We want to setup a continuous integration/delivery  system for our webapp with [Jenkins](https://jenkins-ci.org/) and [Docker](https://www.docker.com). Each time we push on master we want Jenkins to retrieve the changes, compile, test on a specific environment,  build and push the new image to a registry, then manually deploy the new image to a staging server.
+We want to setup a continuous integration/delivery  system for our webapp with [Jenkins](https://jenkins-ci.org/) and [Docker](https://www.docker.com). Each time we push on master we want Jenkins to retrieve the changes, compile, test on a specific environment, build and push the new image to a registry, then automatically deploy the new image on the Cloud.
 
 ####4.4.1 Jenkins & Docker
 Create Docker images that contain a test environment: one with jdk8 + maven and another with a MySQL database. Use the [docker network](https://docs.docker.com/engine/userguide/networking/work-with-networks/) command to enable communication between your containers. Do not use [links](https://docs.docker.com/engine/userguide/networking/default_network/dockerlinks/) since the feature will be deprecated.
 Setup a Jenkins to start your test containers each time a push on master is performed, then display the JUnits results.
 
-####4.4.2 Docker in Docker
-We now want to put our Jenkins in a Docker container. Create a Docker container with your previous Jenkins configuration. Jenkins must be able to run your test containers. To do that start a [docker in docker](https://hub.docker.com/_/docker/) container.
-Warning: Sharing the host docker socket with the Jenkins container is forbidden.
+####4.4.2 Docker in Docker?
+We now want to put our Jenkins in a Docker container. Create a Docker container with your previous Jenkins configuration. Jenkins must be able to run your test containers. As Jenkins is already working inside a container, you need to find a way for it to run another one. Multiple solutions exist. Find the most relevant for your use case, and let us know what choices you made.
 
 ####4.4.3 Continuous Delivery
-Create two Docker images: one for the computer database webapp and one for the mysql. Push them to DockerHub.
+Create four Docker images: one for jenkins, one for compilation and tests, one for production (tomcat) and one for the mysql. Push them to DockerHub.
 
-Connect with ssh to your staging server kindergarten (login: student, password: student) and setup your staging environment:
+- Connect with your login to [Docker Cloud](https://cloud.docker.com/) 
 
- - ``` $ mkdir $HOME/yourname ``` -- this will be your working directory for your conf files, launch scripts and data if any
- - ``` $ docker network create yourname``` -- this will be your private network
- - Choose a port to publish your webapp.
- - Start your database and webapp containers and add them to your private network
+- Create a [free account](https://aws.amazon.com/fr/free/) on Amazon Web Services.
 
-Update your Jenkins to rebuild your webapp image with the latest successful war and push it to DockerHub.
+- [Link](https://docs.docker.com/docker-cloud/getting-started/link-aws/) your Amazon Web Services account to deploy node clusters and nodes using Docker Cloud’s dashboard. Be careful when choosing the type of node on Docker Cloud, select 't2.micro' under the conditions of free AWS account.
 
-From now on, you must manually update your stagging environment after a success build.
+- Observe the diagram below to properly configure the architecture of Docker containers to set up the continuous delivery:
+![image](http://s24.postimg.org/4hwvay1mt/Continuous_delivery_1.png)
+
+- Below the activity diagram to figure out all the process:
+![image](http://s22.postimg.org/4sxvlgtw1/CDProcess_Diagram_1.png)
+
 
 ####4.4.4. Point overview: Continuous Integration (t0 + 18 days)
 Jenkins + DinD: which service actually starts the containers ?   
@@ -162,7 +172,7 @@ Replace your connection pool by a real datasource configured in the spring conte
 Which problems did you encounter? Study and note all the possible ways of solving the dependency injection issue in servlets.  
 Warning: Do not replace your Servlets by another class. Your controllers should still extend HttpServlet.
 
-####4.5.2. Point overview: Spring integration (t0 + 19 days)
+####4.5.2. Point overview: Spring integration (t0 + 20 days)
 How a webapp is started, how spring initializes itself.  
 Explanation of the common problems encountered with the different contexts.  
 Roundtable of the solutions found, best practices.
@@ -178,7 +188,7 @@ Add custom error pages.
 ####4.5.5. i18n
 Implement spring multilingual features (French/English).
 
-####4.5.6. Code Review (t0 + 22 days)
+####4.5.6. Code Review (t0 + 23 days)
 Important Points: How did you split your Spring / Spring MVC contexts? How to switch from a language to another? How about javascript translation? Did you use spring-mvc annotations, forms and models?
 
 ###4.6. Multi module, ORM, and Security
@@ -202,14 +212,17 @@ Maven and Spring contexts evaluation, unit tests evaluation.
 
 ###4.7. Web Services, REST API
 
-####4.7.1. Jax WS / Jax RS 
-Now, we want your webapp to also produce APIs so that clients could access the resources remotely.  
-Refactor your CLI client to act as a remote client to your webapp, using either Jax-RS or Jax-WS libraries.
+#### 4.7.1 Performance review with Gatling
+Now that you have enabled Spring Security, you can use the second Gatling Simulation with Spring Security. See the README present in the gatling-test folder for more details.
 
 ####4.7.2. Jackson
-Finally, to allow the creation of AngularJS, Mobile (Android/iOS) or third party clients, you should expose the computer listing feature using Jackson and Spring RestController.
+Now, we want your webapp to also produce APIs so that clients could access the resources remotely.  
+To allow the creation of AngularJS, Mobile (Android/iOS) or third party clients, you should expose all features using Jackson and Spring RestController.
 
-####4.7.3. Final Code Review (t0 + 30 days)
+####4.7.3. Jax WS / Jax RS
+Refactor your CLI client to act as a remote client to your webapp, using either Jax-RS or Jax-WS libraries.
+
+####4.7.4. Final Code Review (t0 + 31 days)
 Steps to fix before final release, code quality overview and possible improvements. Point about UX
 
 ###4.8. Final refactoring, UX, and project presentation
@@ -218,9 +231,12 @@ The final stage is your production release.
 ####4.8.1. UX
 This is where you will think UX first, challenge the technical choices of the base page template, and customize it to your standards.
 
-###4.8.2. Final Presentation (t0 + 33 days)
+###4.8.2. Final Presentation (t0 + 34 days)
 The presentation will be made with the whole group, on one project of their choice.  
 It consists of 3 parts:  
-The product-presentation, from a user-centered perspective (non-technical). You are presenting your "Computer database" product, and telling us what it does and how it was made.  
+The product-presentation, from a user-centered perspective (non-technical). 
+You are presenting your "Computer database" product, and telling us what it does and how it was made.  
 A live-demonstration. Be careful, the audience may interrupt your demo and ask you to try / show something else.  
-The technical-presentation, to the IT Director. This presentation should lay out how strong your architecture is, describe the libraries used and you should be prepared to answer any technical question or justify your technical choices to the audience.
+A technical review: you will reassure your client on what he paid for. Give him the necessary technical data and metrics which will allow him to think "they are competent and they did the job, and I am confident that it is maintainable and well coded".
+
+**Warning**: this presentation is not a restitution of what you have done. It is a **simulation** of the presentation of a project you would deliver to your customer.
