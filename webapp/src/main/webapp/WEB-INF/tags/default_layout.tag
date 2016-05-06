@@ -1,5 +1,6 @@
 <%@tag description="Default Template" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 
 <%@attribute name="title"%>
@@ -13,25 +14,55 @@
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
+<sec:csrfMetaTags />
 <!-- Bootstrap -->
 <link href="${root}/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="${root}/css/font-awesome.css" rel="stylesheet" media="screen">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
 <link href="${root}/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
 <link href="${root}/css/bootstrap-select.min.css" rel="stylesheet" media="screen">
 <link href="${root}/css/main.css" rel="stylesheet" media="screen">
 </head>
+
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<cdb:link target="/computer-database/dashboard" label="Application - Computer Database"
+			<cdb:link target="dashboard" label="Application - Computer Database"
 				classes="navbar-brand" />
-			<ul class="nav navbar-nav navbar-right">
+			<ul class="nav navbar-nav navbar-right col-sm-4">
+
 				<li>
 					<a href="javascript:void(0)" class="navbar-brand navbar-link navbar-lang" data-lang="fr">Fr</a>
 				</li>
 				<li>
 					<a href="javascript:void(0)" class="navbar-brand navbar-link navbar-lang" data-lang="en">En</a>
 				</li>
+				<li>
+					
+				</li>
+				<sec:authorize access="!isAuthenticated()">
+					<li class="pull-right">
+						<a href="login">
+							<i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>
+						</a>
+					</li>
+					<li class="pull-right">
+						<a href="register">
+							<i class="fa fa-user-plus fal-lg" aria-hidden="true"></i>
+						</a>
+					</li>
+				</sec:authorize>
+				<sec:authorize access="isAuthenticated()">
+					<li class="pull-right">
+						<form class="navbar-form navbar-out" action="/webapp/logout" method="POST">
+							<span class="user-welcome">Hi <sec:authentication property="principal.username" /> !
+							</span>
+							<button type="submit" class="btn-link navbar-btn">
+								<i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>
+							</button>
+							<sec:csrfInput />
+						</form>
+					</li>
+				</sec:authorize>
 			</ul>
 		</div>
 	</header>

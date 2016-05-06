@@ -5,13 +5,14 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.FrameworkServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import com.excilys.formation.computerdatabase.config.SecurityConfig;
 import com.excilys.formation.computerdatabase.config.SpringRootConfig;
 
 public class ServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
   @Override
   protected Class<?>[] getRootConfigClasses() {
-    return new Class[] { SpringRootConfig.class };
+    return new Class[] { SpringRootConfig.class, SecurityConfig.class };
   }
 
   @Override

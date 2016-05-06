@@ -11,6 +11,15 @@
 					<spring:message code="${errors.getErrCode()}" />
 				</c:if>
 				${errors.getMessage()}
+				
+				<div class="row">
+					<div class="col-md-10">
+						<a href="#" class="btn btn-lg btn-block btn-danger panic">Panic !</a>
+					</div>
+					<div class="col-md-2">
+						<a href="/webapp" class="btn btn-lg btn-block btn-success">Stay calm</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>

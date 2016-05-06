@@ -35,3 +35,17 @@ input[type='checkbox'] {
 .navbar-inverse .navbar-nav>li>a.navbar-link.lang-selected {
 	color: #fff;
 }
+
+.user-welcome {
+	color: #EEEEEE;
+}
+
+.centered-form {
+	position: relative;
+}
+
+.centered-form>form {
+	position: absolute;
+	top: 50%;
+	transform: translate(0%, 50%);
+}

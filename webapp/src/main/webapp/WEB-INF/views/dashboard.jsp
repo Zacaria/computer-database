@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -56,7 +57,6 @@
 				</c:forEach>
 				<c:remove var="errors" scope="session" />
 			</c:if>
-			${pout }
 			<h1 id="homeTitle">${dto.getPager().getTotal()} <spring:message code="Dashboard.Title" />
 				<c:if test="${not empty param.s}"> <spring:message code="Dashboard.Search.Label" /> <c:out
 							value="${param.s}" />
@@ -69,6 +69,7 @@
 						<input type="search" id="searchbox" name="s" class="form-control" placeholder="Search name" />
 						<input type="submit" id="searchsubmit" value="${DashboardSearchButton}"
 								class="btn btn-primary"></input>
+						<sec:csrfInput />
 					</form>
 				</div>
 				<div class="pull-right">

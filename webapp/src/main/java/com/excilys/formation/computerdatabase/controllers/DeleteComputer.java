@@ -16,9 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.excilys.formation.computerdatabase.controllers.requestDTO.DeleteComputerDTO;
 import com.excilys.formation.computerdatabase.controllers.requestMapping.DeleteComputerRequestMapper;
 import com.excilys.formation.computerdatabase.controllers.requestValidator.DeleteComputerRequestValidator;
-import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.service.ComputerService;
-import com.excilys.formation.computerdatabase.service.IService;
+import com.excilys.formation.computerdatabase.service.IComputerService;
 
 /**
  * Servlet implementation class deleteComputer
@@ -32,7 +31,7 @@ public class DeleteComputer {
   private static final String SUCCESS_MESSAGE = "DeleteComputer.success";
 
   @Autowired
-  private IService<Computer> cs;
+  private IComputerService cs;
 
   @Autowired
   private DeleteComputerRequestValidator validator;
@@ -54,7 +53,9 @@ public class DeleteComputer {
     validator.validate(dto, bindingResult);
 
     if (!bindingResult.hasErrors()) {
-      dto.getIds().stream().forEach(this.cs::delete);
+      dto.getIds()
+        .stream()
+        .forEach(this.cs::delete);
       messages.put(ATTR_SUCCESS, SUCCESS_MESSAGE);
     } else {
       messages.put(ATTR_ERROR, bindingResult.getAllErrors());

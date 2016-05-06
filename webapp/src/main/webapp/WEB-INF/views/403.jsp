@@ -1,22 +1,10 @@
-<!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="root" value="${pageContext.request.contextPath}/resources" />
-<html xmlns:h="http://java.sun.com/jsf/html">
-<head>
-<title>Computer Database</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Bootstrap -->
-<link href="${root}/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="${root}/css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="${root}/css/main.css" rel="stylesheet" media="screen">
-</head>
-<body>
-	<header class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="dashboard.html"> Application - Computer Database </a>
-		</div>
-	</header>
+<%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 
+<c:set var="root" value="${pageContext.request.contextPath}/resources" />
+
+<cdb:default_layout>
+	<jsp:attribute name="body_area">	
 	<section id="main">
 		<div class="container">
 			<div class="alert alert-danger">
@@ -24,13 +12,19 @@
 				<c:out value="${message }" />
 				<br />
 				<!-- stacktrace -->
+				
+				<div class="jumbotron">
+					<div class="row">
+						<div class="col-md-10">
+							<a href="#" class="btn btn-lg btn-block btn-danger panic">Panic !</a>
+						</div>
+						<div class="col-md-2">
+							<a href="/webapp" class="btn btn-lg btn-block btn-success">Stay calm</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</section>
-
-	<script src="${root}/js/jquery.min.js"></script>
-	<script src="${root}/js/bootstrap.min.js"></script>
-	<script src="${root}/js/dashboard.js"></script>
-
-</body>
-</html>
+	</jsp:attribute>
+</cdb:default_layout>

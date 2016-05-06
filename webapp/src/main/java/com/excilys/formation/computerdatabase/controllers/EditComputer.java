@@ -25,8 +25,8 @@ import com.excilys.formation.computerdatabase.controllers.util.Pager;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.model.Company;
-import com.excilys.formation.computerdatabase.model.Computer;
-import com.excilys.formation.computerdatabase.service.IService;
+import com.excilys.formation.computerdatabase.service.ICompanyService;
+import com.excilys.formation.computerdatabase.service.IComputerService;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
 /**
@@ -47,10 +47,10 @@ public class EditComputer implements InitializingBean {
   private static final String ID_NOT_FOUND_MESSAGE = "NotFound.EditComputer.Id";
 
   @Autowired
-  private IService<Computer> cs;
+  private IComputerService cs;
 
   @Autowired
-  private IService<Company> es;
+  private ICompanyService es;
 
   @Autowired
   private EditComputerRequestValidator validator;
@@ -72,7 +72,6 @@ public class EditComputer implements InitializingBean {
       messages.put(ATTR_ERROR, ID_NOT_FOUND_MESSAGE);
 
       attr.addFlashAttribute(ATTR_MESSAGES, messages);
-      // return "redirect:/dashboard";
 
       throw new NotFoundException(ID_NOT_FOUND_MESSAGE);
     }

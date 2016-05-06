@@ -33,7 +33,10 @@ $(function() {
 
 		$.ajax({
 			type : "POST",
-			url : "/computer-database/lang?lang=" + $(this).data().lang,
+			url : "/webapp/lang?lang=" + $(this).data().lang,
+			beforeSend: function(xhr, settings) {
+				xhr.setRequestHeader('X-CSRF-TOKEN', $("meta[name='_csrf']").attr("content"));
+			},
 			success : function(data) {
 				console.log("switched language to " + that.data().lang);				
 				that.empty();
@@ -47,6 +50,13 @@ $(function() {
 			dataType : "json"
 		});
 	});
+});
+
+// Panic button handling.
+document.querySelector('.panic').onclick = (function() {
+	var s = document.createElement('script');
+	s.setAttribute('src', 'https://nthitz.github.io/turndownforwhatjs/tdfw.js');
+	document.body.appendChild(s);
 });
 
 function getURLParameter(sParam) {

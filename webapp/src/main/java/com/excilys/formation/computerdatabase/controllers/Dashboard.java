@@ -22,11 +22,10 @@ import com.excilys.formation.computerdatabase.controllers.requestMapping.Dashboa
  * Servlet implementation class Dashboard.
  */
 @Controller
-@RequestMapping({"/", "/dashboard"})
+@RequestMapping({ "/", "/dashboard" })
 public class Dashboard {
-  
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(Dashboard.class);
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(Dashboard.class);
 
   private static final String ATTR_RESULT = "data";
   private static final String ATTR_DTO = "dto";
@@ -52,7 +51,7 @@ public class Dashboard {
 
     if (session.getAttribute(ATTR_MESSAGES) != null) {
       messages
-          .putAll((Map<? extends String, ? extends Object>) session.getAttribute(ATTR_MESSAGES));
+        .putAll((Map<? extends String, ? extends Object>) session.getAttribute(ATTR_MESSAGES));
       session.setAttribute(ATTR_MESSAGES, null);
     }
 

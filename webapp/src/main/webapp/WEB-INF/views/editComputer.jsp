@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
 <c:set var="root" value="${pageContext.request.contextPath}/resources" />
@@ -79,6 +80,7 @@
 							<input type="submit" value="Edit" class="btn btn-primary"> or
 							<cdb:link target="dashboard" label="Cancel" classes="btn btn-default" />
 						</div>
+						<sec:csrfInput />
 					</form:form>
 				</div>
 			</div>

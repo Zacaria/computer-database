@@ -10,7 +10,8 @@
 <%@ attribute name="orderBy" required="false" type="java.lang.String" description="orderBy column"%>
 <%@ attribute name="asc" required="false" type="java.lang.String" description="orderBy direction"%>
 
-<!-- Sets default values -->
+<%-- Sets default values --%>
+
 <c:if test="${empty page}">
 	<c:set var="page" value="1" />
 </c:if>
@@ -18,10 +19,10 @@
 	<c:set var="limit" value="10" />
 </c:if>
 
-<!-- Minimum link value -->
+<%-- Minimum link value --%>
 <c:set var="link" value="${target}?p=${page}&r=${limit}" />
 
-<!-- Add optional values to link -->
+<%-- Add optional values to link --%>
 <c:if test="${not empty search}">
 	<c:set var="link" value="${link}&s=${search}" />
 </c:if>
@@ -35,5 +36,5 @@
 </c:if>
 
 
-<!-- Fill up the HTML tag -->
-<a class="${classes}" href="${link}">${label}</a>
+<%-- Fill up the HTML tag --%>
+<a class="${classes}" href="/webapp/${link}">${label}</a>
