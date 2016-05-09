@@ -62,7 +62,8 @@ public class ComputerDAO implements IComputerDAO {
 
     Integer count = (int) queryFactory.get()
       .selectFrom(qComputer)
-      .where(qComputer.name.like(options.getSearch()))
+      .leftJoin(qComputer.company, QCompany.company)
+      .where(qComputer.name.like(options.getSearch()).or(QCompany.company.name.like(options.getSearch())))
       .fetchCount();
 
     return count != null ? count : 0;
@@ -90,7 +91,7 @@ public class ComputerDAO implements IComputerDAO {
     List<Computer> computers = queryFactory.get()
       .selectFrom(qComputer)
       .leftJoin(qComputer.company, QCompany.company)
-      .where(qComputer.name.like(options.getSearch()))
+      .where(qComputer.name.like(options.getSearch()).or(QCompany.company.name.like(options.getSearch())))
       .limit(options.getRange())
       .offset(options.getOffset())
       .orderBy(orderSpecifier)
