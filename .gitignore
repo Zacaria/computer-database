@@ -7,12 +7,10 @@ WEB-INF/views/*.html
 .settings/
 .classpath
 .project
-.tern-project
 .gitignore~
+.tern-project
 .metadata/
 
-WebContent/*
-static/*
 /build/
 /bin/
 /target/
@@ -21,5 +19,3 @@ logs/*
 
 bin/
 tmp/
-
-src/main/resources/db.private.properties
