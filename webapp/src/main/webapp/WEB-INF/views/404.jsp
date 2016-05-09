@@ -1,6 +1,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="cdb" tagdir="/WEB-INF/tags"%>
+
+<c:set var="root" value="${pageContext.request.contextPath}" />
+
 <cdb:default_layout>
 	<jsp:attribute name="body_area">
 	<section id="main">
@@ -17,7 +20,7 @@
 						<a href="#" class="btn btn-lg btn-block btn-danger panic">Panic !</a>
 					</div>
 					<div class="col-md-2">
-						<a href="/webapp" class="btn btn-lg btn-block btn-success">Stay calm</a>
+						<a href="${root}" class="btn btn-lg btn-block btn-success">Stay calm</a>
 					</div>
 				</div>
 			</div>

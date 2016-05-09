@@ -1,5 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt"%>
 
+<c:set var="root" value="${pageContext.request.contextPath}" />
+
 <%@ attribute name="target" required="true" type="java.lang.String" description="Target page"%>
 <%@ attribute name="label" required="true" type="java.lang.String" description="aria-label"%>
 <%@ attribute name="page" required="false" type="java.lang.Integer" description="Page number"%>
@@ -37,4 +39,4 @@
 
 
 <%-- Fill up the HTML tag --%>
-<a class="${classes}" href="/webapp/${link}">${label}</a>
+<a class="${classes}" href="${root}/${link}">${label}</a>

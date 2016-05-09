@@ -6,7 +6,7 @@
 <%@attribute name="title"%>
 <%@attribute name="body_area" fragment="true"%>
 <%@attribute name="script_area" fragment="true"%>
-<c:set var="root" value="${pageContext.request.contextPath}/resources" />
+<c:set var="root" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
 <html lang="${pageContext.response.locale}">
@@ -16,11 +16,11 @@
 <meta charset="UTF-8">
 <sec:csrfMetaTags />
 <!-- Bootstrap -->
-<link href="${root}/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="${root}/resources/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
-<link href="${root}/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
-<link href="${root}/css/bootstrap-select.min.css" rel="stylesheet" media="screen">
-<link href="${root}/css/main.css" rel="stylesheet" media="screen">
+<link href="${root}/resources/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link href="${root}/resources/css/bootstrap-select.min.css" rel="stylesheet" media="screen">
+<link href="${root}/resources/css/main.css" rel="stylesheet" media="screen">
 </head>
 
 <body>
@@ -53,7 +53,7 @@
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
 					<li class="pull-right">
-						<form class="navbar-form navbar-out" action="/webapp/logout" method="POST">
+						<form class="navbar-form navbar-out" action="${root}/logout" method="POST">
 							<span class="user-welcome">Hi <sec:authentication property="principal.username" /> !
 							</span>
 							<button type="submit" class="btn-link navbar-btn">
@@ -69,9 +69,9 @@
 
 	<jsp:invoke fragment="body_area" />
 
-	<script src="${root}/js/jquery.min.js"></script>
-	<script src="${root}/js/bootstrap.min.js"></script>
-	<script src="${root}/js/main.js"></script>
+	<script src="${root}/resources/js/jquery.min.js"></script>
+	<script src="${root}/resources/js/bootstrap.min.js"></script>
+	<script src="${root}/resources/js/main.js"></script>
 	<jsp:invoke fragment="script_area" />
 
 </body>
