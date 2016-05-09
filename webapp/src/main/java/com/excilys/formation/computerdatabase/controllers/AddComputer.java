@@ -88,9 +88,11 @@ public class AddComputer implements InitializingBean {
     AddComputerRequestMapper mapper = new AddComputerRequestMapper();
     // check errors.
     if (bindingResult.hasErrors()) {
-      LOGGER.error(bindingResult.getAllErrors().toString());
+      LOGGER.error(bindingResult.getAllErrors()
+        .toString());
     } else {
-      LOGGER.debug(mapper.fromDTO(dto).toString());
+      LOGGER.debug(mapper.fromDTO(dto)
+        .toString());
       cs.create(mapper.fromDTO(dto));
       model.addAttribute(MODEL_ATTRIBUTE, new AddComputerDTO());
       model.addAttribute(ATTR_SUCCESS, true);

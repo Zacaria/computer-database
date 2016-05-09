@@ -23,7 +23,8 @@ public enum ComputerFields implements Fields {
   public static boolean contains(String test) {
 
     for (ComputerFields c : ComputerFields.values()) {
-      if (c.getValue().equals(test)) {
+      if (c.getValue()
+        .equals(test)) {
         return true;
       }
     }

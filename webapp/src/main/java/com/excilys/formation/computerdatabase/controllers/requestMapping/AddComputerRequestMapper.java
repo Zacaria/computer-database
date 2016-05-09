@@ -29,8 +29,11 @@ public class AddComputerRequestMapper implements IRequestMapper<Computer> {
   public Computer fromDTO(IRequestDTO requestDTO) {
     AddComputerDTO dto = (AddComputerDTO) requestDTO;
 
-    return Computer.builder(dto.getName()).introduced(dto.getIntroduced())
-        .discontinued(dto.getDiscontinued())
-        .company(Company.builder(Long.parseLong(dto.getCompanyId())).build()).build();
+    return Computer.builder(dto.getName())
+      .introduced(dto.getIntroduced())
+      .discontinued(dto.getDiscontinued())
+      .company(Company.builder(Long.parseLong(dto.getCompanyId()))
+        .build())
+      .build();
   }
 }

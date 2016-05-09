@@ -67,8 +67,10 @@ public class ParamValidator {
 
     List<String> stringIds = Arrays.asList(serialIds.split(","));
 
-    List<Long> ids = stringIds.stream().filter(s -> this.isNumber("id", s)).map(Long::parseLong)
-        .collect(Collectors.toCollection(ArrayList::new));
+    List<Long> ids = stringIds.stream()
+      .filter(s -> this.isNumber("id", s))
+      .map(Long::parseLong)
+      .collect(Collectors.toCollection(ArrayList::new));
     return ids;
   }
 
@@ -84,7 +86,8 @@ public class ParamValidator {
   public LocalDate getDate(HttpServletRequest request, String field) {
     LocalDate result = null;
 
-    if (!request.getParameter(field).isEmpty() && this.isDate(field, request.getParameter(field))) {
+    if (!request.getParameter(field)
+      .isEmpty() && this.isDate(field, request.getParameter(field))) {
       result = DateConverter.stringToDate(request.getParameter(field));
     }
 
@@ -105,7 +108,8 @@ public class ParamValidator {
       return false;
     }
 
-    if (!NUMBER_PATTERN.matcher(s.trim()).matches()) {
+    if (!NUMBER_PATTERN.matcher(s.trim())
+      .matches()) {
       this.errors.add("The given parameter \"" + name + "\" with value \"" + s
           + "\" could not be converted into a number");
       return false;

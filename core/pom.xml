@@ -18,6 +18,7 @@
 		<hikari.version>2.4.5</hikari.version>
 		<querydsl.version>4.1.0</querydsl.version>
 		<javassist.version>3.20.0-GA</javassist.version>
+		<spring.security.version>4.0.4.RELEASE</spring.security.version>
 	</properties>
 
 	<dependencies>
@@ -52,6 +53,13 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
+		</dependency>
+		
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring.security.version}</version>
 		</dependency>
 
 		<!-- HikariCP -->

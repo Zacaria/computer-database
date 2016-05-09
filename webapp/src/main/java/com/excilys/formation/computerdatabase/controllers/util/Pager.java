@@ -41,7 +41,9 @@ public class Pager<T> {
   }
 
   public PageDTO<T> getPage() {
-    return this.getPage(SelectOptions.builder().page(this.currentPageNumber).build());
+    return this.getPage(SelectOptions.builder()
+      .page(this.currentPageNumber)
+      .build());
   }
 
   public PageDTO<T> getPage(SelectOptions options) {
@@ -72,7 +74,7 @@ public class Pager<T> {
   public int getTotal() {
     return this.total;
   }
-  
+
   public void setRange(int range) {
     this.range = range;
   }

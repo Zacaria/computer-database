@@ -25,7 +25,9 @@ public interface IDAO<T> {
    * @param count is the maximum number of results.
    * @return 
    */
-  List<T> find(SelectOptions options);
+  default List<T> find(SelectOptions options) {
+    throw new UnsupportedOperationException();
+  };
 
   /**
    * 

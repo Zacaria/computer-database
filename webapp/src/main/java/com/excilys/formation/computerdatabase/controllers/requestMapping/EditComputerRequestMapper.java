@@ -38,8 +38,12 @@ public class EditComputerRequestMapper implements IRequestMapper<Computer> {
 
     // Safe strings with prepared queries.
 
-    return Computer.builder(dto.getName()).id(Long.parseLong(dto.getId()))
-        .introduced(dto.getIntroduced()).discontinued(dto.getDiscontinued())
-        .company(Company.builder(Long.parseLong(dto.getCompanyId())).build()).build();
+    return Computer.builder(dto.getName())
+      .id(Long.parseLong(dto.getId()))
+      .introduced(dto.getIntroduced())
+      .discontinued(dto.getDiscontinued())
+      .company(Company.builder(Long.parseLong(dto.getCompanyId()))
+        .build())
+      .build();
   }
 }

@@ -17,7 +17,8 @@ public class AddComputerRequestValidator implements Validator {
     AddComputerDTO dto = (AddComputerDTO) target;
 
     if (!StringChecker.isNullOrEmpty(dto.getIntroduced())) {
-      if ("fr".equals(LocaleContextHolder.getLocale().toString())) {
+      if ("fr".equals(LocaleContextHolder.getLocale()
+        .toString())) {
         dto.setIntroduced(DateConverter.frToEnDate(dto.getIntroduced()));
       }
 
@@ -27,7 +28,8 @@ public class AddComputerRequestValidator implements Validator {
     }
 
     if (!StringChecker.isNullOrEmpty(dto.getDiscontinued())) {
-      if ("fr".equals(LocaleContextHolder.getLocale().toString())) {
+      if ("fr".equals(LocaleContextHolder.getLocale()
+        .toString())) {
         dto.setDiscontinued(DateConverter.frToEnDate(dto.getDiscontinued()));
       }
       if (!StringChecker.isDate(dto.getDiscontinued())) {

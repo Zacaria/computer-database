@@ -12,7 +12,7 @@ import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.persistence.IComputerDAO;
 
 @Service("ComputerService")
-public class ComputerService implements IService<Computer> {
+public class ComputerService implements IComputerService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ComputerService.class);
 

@@ -22,7 +22,7 @@ import com.excilys.formation.computerdatabase.util.StringChecker;
 public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
 
   private final static Logger LOGGER = LoggerFactory.getLogger(DashboardRequestMapper.class);
-  
+
   private static final String PAGE_PARAM = "p";
   private static final String RANGE_PARAM = "r";
   private static final String COLUMN_PARAM = "col";
@@ -77,14 +77,18 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
       orderByColumn = DEFAULT_ORDER_BY;
     }
 
-    SelectOptions options = SelectOptions.builder().range(range).search(search)
-        .orderBy(orderByColumn).asc(orderByDir).build();
+    SelectOptions options = SelectOptions.builder()
+      .range(range)
+      .search(search)
+      .orderBy(orderByColumn)
+      .asc(orderByDir)
+      .build();
 
     /**
      * Determine the page we need.
      * I need to know how much computers there is before asking any page.
      */
-    int count = this.cs.count(options);   
+    int count = this.cs.count(options);
     int totalPage = (count + range - 1) / range;
 
     page = page > totalPage ? totalPage : page;
@@ -93,10 +97,10 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
      * Get that page and give it to the view.
      */
     options.setPage(page);
-    
-    Pager<Computer> pager = new Pager<>(this.cs.count(options), 
-        opts -> this.cs.get(opts),
-        computer -> ComputerDTO.builder(computer).build());
+
+    Pager<Computer> pager = new Pager<>(this.cs.count(options), opts -> this.cs.get(opts),
+        computer -> ComputerDTO.builder(computer)
+          .build());
 
     PageDTO<Computer> computers = pager.getPage(options);
 

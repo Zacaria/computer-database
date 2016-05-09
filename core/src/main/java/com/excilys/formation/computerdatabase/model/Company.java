@@ -3,17 +3,18 @@ package com.excilys.formation.computerdatabase.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(schema="computer-database-db", name="company")
+@Table(schema = "computer-database-db", name = "company")
 public class Company {
-  
+
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  
+
   @Column
   private String name;
 

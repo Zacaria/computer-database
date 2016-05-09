@@ -16,7 +16,9 @@ public interface IService<T> {
     throw new UnsupportedOperationException();
   }
 
-  Page<T> get(SelectOptions options);
+  default Page<T> get(SelectOptions options) {
+    throw new UnsupportedOperationException();
+  };
 
   T get(Long id);
 

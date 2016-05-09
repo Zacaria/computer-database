@@ -17,7 +17,8 @@ public enum SupportedLocale {
   public static boolean contains(String test) {
 
     for (SupportedLocale l : SupportedLocale.values()) {
-      if (l.getValue().equals(test)) {
+      if (l.getValue()
+        .equals(test)) {
         return true;
       }
     }

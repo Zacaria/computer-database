@@ -34,7 +34,8 @@ public class DateConverter {
   }
 
   public static LocalDate stringToDate(String s) {
-    if (!MYSQL_TIMESTAMP_PATTERN.matcher(s).matches()) {
+    if (!MYSQL_TIMESTAMP_PATTERN.matcher(s)
+      .matches()) {
       return null;
     }
 

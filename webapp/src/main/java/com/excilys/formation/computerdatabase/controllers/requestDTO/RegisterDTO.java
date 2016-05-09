@@ -5,11 +5,11 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class RegisterDTO implements IRequestDTO {
-  
+
   @NotEmpty(message = "{NotEmpty.Register.username}")
   @Size(min = 4, max = 60, message = "{Size.Register.username}")
   private String username;
-  
+
   @NotEmpty(message = "{NotEmpty.Register.password}")
   @Size(min = 4, max = 1024, message = "{Size.Register.password}")
   private String password;
@@ -17,7 +17,7 @@ public class RegisterDTO implements IRequestDTO {
   public RegisterDTO() {
 
   }
-  
+
   public RegisterDTO(String username, String password) {
     this.username = username;
     this.password = password;

@@ -16,7 +16,8 @@ public enum CompanyFields {
   public static boolean contains(String test) {
 
     for (ComputerFields c : ComputerFields.values()) {
-      if (c.getValue().equals(test)) {
+      if (c.getValue()
+        .equals(test)) {
         return true;
       }
     }

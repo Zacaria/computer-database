@@ -24,8 +24,10 @@ public class DeleteComputerRequestMapper implements IRequestMapper<Object> {
 
     List<String> stringIds = Arrays.asList(serialIds.split(","));
 
-    List<Long> ids = stringIds.stream().filter(s -> StringChecker.isNumber(s)).map(Long::parseLong)
-        .collect(Collectors.toCollection(ArrayList::new));
+    List<Long> ids = stringIds.stream()
+      .filter(s -> StringChecker.isNumber(s))
+      .map(Long::parseLong)
+      .collect(Collectors.toCollection(ArrayList::new));
 
     return new DeleteComputerDTO(ids);
   }

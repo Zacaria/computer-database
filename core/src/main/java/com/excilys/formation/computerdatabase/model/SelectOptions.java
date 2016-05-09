@@ -50,7 +50,8 @@ public final class SelectOptions {
     }
 
     public Builder search(String search) {
-      if (search != null && !search.trim().isEmpty()) {
+      if (search != null && !search.trim()
+        .isEmpty()) {
         instance.search = "%" + search + "%";
       }
       return this;

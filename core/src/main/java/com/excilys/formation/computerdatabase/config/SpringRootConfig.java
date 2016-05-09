@@ -31,11 +31,11 @@ import com.zaxxer.hikari.HikariDataSource;
 public class SpringRootConfig {
 
   private final static Logger LOGGER = LoggerFactory.getLogger(SpringRootConfig.class);
-  
+
   {
     LOGGER.debug("init");
   }
-  
+
   @Value("${hbm.hbm2ddl.auto}")
   private String hbm2ddl;
 

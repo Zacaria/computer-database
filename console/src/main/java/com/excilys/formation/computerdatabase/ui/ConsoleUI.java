@@ -26,25 +26,25 @@ import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.model.Company;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
-import com.excilys.formation.computerdatabase.service.IService;
+import com.excilys.formation.computerdatabase.service.ICompanyService;
+import com.excilys.formation.computerdatabase.service.IComputerService;
 
 public class ConsoleUI {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleUI.class);
   private static final Pattern ID_PATTERN = Pattern.compile("^\\d+$");
 
-  private static IService<Computer> computerService;
-  private static IService<Company> companyService;
+  private static IComputerService computerService;
+  private static ICompanyService companyService;
   private static Pager<Computer> computerPager;
   private static Pager<Company> companyPager;
   private static int defaultMax = 10;
   private static int defaultCompanyMax = 50;
 
-  @SuppressWarnings("unchecked")
   public static void main(String[] args) {
     ApplicationContext appContext = new AnnotationConfigApplicationContext(SpringRootConfig.class);
-    computerService = (IService<Computer>) appContext.getBean("ComputerService");
-    companyService = (IService<Company>) appContext.getBean("CompanyService");
+    computerService = (IComputerService) appContext.getBean("ComputerService");
+    companyService = (ICompanyService) appContext.getBean("CompanyService");
 
     Options options = ConsoleConfig.getConfig();
 

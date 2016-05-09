@@ -36,7 +36,8 @@ public class EditComputerRequestValidator implements Validator {
     }
 
     if (!StringChecker.isNullOrEmpty(dto.getIntroduced())) {
-      if ("fr".equals(LocaleContextHolder.getLocale().toString())) {
+      if ("fr".equals(LocaleContextHolder.getLocale()
+        .toString())) {
         dto.setIntroduced(DateConverter.frToEnDate(dto.getIntroduced()));
       }
 
@@ -46,7 +47,8 @@ public class EditComputerRequestValidator implements Validator {
     }
 
     if (!StringChecker.isNullOrEmpty(dto.getDiscontinued())) {
-      if ("fr".equals(LocaleContextHolder.getLocale().toString())) {
+      if ("fr".equals(LocaleContextHolder.getLocale()
+        .toString())) {
         dto.setDiscontinued(DateConverter.frToEnDate(dto.getDiscontinued()));
       }
       if (!StringChecker.isDate(dto.getDiscontinued())) {

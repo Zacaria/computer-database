@@ -13,7 +13,8 @@ public class DeleteComputerRequestValidator implements Validator {
   public void validate(Object target, Errors errors) {
     DeleteComputerDTO dto = (DeleteComputerDTO) target;
 
-    if (dto.getIds() == null || dto.getIds().isEmpty()) {
+    if (dto.getIds() == null || dto.getIds()
+      .isEmpty()) {
       errors.reject("DeleteComputer.Id.Empty", "There was no id to delete");
     }
   }

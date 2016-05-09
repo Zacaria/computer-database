@@ -27,7 +27,8 @@ public class PageDTO<E> {
     this.size = page.getSize();
 
     List<IDTO> elements = new ArrayList<>();
-    Iterator<E> iterator = page.getElements().iterator();
+    Iterator<E> iterator = page.getElements()
+      .iterator();
     while (iterator.hasNext()) {
       elements.add(dtoizer.getDTO(iterator.next()));
     }

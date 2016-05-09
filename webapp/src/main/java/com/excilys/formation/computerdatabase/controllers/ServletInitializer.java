@@ -24,13 +24,13 @@ public class ServletInitializer extends AbstractAnnotationConfigDispatcherServle
   protected String[] getServletMappings() {
     return new String[] { "/" };
   }
-  
+
   @Override
   protected FrameworkServlet createDispatcherServlet(WebApplicationContext servletAppContext) {
-    DispatcherServlet serv =  (DispatcherServlet) super.createDispatcherServlet(servletAppContext);
-    
+    DispatcherServlet serv = (DispatcherServlet) super.createDispatcherServlet(servletAppContext);
+
     serv.setThrowExceptionIfNoHandlerFound(true);
-    
+
     return serv;
   }
 }

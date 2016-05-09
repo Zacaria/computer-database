@@ -10,18 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.excilys.formation.computerdatabase.model.Company;
-import com.excilys.formation.computerdatabase.model.QCompany;
-import com.excilys.formation.computerdatabase.model.SelectOptions;
+import com.excilys.formation.computerdatabase.model.QUser;
+import com.excilys.formation.computerdatabase.model.User;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 
-@Repository("CompanyDAO")
+@Repository("UserDAO")
 @Transactional
-public class CompanyDAO implements ICompanyDAO {
+public class UserDAO implements IUserDAO {
 
-  private final static Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(UserDAO.class);
 
-  private final static QCompany qCompany = QCompany.company;
+  private final static QUser qUser = QUser.user;
 
   @Autowired
   private SessionFactory sessionFactory;
@@ -30,7 +29,7 @@ public class CompanyDAO implements ICompanyDAO {
   private Supplier<HibernateQueryFactory> queryFactory =
       () -> new HibernateQueryFactory(sessionFactory.getCurrentSession());
 
-  public CompanyDAO() {
+  public UserDAO() {
   }
 
   @Override
@@ -39,62 +38,67 @@ public class CompanyDAO implements ICompanyDAO {
       .getSimpleName());
 
     Integer count = (int) queryFactory.get()
-      .selectFrom(QCompany.company)
+      .selectFrom(QUser.user)
       .fetchCount();
 
     return count != null ? count : 0;
   }
 
   @Override
-  public List<Company> find() {
+  public List<User> find() {
     LOGGER.info("finding in " + this.getClass()
       .getSimpleName());
 
-    List<Company> companies = queryFactory.get()
-      .selectFrom(qCompany)
+    List<User> users = queryFactory.get()
+      .selectFrom(qUser)
       .fetch();
 
-    return companies;
+    return users;
   }
 
   @Override
-  public List<Company> find(SelectOptions options) {
-    LOGGER.info("finding in " + this.getClass()
-      .getSimpleName());
-    LOGGER.debug("With params " + options);
+  public User find(Long id) {
 
-    List<Company> companies = queryFactory.get()
-      .selectFrom(qCompany)
-      .offset(options.getOffset())
-      .limit(options.getRange())
-      .fetch();
-
-    return companies;
-  }
-
-  @Override
-  public Company find(Long id) {
     LOGGER.info("finding in " + this.getClass()
       .getSimpleName());
     LOGGER.debug("With id " + id);
 
-    Company company = queryFactory.get()
-      .selectFrom(qCompany)
-      .where(qCompany.id.eq(id))
+    User user = queryFactory.get()
+      .selectFrom(qUser)
+      .where(qUser.id.eq(id))
       .fetchOne();
 
-    return company;
+    return user;
+  }
+
+  @Override
+  public User find(String username) {
+    LOGGER.info("finding in " + this.getClass()
+      .getSimpleName());
+    LOGGER.debug("With username " + username);
+
+    User user = queryFactory.get()
+      .selectFrom(qUser)
+      .where(qUser.username.eq(username))
+      .fetchOne();
+
+    return user;
+  }
+
+  @Override
+  public Long create(User user) {
+    LOGGER.debug("Creating this user : " + user);
+
+    return (Long) sessionFactory.getCurrentSession()
+      .save(user);
   }
 
   @Override
   public boolean delete(Long id) {
-    LOGGER.info("deleting in " + this.getClass()
-      .getSimpleName());
-    LOGGER.debug("With params " + id);
 
     int affectedRows = (int) queryFactory.get()
-      .delete(qCompany)
-      .where(qCompany.id.eq(id))
+      .delete(qUser)
+      .where(qUser.id.eq(id))
       .execute();
 
     return affectedRows != 0 ? true : false;

@@ -24,7 +24,8 @@ public class StringChecker {
       return false;
     }
 
-    if (!NUMBER_PATTERN.matcher(s.trim()).matches()) {
+    if (!NUMBER_PATTERN.matcher(s.trim())
+      .matches()) {
       return false;
     }
     return true;
