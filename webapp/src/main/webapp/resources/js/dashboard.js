@@ -23,7 +23,7 @@ $(function() {
 	});
 
 	$('.glyphicon-sort').click(function() {
-		var link = 'dashboard?p=1';
+		var link = 'computer?p=1';
 
 		// get range
 		link += getURLParameter('r') ? '&r=' + getURLParameter('r') : '';

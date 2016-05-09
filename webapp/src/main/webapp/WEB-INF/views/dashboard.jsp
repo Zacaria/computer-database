@@ -64,12 +64,11 @@
 			</h1>
 			<div id="actions" class="form-horizontal">
 				<div class="pull-left">
-					<form id="searchForm" action="dashboard" method="GET" class="form-inline">
+					<form id="searchForm" action="computer" method="GET" class="form-inline">
 
 						<input type="search" id="searchbox" name="s" class="form-control" placeholder="Search name" />
 						<input type="submit" id="searchsubmit" value="${DashboardSearchButton}"
 								class="btn btn-primary"></input>
-						<sec:csrfInput />
 					</form>
 				</div>
 				<div class="pull-right">
@@ -140,13 +139,13 @@
 			</cdb:pagination>
 
 			<div class="btn-group btn-group-sm pull-right" role="group">
-				<cdb:link target="dashboard" label="10" page="${currentPage}" limit="10" search="${param.s}"
+				<cdb:link target="computer" label="10" page="${currentPage}" limit="10" search="${param.s}"
 						classes="btn btn-default ${range == 10 || empty range ? 'active' : '' }"
 						orderBy="${param.col}" asc="${param.asc}" />
-				<cdb:link target="dashboard" label="50" page="${currentPage}" limit="50" search="${param.s}"
+				<cdb:link target="computer" label="50" page="${currentPage}" limit="50" search="${param.s}"
 						classes="btn btn-default ${range== 50 ? 'active' : '' }" orderBy="${param.col}"
 						asc="${param.asc}" />
-				<cdb:link target="dashboard" label="100" page="${currentPage}" limit="100" search="${param.s}"
+				<cdb:link target="computer" label="100" page="${currentPage}" limit="100" search="${param.s}"
 						classes="btn btn-default ${range== 100 ? 'active' : '' }" orderBy="${param.col}"
 						asc="${param.asc}" />
 			</div>

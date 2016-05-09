@@ -7,7 +7,6 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 import com.excilys.formation.computerdatabase.config.SecurityConfig;
 import com.excilys.formation.computerdatabase.config.SpringRootConfig;
-import com.excilys.formation.computerdatabase.controllers.exceptions.ExceptionsHandler;
 
 public class ServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 

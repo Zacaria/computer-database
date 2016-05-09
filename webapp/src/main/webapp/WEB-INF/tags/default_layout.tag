@@ -26,7 +26,7 @@
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container">
-			<cdb:link target="dashboard" label="Application - Computer Database"
+			<cdb:link target="computer" label="Application - Computer Database"
 				classes="navbar-brand" />
 			<ul class="nav navbar-nav navbar-right col-sm-4">
 

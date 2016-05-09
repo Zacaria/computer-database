@@ -14,7 +14,7 @@
 	<!-- link to the first page -->
 	<c:if test="${current != 1 and total > 0 }">
 		<li>
-			<cdb:link target="dashboard" page="1" limit="${range}" search="${search}" label="&laquo;"
+			<cdb:link target="computer" page="1" limit="${range}" search="${search}" label="&laquo;"
 				classes="btn btn-default" orderBy="${orderBy}" asc="${asc}" />
 		</li>
 	</c:if>
@@ -22,7 +22,7 @@
 	<!-- link to this page -2 -->
 	<c:if test="${current > 2 }">
 		<li>
-			<cdb:link target="dashboard" page="${current - 2}" limit="${range}" search="${search}"
+			<cdb:link target="computer" page="${current - 2}" limit="${range}" search="${search}"
 				label="${current - 2}" classes="btn btn-default" orderBy="${orderBy}" asc="${asc}" />
 		</li>
 	</c:if>
@@ -30,21 +30,21 @@
 	<!-- link to the previous page -->
 	<c:if test="${current > 1 }">
 		<li>
-			<cdb:link target="dashboard" page="${current - 1}" limit="${range}" search="${search}"
+			<cdb:link target="computer" page="${current - 1}" limit="${range}" search="${search}"
 				label="${current - 1}" classes="btn btn-default" orderBy="${orderBy}" asc="${asc}" />
 		</li>
 	</c:if>
 
 	<!-- link to the current page, is it really useful ? -->
 	<li>
-		<cdb:link target="dashboard" page="${current}" limit="${range}" search="${search}"
+		<cdb:link target="computer" page="${current}" limit="${range}" search="${search}"
 			label="${current}" classes="btn btn-primary active" orderBy="${orderBy}" asc="${asc}" />
 	</li>
 
 	<!-- link to the next page -->
 	<c:if test="${current < total}">
 		<li>
-			<cdb:link target="dashboard" page="${current + 1}" limit="${range}" search="${search}"
+			<cdb:link target="computer" page="${current + 1}" limit="${range}" search="${search}"
 				label="${current + 1}" classes="btn btn-default" orderBy="${orderBy}" asc="${asc}" />
 		</li>
 	</c:if>
@@ -52,7 +52,7 @@
 	<!-- link to the current page +2 -->
 	<c:if test="${current < total - 1}">
 		<li>
-			<cdb:link target="dashboard" page="${current + 2}" limit="${range}" search="${search}"
+			<cdb:link target="computer" page="${current + 2}" limit="${range}" search="${search}"
 				label="${current + 2}" classes="btn btn-default" orderBy="${orderBy}" asc="${asc}" />
 		</li>
 	</c:if>
@@ -60,7 +60,7 @@
 	<!-- link to the last page -->
 	<c:if test="${current != total}">
 		<li>
-			<cdb:link target="dashboard" page="${total}" limit="${range}" search="${search}" label="&raquo;"
+			<cdb:link target="computer" page="${total}" limit="${range}" search="${search}" label="&raquo;"
 				classes="btn btn-default" orderBy="${orderBy}" asc="${asc}" />
 		</li>
 	</c:if>

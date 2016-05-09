@@ -78,7 +78,7 @@
 						</fieldset>
 						<div class="actions pull-right">
 							<input type="submit" value="Edit" class="btn btn-primary"> or
-							<cdb:link target="dashboard" label="Cancel" classes="btn btn-default" />
+							<cdb:link target="computer" label="Cancel" classes="btn btn-default" />
 						</div>
 						<sec:csrfInput />
 					</form:form>

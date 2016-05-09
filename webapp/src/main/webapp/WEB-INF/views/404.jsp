@@ -10,9 +10,9 @@
 		<div class="container">
 			<div class="jumbotron">
 				<h1>404</h1>
-				<c:if test="${errors.getClass().getSimpleName() == 'NotFoundException'}">
-					<spring:message code="${errors.getErrCode()}" />
-				</c:if>
+<%-- 				<c:if test="${errors.getClass().getSimpleName() == 'NotFoundException'}"> --%>
+<%-- 					<spring:message code="${errors.getErrCode()}" /> --%>
+<%-- 				</c:if> --%>
 				${errors.getMessage()}
 				
 				<div class="row">
