@@ -100,7 +100,7 @@ public class ComputerDAO implements IComputerDAO {
 
     List<Computer> computers = null;
     
-    if (options.getSearch() != "%") {
+    if (options.getSearch() == "%") {
       computers = queryFactory.get()
           .selectFrom(qComputer)
           .limit(options.getRange())
