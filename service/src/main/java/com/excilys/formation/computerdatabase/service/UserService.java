@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import com.excilys.formation.computerdatabase.model.User;
+import com.excilys.formation.computerdatabase.model.UserRoles;
 import com.excilys.formation.computerdatabase.persistence.IUserDAO;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
@@ -51,6 +52,8 @@ public class UserService implements IUserService, UserDetailsService {
     LOGGER.info("create " + this.getClass()
       .getSimpleName());
     LOGGER.debug(user.toString());
+    
+    user.setRole(UserRoles.ROLE_USER);
 
     if (StringChecker.isNullOrEmpty(user.getUsername())
         || StringChecker.isNullOrEmpty(user.getPassword())) {
