@@ -3,16 +3,14 @@ package com.excilys.formation.computerdatabase.model;
 import java.util.List;
 
 public final class Page<T> {
-  private final int total;
   private final List<T> elements;
   private final int currentOffset;
   private final int size;
 
-  public Page(int offset, List<T> data, int total) {
+  public Page(int offset, List<T> data) {
     this.currentOffset = offset;
     this.elements = data;
     this.size = this.elements.size();
-    this.total = total;
   }
 
   public List<T> getElements() {
@@ -27,10 +25,6 @@ public final class Page<T> {
     return size;
   }
 
-  public int getTotal() {
-    return total;
-  }
-
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -38,7 +32,6 @@ public final class Page<T> {
     result = prime * result + currentOffset;
     result = prime * result + ((elements == null) ? 0 : elements.hashCode());
     result = prime * result + size;
-    result = prime * result + total;
     return result;
   }
 
@@ -67,15 +60,12 @@ public final class Page<T> {
     if (size != other.size) {
       return false;
     }
-    if (total != other.total) {
-      return false;
-    }
     return true;
   }
 
   @Override
   public String toString() {
-    return "Page [total=" + total + ", elements=" + elements + ", currentOffset=" + currentOffset
+    return "Page [elements=" + elements + ", currentOffset=" + currentOffset
         + ", size=" + size + "]";
   }
 

@@ -31,7 +31,7 @@ public class CompanyService implements ICompanyService {
   public Page<Company> get(SelectOptions options) {
     LOGGER.info("get with options" + this.getClass());
 
-    return new Page<>(options.getOffset(), this.cdao.find(options), this.cdao.count());
+    return new Page<>(options.getOffset(), this.cdao.find(options));
   }
 
   @Override

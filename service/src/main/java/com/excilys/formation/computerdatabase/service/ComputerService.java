@@ -41,7 +41,7 @@ public class ComputerService implements IComputerService {
   public Page<Computer> get(SelectOptions options) {
     LOGGER.info("get options " + this.getClass());
 
-    return new Page<>(options.getOffset(), this.cdao.find(options), this.cdao.count());
+    return new Page<>(options.getOffset(), this.cdao.find(options));
   }
 
   @Override

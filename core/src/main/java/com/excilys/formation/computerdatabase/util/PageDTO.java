@@ -16,13 +16,11 @@ import com.excilys.formation.computerdatabase.model.Page;
  * @param <E>
  */
 public class PageDTO<E> {
-  private final int total;
   private final List<IDTO> elements;
   private final int currentOffset;
   private final int size;
 
   public PageDTO(Page<E> page, DTOable<E> dtoizer) {
-    this.total = page.getTotal();
     this.currentOffset = page.getCurrentOffset();
     this.size = page.getSize();
 
@@ -46,9 +44,5 @@ public class PageDTO<E> {
 
   public int getSize() {
     return size;
-  }
-
-  public int getTotal() {
-    return total;
   }
 }
