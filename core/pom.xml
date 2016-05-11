@@ -19,6 +19,7 @@
 		<querydsl.version>4.1.0</querydsl.version>
 		<javassist.version>3.20.0-GA</javassist.version>
 		<spring.security.version>4.0.4.RELEASE</spring.security.version>
+		<ehcache.version>2.6.9</ehcache.version>
 	</properties>
 
 	<dependencies>
@@ -54,7 +55,7 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		
+
 		<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -81,6 +82,20 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 
+		<!-- EHCache Core APIs -->
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>${ehcache.version}</version>
+		</dependency>
+		<!-- Hibernate EHCache API -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+
 		<!-- Mysql driver -->
 		<dependency>
 			<groupId>mysql</groupId>
@@ -104,6 +119,7 @@
 			<artifactId>querydsl-jpa</artifactId>
 			<version>${querydsl.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>

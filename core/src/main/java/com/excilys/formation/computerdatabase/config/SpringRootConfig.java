@@ -114,8 +114,10 @@ public class SpringRootConfig {
         setProperty("hibernate.hbm2ddl.auto", hbm2ddl);
         setProperty("hibernate.dialect", dialect);
         setProperty("hibernate.globally_quoted_identifiers", "true");
+        setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory");
+        setProperty("hibernate.cache.use_second_level_cache", "true");
+        setProperty("hibernate.cache.use_query_cache", "true");
       }
     };
   }
-
 }

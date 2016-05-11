@@ -8,6 +8,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -15,7 +16,8 @@ import javax.persistence.Table;
 import com.excilys.formation.computerdatabase.util.DateConverter;
 
 @Entity
-@Table(schema = "computer-database-db", name = "computer")
+@Table(schema = "computer-database-db", name = "computer", indexes = {
+    @Index(name = "name_index", columnList = "name")})
 public class Computer {
 
   @Id

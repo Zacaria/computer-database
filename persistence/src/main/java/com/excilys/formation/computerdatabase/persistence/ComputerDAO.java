@@ -60,11 +60,21 @@ public class ComputerDAO implements IComputerDAO {
       .getSimpleName());
     LOGGER.debug(options.toString());
 
-    Integer count = (int) queryFactory.get()
-      .selectFrom(qComputer)
-      .leftJoin(qComputer.company, QCompany.company)
-      .where(qComputer.name.like(options.getSearch()).or(QCompany.company.name.like(options.getSearch())))
-      .fetchCount();
+    Integer count = null;
+
+    if (options.getSearch() == "%") {
+      count = (int) queryFactory.get()
+        .selectFrom(qComputer)
+        .leftJoin(qComputer.company, QCompany.company)
+        .fetchCount();
+    } else {
+      count = (int) queryFactory.get()
+        .selectFrom(qComputer)
+        .leftJoin(qComputer.company, QCompany.company)
+        .where(qComputer.name.like(options.getSearch())
+          .or(QCompany.company.name.like(options.getSearch())))
+        .fetchCount();
+    }
 
     return count != null ? count : 0;
   }
@@ -88,14 +98,27 @@ public class ComputerDAO implements IComputerDAO {
     OrderSpecifier<?> orderSpecifier = new OrderSpecifier<>(
         options.isAsc() ? Order.ASC : Order.DESC, orderBy.getString(options.getOrderBy()));
 
-    List<Computer> computers = queryFactory.get()
-      .selectFrom(qComputer)
-      .leftJoin(qComputer.company, QCompany.company)
-      .where(qComputer.name.like(options.getSearch()).or(QCompany.company.name.like(options.getSearch())))
-      .limit(options.getRange())
-      .offset(options.getOffset())
-      .orderBy(orderSpecifier)
-      .fetch();
+    List<Computer> computers = null;
+    
+    if (options.getSearch() != "%") {
+      computers = queryFactory.get()
+          .selectFrom(qComputer)
+          .limit(options.getRange())
+          .offset(options.getOffset())
+          .orderBy(orderSpecifier)
+          .fetch();
+    } else {
+
+      computers = queryFactory.get()
+        .selectFrom(qComputer)
+        .leftJoin(qComputer.company, QCompany.company)
+        .where(qComputer.name.like(options.getSearch())
+          .or(QCompany.company.name.like(options.getSearch())))
+        .limit(options.getRange())
+        .offset(options.getOffset())
+        .orderBy(orderSpecifier)
+        .fetch();
+    }
 
     return computers;
   }

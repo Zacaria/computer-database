@@ -36,7 +36,7 @@
 						</h1>
 
 					<form:form modelAttribute="editComputerForm" action="" method="POST">
-						<input name="id" type="hidden" value="${computer.getId()}" />
+						<input name="id" id="id" type="hidden" value="${computer.getId()}" />
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName"><spring:message code="Computer.Name" /></label> 

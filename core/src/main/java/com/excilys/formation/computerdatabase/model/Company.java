@@ -5,10 +5,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 @Entity
-@Table(schema = "computer-database-db", name = "company")
+@Table(schema = "computer-database-db", name = "company", indexes = {
+    @Index(name = "company_name_index", columnList = "name", unique = false) })
+@Cache(region = "company", usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Company {
 
   @Id

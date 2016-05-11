@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
 
     http.authorizeRequests()
-      .antMatchers("/computer", "/resources/**", "/404", "/403")
+      .antMatchers("/resources/**", "/404", "/403")
       .permitAll()
       .antMatchers("/lang")
       .permitAll()
@@ -38,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .and()
       .formLogin()
       .loginPage("/login")
+      .loginProcessingUrl("/login")
       .permitAll()
       .and()
       .exceptionHandling()
@@ -53,7 +54,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   @Bean
   public UserDetailsService userDetailsServiceBean() throws Exception {
-    LOGGER.debug(this.us.toString());
     return this.us;
   }
 

@@ -62,7 +62,7 @@ public class DeleteComputer {
     }
 
     attr.addFlashAttribute(ATTR_MESSAGES, messages);
-    return "redirect:dashboard";
+    return "redirect:computer";
   }
 
   public void setCs(ComputerService cs) {

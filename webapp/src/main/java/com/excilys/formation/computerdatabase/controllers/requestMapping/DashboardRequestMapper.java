@@ -14,7 +14,7 @@ import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.ComputerFields;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
-import com.excilys.formation.computerdatabase.service.ComputerService;
+import com.excilys.formation.computerdatabase.service.IComputerService;
 import com.excilys.formation.computerdatabase.util.PageDTO;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
@@ -38,7 +38,7 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
   private static final String DEFAULT_ORDER_BY = ComputerFields.NAME.getValue();
 
   @Autowired
-  private ComputerService cs;
+  private IComputerService cs;
 
   public DashboardRequestMapper() {
 
