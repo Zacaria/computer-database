@@ -18,9 +18,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.excilys.formation.computerdatabase.config.SpringRootConfig;
-import com.excilys.formation.computerdatabase.util.IDTO;
-import com.excilys.formation.computerdatabase.util.PageDTO;
-import com.excilys.formation.computerdatabase.util.Pager;
 import com.excilys.formation.computerdatabase.dataBinders.dto.CompanyDTO;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
 import com.excilys.formation.computerdatabase.model.Company;
@@ -28,6 +25,9 @@ import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.service.ICompanyService;
 import com.excilys.formation.computerdatabase.service.IComputerService;
+import com.excilys.formation.computerdatabase.ui.util.Pager;
+import com.excilys.formation.computerdatabase.util.IDTO;
+import com.excilys.formation.computerdatabase.util.PageDTO;
 
 public class ConsoleUI {
 

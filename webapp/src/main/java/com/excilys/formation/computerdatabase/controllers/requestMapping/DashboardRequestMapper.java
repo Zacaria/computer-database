@@ -11,11 +11,11 @@ import com.excilys.formation.computerdatabase.controllers.requestDTO.DashboardDT
 import com.excilys.formation.computerdatabase.controllers.requestDTO.IRequestDTO;
 import com.excilys.formation.computerdatabase.controllers.util.Pager;
 import com.excilys.formation.computerdatabase.dataBinders.dto.ComputerDTO;
-import com.excilys.formation.computerdatabase.util.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.ComputerFields;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
 import com.excilys.formation.computerdatabase.service.ComputerService;
+import com.excilys.formation.computerdatabase.util.PageDTO;
 import com.excilys.formation.computerdatabase.util.StringChecker;
 
 @Component
@@ -98,9 +98,9 @@ public class DashboardRequestMapper implements IRequestMapper<IRequestDTO> {
      */
     options.setPage(page);
 
-    Pager<Computer> pager = new Pager<>(this.cs.count(options), opts -> this.cs.get(opts),
+    Pager<Computer> pager = new Pager<>(count, opts -> this.cs.get(opts),
         computer -> ComputerDTO.builder(computer)
-          .build());
+          .build());    
 
     PageDTO<Computer> computers = pager.getPage(options);
 

@@ -1,9 +1,9 @@
 package com.excilys.formation.computerdatabase.controllers.requestDTO;
 
 import com.excilys.formation.computerdatabase.controllers.util.Pager;
-import com.excilys.formation.computerdatabase.util.PageDTO;
 import com.excilys.formation.computerdatabase.model.Computer;
 import com.excilys.formation.computerdatabase.model.SelectOptions;
+import com.excilys.formation.computerdatabase.util.PageDTO;
 
 public class DashboardDTO implements IRequestDTO {
   private int page;

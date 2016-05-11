@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.util;
+package com.excilys.formation.computerdatabase.ui.util;
 
 import com.excilys.formation.computerdatabase.model.Page;
 import com.excilys.formation.computerdatabase.model.SelectOptions;

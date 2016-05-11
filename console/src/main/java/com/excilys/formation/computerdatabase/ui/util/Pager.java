@@ -1,4 +1,4 @@
-package com.excilys.formation.computerdatabase.util;
+package com.excilys.formation.computerdatabase.ui.util;
 
 import com.excilys.formation.computerdatabase.util.DTOable;
 import com.excilys.formation.computerdatabase.util.PageDTO;
@@ -36,7 +36,6 @@ public class Pager<T> {
   public Pager(int count, Pageable<T> p, DTOable<T> dtoizer) {
     this.total = count;
     this.dataRetreiver = p;
-    this.setTotalPage();
     this.dtoizer = dtoizer;
   }
 
@@ -51,7 +50,7 @@ public class Pager<T> {
     this.data = new PageDTO<>(page, this.dtoizer);
     this.range = options.getRange();
     this.currentPageNumber = options.getPage();
-
+    this.setTotalPage();
     return this.data;
   }
 
