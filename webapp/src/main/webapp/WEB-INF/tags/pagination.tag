@@ -38,7 +38,7 @@
 	<!-- link to the current page, is it really useful ? -->
 	<li>
 		<cdb:link target="computer" page="${current}" limit="${range}" search="${search}"
-			label="${current}" classes="btn btn-primary active" orderBy="${orderBy}" asc="${asc}" />
+			label="${current}" classes="btn btn-raised active" orderBy="${orderBy}" asc="${asc}" />
 	</li>
 
 	<!-- link to the next page -->

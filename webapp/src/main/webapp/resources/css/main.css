@@ -32,8 +32,9 @@ input[type='checkbox'] {
 	cursor: pointer;
 }
 
-.navbar-inverse .navbar-nav>li>a.navbar-link.lang-selected {
-	color: #fff;
+.lang-selected {
+	color: #fff !important;
+	font-weight: bold;
 }
 
 .user-welcome {

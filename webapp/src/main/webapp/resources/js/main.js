@@ -25,8 +25,8 @@ window.enToFrDate = function (str) {
 //On load
 $(function() {
 	var lang = window.getLang();
-	$(".navbar-lang[data-lang='"+ lang +"']").addClass("lang-selected");
-	$('.navbar-lang').click(function(e) {
+	$(".navbar-lang > a[data-lang='"+ lang +"']").addClass("lang-selected");
+	$('.navbar-lang > a').click(function(e) {
 		e.preventDefault();
 		
 		var that = $(this);

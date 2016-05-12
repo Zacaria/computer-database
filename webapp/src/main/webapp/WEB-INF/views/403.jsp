@@ -7,22 +7,21 @@
 	<jsp:attribute name="body_area">	
 	<section id="main">
 		<div class="container">
-			<div class="alert alert-danger">
-				Error 403: Access denied!
+			<div class="jumbotron">
+				<h1>403 Access denied!</h1>
 				<c:out value="${message }" />
 				<br />
 				<!-- stacktrace -->
 				
-				<div class="jumbotron">
-					<div class="row">
-						<div class="col-md-10">
-							<a href="#" class="btn btn-lg btn-block btn-danger panic">Panic !</a>
-						</div>
-						<div class="col-md-2">
-							<a href="${root}" class="btn btn-lg btn-block btn-success">Stay calm</a>
-						</div>
+				<div class="row">
+					<div class="col-md-10">
+						<a href="#" class="btn btn-lg btn-block btn-danger panic">Panic !</a>
+					</div>
+					<div class="col-md-2">
+						<a href="${root}" class="btn btn-lg btn-block btn-success">Stay calm</a>
 					</div>
 				</div>
+				
 			</div>
 		</div>
 	</section>
