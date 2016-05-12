@@ -24,7 +24,9 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableTransactionManagement
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 @ComponentScan(basePackages = "com.excilys.formation.computerdatabase.config, "
+    + "com.excilys.formation.computerdatabase.webapp, "
     + "com.excilys.formation.computerdatabase.controllers, "
+    + "com.excilys.formation.computerdatabase.api,"
     + "com.excilys.formation.computerdatabase.service,"
     + "com.excilys.formation.computerdatabase.persistence ")
 @PropertySource("classpath:application.properties")
