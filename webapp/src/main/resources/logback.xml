@@ -35,7 +35,7 @@
 	</appender>
 
 	<!-- Send logs to both console and file audit -->
-	<logger name="com.excilys.formation.computerdatabase" level="warn"
+	<logger name="com.excilys.formation.computerdatabase" level="trace"
 		additivity="false">
 		<appender-ref ref="FILE" />
 		<appender-ref ref="STDOUT" />

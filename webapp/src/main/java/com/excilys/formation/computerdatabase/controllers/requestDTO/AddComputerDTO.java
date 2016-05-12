@@ -18,8 +18,10 @@ public class AddComputerDTO implements IRequestDTO {
   @Size(min = 1, max = 60, message = "{Size.AddComputerDTO.name}")
   private String name;
 
+  @NotNull
   private String introduced;
 
+  @NotNull
   private String discontinued;
 
   public AddComputerDTO() {

@@ -23,5 +23,4 @@ public class DeleteComputerRequestValidator implements Validator {
   public boolean supports(Class<?> clazz) {
     return DeleteComputerDTO.class.equals(clazz);
   }
-
 }
