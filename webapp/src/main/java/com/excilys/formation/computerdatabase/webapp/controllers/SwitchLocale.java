@@ -17,7 +17,6 @@ public class SwitchLocale {
     if (!SupportedLocale.contains(lang)) {
       lang = "en";
     }
-    ;
     return new SwitchLocaleDTO(lang, "200");
   }
 }
